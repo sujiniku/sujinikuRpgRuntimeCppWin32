@@ -4,6 +4,10 @@
 
 Because it is incomplete, most functions are not implemented yet.
 
+
+名前は「ランタイム」ですが、しかし現時点では、このアプリ単独でしか動作しません。
+The name has "runtime", but at this time it works only with this application alone, because of incomplete.
+
 # 使用プログラミング言語 Programming lnaguage
 Win32 API を使用しています。Visual C++ 2017 を使用しています。
 
