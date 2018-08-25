@@ -48,5 +48,32 @@
     <Image Include="sujinikuRpgRuntimeCppWin32.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="hero_dot_right.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="enemy_dot.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="hero_dot.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="hero_dot_down.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="hero_dot_left.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="hero_dot_up.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="mapchip_grass.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="mapchip_wall.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="MapTrans_dot.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

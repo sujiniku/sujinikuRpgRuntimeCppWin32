@@ -165,6 +165,15 @@
     <ResourceCompile Include="sujinikuRpgRuntimeCppWin32.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="enemy_dot.bmp" />
+    <Image Include="hero_dot.bmp" />
+    <Image Include="hero_dot_down.bmp" />
+    <Image Include="hero_dot_left.bmp" />
+    <Image Include="hero_dot_right.bmp" />
+    <Image Include="hero_dot_up.bmp" />
+    <Image Include="mapchip_grass.bmp" />
+    <Image Include="mapchip_wall.bmp" />
+    <Image Include="MapTrans_dot.bmp" />
     <Image Include="small.ico" />
     <Image Include="sujinikuRpgRuntimeCppWin32.ico" />
   </ItemGroup>
