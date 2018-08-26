@@ -32,7 +32,7 @@ Direct X is not used. Therefore, installation of Direct X is unnecessary.
 
 The license of this app is released under MIT license.
 
-また、私 sujiniku が当ソフト内で公開した画像ファイルやマップデータなどコンテンツのライセンスは、特にことわりのないかぎり、原則的に パブリックドメイン または クリエイティブコモンズ0 とします。
+また、私 sujiniku が当ソフト内で公開した画像ファイルやマップデータなどコンテンツのライセンスは、特にことわりのないかぎり、原則的に パブリックドメイン または クリエイティブコモンズ0 (CC0) とします。
 
 Also, the licenses of contents such as image files and map data released by me sujiniku are, in principle, public domain or creative commons 0 unless otherwise stated.
 
@@ -56,6 +56,6 @@ Move: Arrow keys
 
 
 # インストール方法 How to install
-現時点では未完成なので、Visual Studioを使ってソースファイルをビルドしてください。
+現時点では未完成なので、isual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。
 
 Since this app is incomplete at the moment, please use Visual Studio to build the source code.
