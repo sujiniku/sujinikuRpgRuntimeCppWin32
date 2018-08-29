@@ -41,19 +41,18 @@ Also, the licenses of contents such as image files and map data released by me s
 However, in the future, content with the exception of specifying the license may be added, so in that case, please follow the individual license for each individual additional content.
 
 # サンプルゲームの操作方法 How to operate sample game
-決定ボタン: Z キー
 
-キャンセルボタン: X キー
+動作       |キー  |
+:---------|----:|
+決定       |Z   |
+キャンセル / メニュー開  |X    |
+移動      |矢印  |
 
-移動: 矢印キー
-
-
-Decide button: Z key
-
-Cancel button: X key
-
-Move: Arrow keys
-
+Action       |Key  |
+:---------|----:|
+Decide       |Z   |
+Cancel / Menu  |X    |
+Move      |Arrow  |
 
 # ゲームの起動方法 How to launch this game
 現時点では未完成なので、isual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。
