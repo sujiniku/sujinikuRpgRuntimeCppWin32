@@ -48,5 +48,5 @@ Cancel / Menu  |X    |
 Move      |Arrow  |
 
 # ゲームの起動方法 How to launch this game
-現時点では未完成なので、isual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。  
+現時点では未完成なので、Visual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。  
 Since this app is incomplete at the moment, please use Visual Studio to build the source code.  
