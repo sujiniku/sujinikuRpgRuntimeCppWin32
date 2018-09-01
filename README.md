@@ -52,3 +52,7 @@ Move      |Arrow  |
 # ゲームの起動方法 How to launch this game
 現時点では未完成なので、Visual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。  
 Since this app is incomplete at the moment, please use Visual Studio to build the source code.  
+
+# その他の書類 Other documents
+ソースコードの関数や変数などの説明といった、ゲームの仕様については `specification.md` に記載されています。  
+Specifications of games such as explanations of functions and variables in source code are described in `specification.md` .  
