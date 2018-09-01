@@ -1,0 +1,10 @@
+ID,ファイル名
+1,enemy_dot.bmp
+2,hero_dot.bmp
+3,hero_dot_down.bmp
+4,hero_dot_left.bmp
+5,hero_dot_right.bmp
+6,hero_dot_up.bmp
+7,mapchip_grass.bmp
+8,mapchip_wall.bmp
+9,MapTrans_dot.bmp
