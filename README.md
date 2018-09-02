@@ -57,6 +57,6 @@ Since this app is incomplete at the moment, please use Visual Studio to build th
 ソースコードの関数や変数などの説明といった、ゲームの仕様については `specification.md` に記載されています。  
 Specifications of games such as explanations of functions and variables in source code are described in `specification.md` .  
 
-# 更新履歴 change log
+# 更新履歴 update history
 2018年9月2日 : 履歴の記録を開始。  
 この時点で先月8月中にver0.01がリリースされている。
