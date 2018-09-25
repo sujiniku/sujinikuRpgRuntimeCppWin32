@@ -27,7 +27,6 @@ There is no particular deep meaning in the number.
 "Menu screen" is a screen for doing "tools" and "equipment".  
 
 ### Detail mode
-
 In fact, in addition to the above basic modes, there are also cases where it is classified more finely.  
 
 Combat command: MODE_BATTLE_COMMAND
@@ -52,9 +51,9 @@ __Menu screen__
 item_select : For calculating the cursor position in the item menu.  
 
 __Battle function__
-battle_start: We make the necessary substitution when entering battle. Assignment of enemy HP etc.  
-hero_attack: Process in the case where the main character attacks in battle.  
-enemy_attack: Processing when an enemy attacks in battle.  
+battle_start : We make the necessary substitution when entering battle. Assignment of enemy HP etc.  
+hero_attack : Process in the case where the main character attacks in battle.  
+enemy_attack : Processing when an enemy attacks in battle.  
 
 draw_battle_common_before: A function that draws the background of the battle screen. However, at present, there is only a pure white background.  
 draw_battle_common_after: A function for drawing the HP display field of the battle screen. HP is displayed for the whole time in battle, in principle.  
@@ -63,69 +62,70 @@ draw_battle_HeroDamage: Draws damage received by the main character party. Since
 draw_battle_EnemyDamage: Draws the damage the enemy received.  
 
 ## Contents of structure
-chara_chip_def: A structure for grouping the image handles of the character chips in each direction (up, down, left, and right) on the main character's map screen.  
+chara_chip_def : A structure for grouping the image handles of the character chips in each direction (up, down, left, and right) on the main character's map screen.  
 
-item_def: a structure that defines items such as "medicinal herbs"  
-item_have: A structure that is scheduled to keep the number of items held by the leading character. (Incomplete as it is working)  
+item_def : a structure that defines items such as "medicinal herbs"  
+item_have : A structure that is scheduled to keep the number of items held by the leading character. (Incomplete as it is working)  
 
-monster_def: Definition of a monster. Name (slime, cobolt etc.) and max HP etc. Also include the monster number (ID) in this.  
+monster_def : Definition of a monster. Name (slime, cobolt etc.) and max HP etc. Also include the monster number (ID) in this.  
 
-MapTrans_def: Warp zone structure. We use this structure as we treat entrances and exits of each map as warp zones.  
+MapTrans_def : Warp zone structure. We use this structure as we treat entrances and exits of each map as warp zones.  
+
 ## Contents of variables  
 Since we have too many variables, we do not introduce all the variables.  
 
-mode_scene: Variable for managing the mode number of the current mode (battle mode, opening screen mode, etc.).  
+mode_scene : Variable for managing the mode number of the current mode (battle mode, opening screen mode, etc.).  
   
-next_attack_flag: Who will attack next? In the current system, only two of the enemies and the hero participate in the battle in the battle mode, so we manage it by this.  
+next_attack_flag : Who will attack next? In the current system, only two of the enemies and the hero participate in the battle in the battle mode, so we manage it by this.  
 
 encount_monters_id: When encountering an enemy, save the ID of that monster. He records who fights against his opponent.  
-monster_name: Save the name of the monster you encountered.  
-monster_hp: You save the HP of the monster you encountered.  
-encount_mons_alive: Flag to distinguish between life and death of the monster encountered. Set to 0 if you died. Set to 1 if you are alive.  
+monster_name : Save the name of the monster you encountered.  
+monster_hp : You save the HP of the monster you encountered.  
+encount_mons_alive : Flag to distinguish between life and death of the monster encountered. Set to 0 if you died. Set to 1 if you are alive.  
 
-__Selection item__
-selecting_OP: This is a selection screen such as "From the beginning" "From the continuation" on the opening screen, and records the number of commands selected. The first is "from the beginning", the second is "from the continuation".  
+__Selection item__  
+selecting_OP : This is a selection screen such as "From the beginning" "From the continuation" on the opening screen, and records the number of commands selected. The first is "from the beginning", the second is "from the continuation".  
 
-selecting_mainmenu: The main menu screen for "tools" and "equipment" etc. records the number of commands selected.  
+selecting_mainmenu : The main menu screen for "tools" and "equipment" etc. records the number of commands selected.  
 
-__The main character's parameter__
+__The main character's parameter__  
 your_money: Possession of the main character party. Although it is said that at present the party has only one hero.  
 
-hero_hp: The current hit point of the hero. HP. When it becomes 0, the game is over.  
-hero_hp_max: Highest hit point of the hero.  
-hero_agility: The hero's quickness.  
+hero_hp : The current hit point of the hero. HP. When it becomes 0, the game is over.  
+hero_hp_max : Highest hit point of the hero.  
+hero_agility : The hero's quickness.  
 
 hero_exp: The cumulative experience value that the hero has acquired up to now.  
 
-__Conversation system__
-drawTalkString1: The text of the first line of the conversation window.  
-drawTalkString 2: The text of the second line of the conversation window.  
-drawTalkString3: The text of the third line of the conversation window.  
+__Conversation system__  
+drawTalkString1 : The text of the first line of the conversation window.  
+drawTalkString2 : The text of the second line of the conversation window.  
+drawTalkString3 : The text of the third line of the conversation window.  
 
 Since text is included, drawTalkString 1 to 3 are array variables.  
 When you use the parenthesis sign of the array, GitHub misunderstands that it is a web link, so the brackets are omitted in the specification.
 
-__map__
-where_map: What number of map is the main character party  
-maptable: A two-dimensional array showing the topographic data of the map of the current position of the hero. The definition of individual maps is done with another variable.
+__map__  
+where_map : What number of map is the main character party  
+maptable : A two-dimensional array showing the topographic data of the map of the current position of the hero. The definition of individual maps is done with another variable.
 
-chara_x: What is the hero in the X coordinate on the map  
-chara_y: What is the hero in the Y coordinate on the map  
+chara_x : What is the hero in the X coordinate on the map  
+chara_y : What is the hero in the Y coordinate on the map  
 
-start_x: On the map at the start of the game, what number is the hero in the X coordinate.  
-start_y: On the map at the start of the game, what number is the hero in the Y coordinate.  
+start_x : On the map at the start of the game, what number is the hero in the X coordinate.  
+start_y : On the map at the start of the game, what number is the hero in the Y coordinate.  
 
-desti_x: The X coordinate of the hero's destination to move or move to. Calculated when the arrow key is pressed etc.
-desti_y: The Y coordinate of the main character of the hero or the destination to move to.
+desti_x : The X coordinate of the hero's destination to move or move to. Calculated when the arrow key is pressed etc.
+desti_y : The Y coordinate of the main character of the hero or the destination to move to.
 If the planned destination of the destination is a movable mass, the content of desti is substituted into the position of the leading character (such as chara_x).
 
-direction: An enumeration that indicates the direction of the character, such as the hero on the map. Either up, down, right, or left. hero1_direction: Variable representing the direction of the main character on the map. Only the hero. Other characters are represented by other variables.
+direction : An enumeration that indicates the direction of the character, such as the hero on the map. Either up, down, right, or left. hero1_direction: Variable representing the direction of the main character on the map. Only the hero. Other characters are represented by other variables.
 
-MapTrans_position_x: X position of warp zone. We use this variable because the entrance and exit of each map is also treated as a warp zone.  
-MapTrans_position_Y: Y position of the warp zone.  
+MapTrans_position_x : X position of warp zone. We use this variable because the entrance and exit of each map is also treated as a warp zone.  
+MapTrans_position_Y : Y position of the warp zone.  
 
-positionX_enemy: The X coordinate of the position of the monster on the map. This game has the function that monsters are displayed on the map.  
-positionY_enemy: The Y coordinate of the position of the monster on the map.  
+positionX_enemy : The X coordinate of the position of the monster on the map. This game has the function that monsters are displayed on the map.  
+positionY_enemy : The Y coordinate of the position of the monster on the map.  
 
 kCount: Variable that limits the keyboard input on the map screen to a certain amount within a certain period of time and increases with the lapse of time.  
 
