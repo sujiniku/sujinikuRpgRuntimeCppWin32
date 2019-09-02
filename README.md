@@ -53,6 +53,12 @@ Move      |Arrow  |
 現時点では未完成なので、Visual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。  
 Since this app is incomplete at the moment, please use Visual Studio to build the source code.  
 
+ソリューションファイルの場所は
+
+sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32
+
+です。
+
 # GitHubに上書き保存する場合の保存場所（自分用メモ）
 解凍したファイル内の
 
