@@ -53,12 +53,12 @@ Move      |Arrow  |
 現時点では未完成なので、Visual Studioを使ってソリューション(sln)ファイルを起動して、ソースファイルをビルドしてください。  
 Since this app is incomplete at the moment, please use Visual Studio to build the source code.  
 
-#上書き保存する場合の保存場所（自分用メモ）
-展開するファイルの
+# GitHubに上書き保存する場合の保存場所（自分用メモ）
+解凍したファイル内の
 
 sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32\sujinikuRpgRuntimeCppWin32
 
-にソースコード sujinikuRpgRuntimeCppWin32.cpp　があるので、そこを上書き。
+にソースコード sujinikuRpgRuntimeCppWin32.cpp　があるので、GitHUbの対応するフォルダを上書き。
 
 # その他の書類 Other documents
 ソースコードの関数や変数などの説明といった、ゲームの仕様については `specification.md` に記載されています。  
