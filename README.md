@@ -66,6 +66,9 @@ sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32\sujinikuRpgRuntimeC
 
 にソースコード sujinikuRpgRuntimeCppWin32.cpp　があるので、GitHUbの対応するフォルダを上書き。
 
+ソリューションファイルがあるフォルダと同じフォルダに「sujinikuRpgRuntimeCppWin32」というフォルダがあるので、そこの中にあるCPPファイルの「sujinikuRpgRuntimeCppWin32」を、GitHubの当リポジトリの該当する同じ場所にアップロードする。
+
+
 # その他の書類 Other documents
 ソースコードの関数や変数などの説明といった、ゲームの仕様については `specification.md` に記載されています。  
 Specifications of games such as explanations of functions and variables in source code are described in `specification.md` .  
