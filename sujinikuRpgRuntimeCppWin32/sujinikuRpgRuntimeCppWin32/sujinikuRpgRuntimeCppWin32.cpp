@@ -34,8 +34,9 @@
 
 
 
+int idTemp = 0;
 
-
+int sankaAgility[20];
 
 // 装備の材質:
 
@@ -81,7 +82,8 @@ enum resource_embedded_flag { on, off };
 enum resource_embedded_flag resource_embedded_var = off;
 
 
-
+int partyNinzu=2, enemyNinzu=1;
+int sankaNinzu = partyNinzu + enemyNinzu;
 
 struct item_def
 {
@@ -2346,6 +2348,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					if (selecting_battle_mainmenu == 1)	{
 						// SetTimer(hWnd, 1, 1000, NULL);
 						battleTimeFlag = 1;
+
+
+						for(idTemp = 0; idTemp < partyNinzu; idTemp = idTemp + 1)
+						{
+							sankaAgility[idTemp] = heros_def_list[idTemp].heros_agility;
+
+						}
+
+						for(idTemp = 0; idTemp < enemyNinzu; idTemp = idTemp + 1)
+						{
+							sankaAgility[partyNinzu + idTemp] = monster_def_list[idTemp].mon_agility;
+
+						}
+
+
+
 
 						// 主人公の素早さのほうが早い場合
 						if (heros_def_list[0].heros_agility >= monster_def_list[encount_monters_id -1].mon_agility) {
