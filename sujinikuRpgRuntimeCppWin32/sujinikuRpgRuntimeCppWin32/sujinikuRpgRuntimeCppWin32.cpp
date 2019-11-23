@@ -12,7 +12,7 @@
 
 // #include "resource.h"
 
-
+// 差分テスト // テスト終わったら、この行を消す
 #define MAX_LOADSTRING 100
 #define MAX_LENGTH 300 // 要素数に注意 
 
