@@ -85,6 +85,12 @@ enum resource_embedded_flag resource_embedded_var = off;
 int partyNinzu=2, enemyNinzu=1;
 int sankaNinzu = partyNinzu + enemyNinzu;
 
+
+int partyNarabijyun[5] = { 0,1,2,3,4 }; // パーティ隊列の並び替えの処理に使う予定
+int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
+
+
+
 struct item_def
 {
 	int item_id;
@@ -154,11 +160,23 @@ struct heros_def
 };
 
 
+
 enum next_attack_flag { next_is_hero, next_is_enemy };
 enum next_attack_flag next_attack_var = next_is_hero;
 
 
 static int encount_monters_id = 1;
+
+
+struct monsterTairetu_def
+{
+	int monsterTairetu[10];
+};
+
+
+
+
+
 
 static int selecting_item = 1 ;
 static int selecting_item_x = 1;
@@ -167,6 +185,7 @@ static int selecting_item_y = 1;
 // 戦闘中に使用する変数。 モンスター定義とは別物。
 static TCHAR monster_name[30];
 static int monster_hp = 10;
+
 
 
 static int enemy_alive[2] = { 1, 1}; // 1なら生きてる。0なら死亡。とりあえず2匹ぶん
@@ -538,6 +557,11 @@ static struct weapon_def weapon_def_list[5]; // 武器処理の構造体配列�
 static struct monster_def monster_def_list[8];
 
 static struct heros_def heros_def_list[8];
+
+
+
+static struct monsterTairetu_def monsterTairetu_def_list[50];
+
 
 
 // 戦闘への突入の処理 // のちのマップ判定で呼びだすので、戦闘突入とマップ判定の順序は固定のこと。
@@ -983,6 +1007,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	heros_def_list[1].heros_agility = 10;
 
 	heros_def_list[1].heros_exp = 0;
+
+
+	int tempHairetu[21] ;
+
+	tempHairetu[0] = 0;
+	tempHairetu[1] = -99;
+	memcpy(monsterTairetu_def_list[0].monsterTairetu, tempHairetu, sizeof(tempHairetu));
+
+	tempHairetu[0] = 1;
+	tempHairetu[1] = -99;
+	memcpy(monsterTairetu_def_list[1].monsterTairetu, tempHairetu, sizeof(tempHairetu));
+
 
 
 	
