@@ -1826,7 +1826,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
 				}
 
-				// ここにタイマーを入れよう。
+			
 
 				//draw_battle_common_before(hdc);
 				draw_battle_common_after(hdc);
