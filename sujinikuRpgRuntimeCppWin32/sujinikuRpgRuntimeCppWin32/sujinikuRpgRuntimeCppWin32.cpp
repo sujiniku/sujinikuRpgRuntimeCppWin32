@@ -36,6 +36,8 @@
 
 int idTemp = 0;
 
+int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
+
 int sankaAgility[20];
 
 // 装備の材質:
@@ -1307,6 +1309,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (next_attack_var == next_is_hero && hero1_already_attack_flag == 0) {
 					//MessageBox(NULL, TEXT("主人公の攻撃"), TEXT("戦闘デバッグ用"), MB_OK);
 
+					whoAction = 0;
 					hero1_attack(hWnd);
 					hero1_already_attack_flag = 1; // Heroも既に攻撃した
 
@@ -1352,6 +1355,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (next_attack_var == next_is_enemy && enemy_already_attack_flag == 0) {
 					//MessageBox(NULL, TEXT("主人公の攻撃"), TEXT("戦闘デバッグ用"), MB_OK);
 
+					whoAction = 1;
 					enemy_attack(hWnd);
 					enemy_already_attack_flag = 1; // enemyも既に攻撃した
 
@@ -1568,15 +1572,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				HBRUSH blue_thin_1, blue_thin_2;
 				blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
 				blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
-				Rectangle(hdc, 10, 10, 610 , 80 );
+				Rectangle(hdc, 10, 10, 610, 80);
 
 
 				HBRUSH brasi_pink_1;
 				brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 				SelectObject(hdc, brasi_pink_1);
-							
-				Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20, 
-					100 + (selecting_mainmenu - 1) * 100,  70 );
+
+				Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+					100 + (selecting_mainmenu - 1) * 100, 70);
 
 				SetBkMode(hdc, TRANSPARENT);
 				lstrcpy(mojibuf, TEXT("道具"));
@@ -1595,13 +1599,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				/* 所持金の表示欄 */
 				SelectObject(hdc, blue_thin_1);
 
-				Rectangle(hdc, 500 , 250,
-					600 , 350);
+				Rectangle(hdc, 500, 250,
+					600, 350);
 
 				lstrcpy(mojibuf, TEXT("所持金"));
 				TextOut(hdc, 510, 260, mojibuf, lstrlen(mojibuf));
 
-				_stprintf_s(mojibuf, MAX_LENGTH,TEXT("%d"), your_money);
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
 				TextOut(hdc, 510, 300, mojibuf, lstrlen(mojibuf));
 
 				// _itot_s(your_money , p,200, 10);
@@ -1621,9 +1625,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
 				TextOut(hdc, 160, 130, mojibuf, lstrlen(mojibuf));
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max );
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
 				TextOut(hdc, 190, 130, mojibuf, lstrlen(mojibuf));
-		
+
 
 				int offset = 120;
 
@@ -1799,7 +1803,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				draw_battle_common_after(hdc);
+				draw_battle_common_after(hdc); // ステータス
 
 
 			}
@@ -1807,16 +1811,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			if (mode_scene == MODE_BATTLE_NOW) {
-				draw_battle_common_before(hdc);
+
+
+
+				draw_battle_common_before(hdc); // 画面全体の背景色など
+
+				if (whoAction == 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("主人公の攻撃！ "));
+					TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+				}
+
+				if (whoAction == 1) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));
+					TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+				}
+
+				// ここにタイマーを入れよう。
+
+				//draw_battle_common_before(hdc);
 				draw_battle_common_after(hdc);
 
 				// ここにダメージ表記の関数を追加。
 				if (enemy_already_attack_flag == 1) {
 					draw_battle_HeroDamage(hdc);
+
+					draw_battle_common_after(hdc);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵はすでに攻撃しました "));
+					// TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+
 				}
 
 				if (hero1_already_attack_flag == 1) {
 					draw_battle_EnemyDamage(hdc);
+
+					draw_battle_common_after(hdc);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("主人公はすでに攻撃しました "));
+					// TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+
+
 				}
 
 
@@ -2410,8 +2442,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							if (hero1_already_attack_flag == 0 ) {
 								//MessageBox(NULL, TEXT("主人公の攻撃"), TEXT("戦闘デバッグ用"), MB_OK);
 
+								whoAction = 0;
 								hero1_attack(hWnd);	
 								hero1_already_attack_flag = 1;	
+
+								
 								next_attack_var = next_is_enemy;
 							}
 
@@ -2429,10 +2464,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 							if (encount_mons_alive == 1) {
-								//MessageBox(NULL, TEXT("敵の攻撃"), TEXT("戦闘デバッグ用"), MB_OK);
+								// MessageBox(NULL, TEXT("敵の攻撃"), TEXT("戦闘デバッグ用"), MB_OK);
 
+								whoAction = 1;
 								enemy_attack(hWnd);
 								enemy_already_attack_flag = 1;
+
+								
 								next_attack_var = next_is_hero;
 								// MessageBox(NULL, TEXT("フラグを next_is_hero にした."), TEXT("戦闘デバッグ用"), MB_OK);
 
