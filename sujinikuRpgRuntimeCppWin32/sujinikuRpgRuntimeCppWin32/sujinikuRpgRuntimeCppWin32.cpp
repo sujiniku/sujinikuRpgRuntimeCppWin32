@@ -8,7 +8,7 @@
 #pragma warning(disable:4996) // fopen
 
 #include <stdlib.h>
-#include <time.h>
+#include <time.h>nkaAgility[partyNinzu + idTemp] = monster_def_list[i
 
 // #include "resource.h"
 
@@ -38,7 +38,11 @@ int idTemp = 0;
 
 int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
 
-int sankaAgility[20];
+int sankaAgility[20]; // 素早さ配列
+int iremonoAgilityHairetu[20]; // 入れ物すばやさ配列
+int actuinOrder[20]; // 行動順配列
+int iremonoOrderHairetu[20] ; // 入れ物こうどうじゅん配列
+
 
 // 装備の材質:
 
@@ -2418,19 +2422,62 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						battleTimeFlag = 1;
 
 
-						for(idTemp = 0; idTemp < partyNinzu; idTemp = idTemp + 1)
+						for(idTemp = 0; idTemp < partyNinzu -1; idTemp = idTemp + 1)
 						{
 							sankaAgility[idTemp] = heros_def_list[idTemp].heros_agility;
-
 						}
 
 						for(idTemp = 0; idTemp < enemyNinzu; idTemp = idTemp + 1)
 						{
-							sankaAgility[partyNinzu + idTemp] = monster_def_list[idTemp].mon_agility;
-
+							sankaAgility[partyNinzu -1 + idTemp] = monster_def_list[idTemp].mon_agility;
 						}
 
+						for (int loctempQ = 0; loctempQ < partyNinzu + enemyNinzu -1; ++loctempQ)
+						{								
+							iremonoAgilityHairetu[loctempQ] = sankaAgility[loctempQ];
 
+							iremonoOrderHairetu[loctempQ] = loctempQ;
+						} // 初期値の代入
+
+
+
+						// ソートで実装しよう
+
+
+
+						for (int loctempB = 0; loctempB < partyNinzu - 1 + enemyNinzu; ++loctempB)
+						{
+							for (int loctempA = loctempB; loctempA < partyNinzu - 1 + enemyNinzu; ++loctempA)
+							{
+								if (iremonoAgilityHairetu[loctempB] >= iremonoAgilityHairetu[loctempA + loctempB]) {
+
+									// 何もしていない
+								//	iremonoAgilityHairetu[loctempB] = iremonoAgilityHairetu[loctempB];
+								//	iremonoAgilityHairetu[loctempA + loctempB] = iremonoAgilityHairetu[loctempA + loctempB];
+
+								}
+								if (iremonoAgilityHairetu[loctempB] < iremonoAgilityHairetu[loctempA + loctempB]) {
+
+									int tempSwapA, tempSwapB;
+
+									tempSwapA = iremonoAgilityHairetu[loctempB];
+									tempSwapB = iremonoAgilityHairetu[loctempA + loctempB];
+
+									iremonoAgilityHairetu[loctempB] = tempSwapB;
+									iremonoAgilityHairetu[loctempA + loctempB] = tempSwapA;
+
+
+									int tempOrederSwapA, tempOrederSwapB;
+
+									tempOrederSwapA = iremonoOrderHairetu[loctempB];
+									tempOrederSwapB = iremonoOrderHairetu[loctempA + loctempB];
+
+									iremonoOrderHairetu[loctempB] = tempOrederSwapB;
+									iremonoOrderHairetu[loctempA + loctempB] = tempOrederSwapA;
+								}
+							}
+
+						}
 
 
 						// 主人公の素早さのほうが早い場合
