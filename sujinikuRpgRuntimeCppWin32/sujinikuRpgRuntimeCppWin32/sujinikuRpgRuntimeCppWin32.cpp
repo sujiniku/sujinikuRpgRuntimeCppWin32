@@ -8,7 +8,9 @@
 #pragma warning(disable:4996) // fopen
 
 #include <stdlib.h>
-#include <time.h>nkaAgility[partyNinzu + idTemp] = monster_def_list[i
+#include <time.h>
+
+// nkaAgility[partyNinzu + idTemp] = monster_def_list[i
 
 // #include "resource.h"
 
