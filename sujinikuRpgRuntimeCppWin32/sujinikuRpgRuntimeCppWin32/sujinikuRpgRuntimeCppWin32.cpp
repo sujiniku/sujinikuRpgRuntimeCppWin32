@@ -45,6 +45,7 @@ int iremonoAgilityHairetu[20]; // 入れ物すばやさ配列
 int actuinOrder[20]; // 行動順配列
 int iremonoOrderHairetu[20] ; // 入れ物こうどうじゅん配列
 int mikataAgility[20]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
+int tekiTairetuAgility[20]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
 
 // 装備の材質:
 
@@ -582,6 +583,7 @@ void battle_start(HWND hWnd) {
 
 	monster_hp = monster_def_list[encount_monters_id - 1].mon_hp_max;
 
+	tekiTairetuAgility[0] = monster_def_list[encount_monters_id - 1].mon_agility;
 
 	encount_mons_alive = 1;
 	selecting_battle_mainmenu = 1;
@@ -2470,8 +2472,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						for(idTemp = 0; idTemp <= enemyNinzu-1; idTemp = idTemp + 1)
 						{
-							sankaAgility[partyNinzu + idTemp] = monster_def_list[idTemp].mon_agility;
+							sankaAgility[partyNinzu + idTemp] = tekiTairetuAgility[idTemp];
 						}
+
+						
 
 						for (int loctempQ = 0; loctempQ <= partyNinzu + enemyNinzu -1; ++loctempQ)
 						{								
