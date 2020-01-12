@@ -44,7 +44,7 @@ int sankaAgility[20]; // 素早さ配列
 int iremonoAgilityHairetu[20]; // 入れ物すばやさ配列
 int actuinOrder[20]; // 行動順配列
 int iremonoOrderHairetu[20] ; // 入れ物こうどうじゅん配列
-
+int mikataAgility[20]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
 
 // 装備の材質:
 
@@ -809,6 +809,15 @@ void draw_battle_common_after(HDC hdc) {
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
 	TextOut(hdc, 50 + 30, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
+	lstrcpy(mojibuf, TEXT("素早さ"));
+	TextOut(hdc, 20 , 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[0]);
+	TextOut(hdc, 50  + 30, 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+
+
+
 	// _itot_s(your_money , p,200, 10);
 
 
@@ -831,8 +840,31 @@ void draw_battle_common_after(HDC hdc) {
 	TextOut(hdc, 50 + 30 + offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
 
+	lstrcpy(mojibuf, TEXT("素早さ"));
+	TextOut(hdc, 20 + offsetBattleX, 410 - chara_window_size_x + 40 +30, mojibuf, lstrlen(mojibuf));
 
 
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[1] );
+	TextOut(hdc, 50 + offsetBattleX + 30, 410 - chara_window_size_x + 40 +30, mojibuf, lstrlen(mojibuf));
+
+
+
+	// 素早さ配列の表示テスト
+
+	lstrcpy(mojibuf, TEXT("素早さ配列"));
+	TextOut(hdc, 370, 180, mojibuf, lstrlen(mojibuf));
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[0] );
+	TextOut(hdc, 300+100, 180 +40, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[1]);
+	TextOut(hdc, 300 + 100 +30, 180 +40 , mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[2]);
+	//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgilityHairetu[2]);
+	TextOut(hdc, 300 + 100 + 30 +30, 180 +40 , mojibuf, lstrlen(mojibuf));
 
 
 
@@ -985,7 +1017,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// モンスターの定義
 	lstrcpy( monster_def_list[0].monster_name, TEXT("スライム"));
 	monster_def_list[0].mon_hp_max = 2;
-	monster_def_list[0].mon_agility = 2;
+	monster_def_list[0].mon_agility = 13;
 	monster_def_list[0].monster_id = 1;
 	monster_def_list[0].mon_gold = 1;
 	monster_def_list[0].mon_exp = 2;
@@ -993,7 +1025,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	lstrcpy(monster_def_list[1].monster_name, TEXT("コボルト"));
 	monster_def_list[1].mon_hp_max = 12;
-	monster_def_list[1].mon_agility = 6;
+	monster_def_list[1].mon_agility = 36;
 	monster_def_list[1].monster_id = 2;
 	monster_def_list[1].mon_gold = 10;
 	monster_def_list[1].mon_exp = 5;
@@ -1004,7 +1036,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	lstrcpy(heros_def_list[0].heros_name, TEXT("エロス"));
 	heros_def_list[0].heros_hp = 20;
 	heros_def_list[0].heros_hp_max = 25;
-	heros_def_list[0].heros_agility = 5;
+	heros_def_list[0].heros_agility = 56;
 
 	heros_def_list[0].heros_exp = 0;
 
@@ -1012,7 +1044,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
 	heros_def_list[1].heros_hp = 18;
 	heros_def_list[1].heros_hp_max = 18;
-	heros_def_list[1].heros_agility = 10;
+	heros_def_list[1].heros_agility = 100;
 
 	heros_def_list[1].heros_exp = 0;
 
@@ -1046,7 +1078,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 
+	
 
+	for (idTemp = 0; idTemp <= partyNinzu - 1; idTemp = idTemp + 1)
+	{
+		mikataAgility[idTemp] = heros_def_list[idTemp].heros_agility;
+	}
 
 
 
@@ -2424,17 +2461,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						battleTimeFlag = 1;
 
 
-						for(idTemp = 0; idTemp < partyNinzu -1; idTemp = idTemp + 1)
+
+
+						for(idTemp = 0; idTemp <= partyNinzu -1; idTemp = idTemp + 1)
 						{
-							sankaAgility[idTemp] = heros_def_list[idTemp].heros_agility;
+							sankaAgility[idTemp] = mikataAgility[idTemp];
 						}
 
-						for(idTemp = 0; idTemp < enemyNinzu; idTemp = idTemp + 1)
+						for(idTemp = 0; idTemp <= enemyNinzu-1; idTemp = idTemp + 1)
 						{
-							sankaAgility[partyNinzu -1 + idTemp] = monster_def_list[idTemp].mon_agility;
+							sankaAgility[partyNinzu + idTemp] = monster_def_list[idTemp].mon_agility;
 						}
 
-						for (int loctempQ = 0; loctempQ < partyNinzu + enemyNinzu -1; ++loctempQ)
+						for (int loctempQ = 0; loctempQ <= partyNinzu + enemyNinzu -1; ++loctempQ)
 						{								
 							iremonoAgilityHairetu[loctempQ] = sankaAgility[loctempQ];
 
@@ -2447,9 +2486,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-						for (int loctempB = 0; loctempB < partyNinzu - 1 + enemyNinzu; ++loctempB)
+						for (int loctempB = 0; loctempB <= partyNinzu - 1 + enemyNinzu; ++loctempB)
 						{
-							for (int loctempA = loctempB; loctempA < partyNinzu - 1 + enemyNinzu; ++loctempA)
+							for (int loctempA = loctempB; loctempA <= partyNinzu - 1 + enemyNinzu; ++loctempA)
 							{
 								if (iremonoAgilityHairetu[loctempB] >= iremonoAgilityHairetu[loctempA + loctempB]) {
 
@@ -2480,6 +2519,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							}
 
 						}
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+
+
+
+						for (int loctempA = 0; loctempA <= partyNinzu - 1 + enemyNinzu; ++loctempA)
+						{
+							actuinOrder[loctempA] = iremonoOrderHairetu[loctempA];
+
+//							 = iremonoAgilityHairetu[loctempA] ;
+
+						}
+	
 
 
 						// 主人公の素早さのほうが早い場合
