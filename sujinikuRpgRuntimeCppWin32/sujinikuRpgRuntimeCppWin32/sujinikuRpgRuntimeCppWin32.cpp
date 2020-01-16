@@ -2554,11 +2554,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_BATTLE_COMMAND && key_remain > 0) {
 
-//			timerFlag = 0;
+			//			timerFlag = 0;
 			switch (wParam)
 			{
 			case 'Z':
-				
+
 				battle_key = 1;
 				{
 
@@ -2666,28 +2666,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				if (mode_scene == MODE_BATTLE_WIN && key_remain > 0) {
-					switch (wParam)
-
-					case 'Z':
-						key_remain = 0;
-
-						mode_scene = MODE_MAP;
-						MessageBox(NULL, TEXT(" MODE_BATTLE_WINのマップ繊維にいる。"), TEXT("キーテスト"), MB_OK);
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-						break;
-				}
-
-
 				break;
-
-
-
-
-
-
 			case VK_RIGHT:
 			{
 				// MessageBox(NULL, TEXT("rightが押されました。"), TEXT("キーテスト"), MB_OK);
@@ -2730,6 +2709,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 			}
 		}
+
+
+
+
+		if (mode_scene == MODE_BATTLE_WIN) {
+		//	MessageBox(NULL, TEXT("応急処置のカッコ内"), TEXT("戦闘テスト"), MB_OK);
+			// 入れた
+
+
+			key_remain = 1; // バグの応急処置
+			// 応急処置できた？
+
+
+		}
+		if (mode_scene == MODE_BATTLE_WIN && key_remain > 0) {
+
+//			MessageBox(NULL, TEXT("ばとうぃんのカッコ内"), TEXT("戦闘テスト"), MB_OK);
+			// 入れた
+
+
+			switch (wParam)
+
+					case 'Z':
+						key_remain = 0;
+
+						mode_scene = MODE_MAP;
+//						MessageBox(NULL, TEXT(" MODE_BATTLE_WINのマップ遷移にいる。"), TEXT("キーテスト"), MB_OK);
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+						break;
+		}
+
 
 			key_remain = 1;
 
