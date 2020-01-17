@@ -40,6 +40,7 @@ int idTemp = 0;
 int battleID = 0;
 int grotempA = 0;
 int timerFlag = 0;
+int enemyAlldeadFlag = 0;// 0なら、敵はまだ全滅してない。1で敵が全滅。
 
 int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
 
@@ -590,6 +591,7 @@ void battle_start(HWND hWnd) {
 
 	encount_mons_alive = 1;
 	selecting_battle_mainmenu = 1;
+	enemyAlldeadFlag = 0;
 
 	mode_scene = MODE_BATTLE_COMMAND;
 
@@ -1497,12 +1499,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
+
+
 					// モンスターの死亡判定
 
-					if (encount_mons_alive == 0) {
-						//iCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
+				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
+						iCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
+						enemyAlldeadFlag = 1;
 
-					}
+						//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);
+					
+				}
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					// timerCheckCount = timerCheckCount + 1;
@@ -1523,7 +1530,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//////////////////////////////////
 
 				// 敵が全滅している場合
-				if (encount_mons_alive == 0 && iCount >= 3) {
+				if (encount_mons_alive == 0 && enemyAlldeadFlag == 1 && iCount >= 3 ) {
 
 					//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
 
@@ -1551,11 +1558,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 
-				if (encount_mons_alive == 1 && iCount >= 12) {
+				if (encount_mons_alive == 1 && iCount >= 13) {
+
 					mode_scene = MODE_BATTLE_COMMAND;
 					iCount = 0;
 					timerFlag = 0;
-					
+					grotempA = 0;
 				}
 
 				// なんらかの理由で上記のiCountリセットがされない場合、
