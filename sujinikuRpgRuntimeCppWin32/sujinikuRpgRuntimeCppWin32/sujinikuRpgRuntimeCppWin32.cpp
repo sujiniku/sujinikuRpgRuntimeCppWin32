@@ -2625,13 +2625,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									iremonoAgilityHairetu[loctempA + loctempB] = tempSwapA;
 
 
-									int tempOrederSwapA, tempOrederSwapB;
+									int tempOrderSwapA, tempOrderSwapB;
 
-									tempOrederSwapA = iremonoOrderHairetu[loctempB];
-									tempOrederSwapB = iremonoOrderHairetu[loctempA + loctempB];
+									tempOrderSwapA = iremonoOrderHairetu[loctempB];
+									tempOrderSwapB = iremonoOrderHairetu[loctempA + loctempB];
 
-									iremonoOrderHairetu[loctempB] = tempOrederSwapB;
-									iremonoOrderHairetu[loctempA + loctempB] = tempOrederSwapA;
+									iremonoOrderHairetu[loctempB] = tempOrderSwapB;
+									iremonoOrderHairetu[loctempA + loctempB] = tempOrderSwapA;
 								}
 							}
 
