@@ -34,6 +34,7 @@
 
 #define MODE_BATTLE_WIN 580 // 戦闘勝利のモード番号
 
+#define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 
 int idTemp = 0;
@@ -44,12 +45,12 @@ int enemyAlldeadFlag = 0;// 0なら、敵はまだ全滅してない。1で敵�
 
 int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
 
-int sankaAgility[20]; // 素早さ配列
-int iremonoAgilityHairetu[20]; // 入れ物すばやさ配列
-int actionOrder[20]; // 行動順配列
-int iremonoOrderHairetu[20]; // 入れ物こうどうじゅん配列
-int mikataAgility[20]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
-int tekiTairetuAgility[20]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
+int sankaAgility[BATTLE_Agility_proc]; // 素早さ配列
+int iremonoAgilityHairetu[BATTLE_Agility_proc]; // 入れ物すばやさ配列
+int actionOrder[BATTLE_Agility_proc]; // 行動順配列
+int iremonoOrderHairetu[BATTLE_Agility_proc]; // 入れ物こうどうじゅん配列
+int mikataAgility[BATTLE_Agility_proc]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
+int tekiTairetuAgility[BATTLE_Agility_proc]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
 
 // 装備の材質:
 
@@ -799,60 +800,37 @@ void draw_battle_common_after(HDC hdc) {
 	/* キャラのウィンドウ欄 */
 	SelectObject(hdc, blue_thin_1);
 
+	int windowTempA = 410;
 	int chara_window_size_x = 140;
-	Rectangle(hdc, 10, 410 - chara_window_size_x,
-		10 + chara_window_size_x, 410);
-
-
-	/* キャラのステータス */
-	TextOut(hdc, 20, 410 - chara_window_size_x + 10, heros_def_list[0].heros_name, lstrlen(heros_def_list[0].heros_name));
-
-	lstrcpy(mojibuf, TEXT("HP"));
-	TextOut(hdc, 20, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
-	TextOut(hdc, 50, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
-	TextOut(hdc, 50 + 30, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
-
-	lstrcpy(mojibuf, TEXT("素早さ"));
-	TextOut(hdc, 20, 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[0]);
-	TextOut(hdc, 50 + 30, 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
-
-
 
 	// _itot_s(your_money , p,200, 10);
 
-
-
 	int offsetBattleX = 170;
 
-	Rectangle(hdc, 10 + offsetBattleX, 410 - chara_window_size_x,
-		10 + chara_window_size_x + offsetBattleX, 410);
+	for (int iTemp = 0; iTemp <= 1; iTemp++)
+	{
+		Rectangle(hdc, 10 + iTemp * offsetBattleX, windowTempA - chara_window_size_x,
+			10 + chara_window_size_x + iTemp * offsetBattleX, 410);
 
-	/* キャラのステータス */
-	TextOut(hdc, 20 + offsetBattleX, 410 - chara_window_size_x + 10, heros_def_list[1].heros_name, lstrlen(heros_def_list[1].heros_name));
+		/* キャラのステータス */
+		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 10, heros_def_list[iTemp].heros_name, lstrlen(heros_def_list[iTemp].heros_name));
 
-	lstrcpy(mojibuf, TEXT("HP"));
-	TextOut(hdc, 20 + offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
+		lstrcpy(mojibuf, TEXT("HP"));
+		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[1].heros_hp);
-	TextOut(hdc, 50 + offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[iTemp].heros_hp);
+		TextOut(hdc, 50 + iTemp * offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[1].heros_hp_max);
-	TextOut(hdc, 50 + 30 + offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
-
-
-	lstrcpy(mojibuf, TEXT("素早さ"));
-	TextOut(hdc, 20 + offsetBattleX, 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[iTemp].heros_hp_max);
+		TextOut(hdc, 50 + 30 + iTemp * offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[1]);
-	TextOut(hdc, 50 + offsetBattleX + 30, 410 - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+		lstrcpy(mojibuf, TEXT("素早さ"));
+		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[iTemp]);
+		TextOut(hdc, 50 + iTemp * offsetBattleX + 30, windowTempA - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
+	}
 
 
 
@@ -1101,7 +1079,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	heros_def_list[1].heros_exp = 0;
 
 
-	int tempHairetu[21];
+	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
 
 	tempHairetu[0] = 0;
 	tempHairetu[1] = -99;
@@ -1139,7 +1117,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 
-	for (int loctempA = 0; loctempA <= 20-1 ; ++loctempA)
+	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc -1 ; ++loctempA)
 	{
 		actionOrder[loctempA] = loctempA ;
 		iremonoOrderHairetu[loctempA] = loctempA ;
