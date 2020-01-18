@@ -39,7 +39,7 @@
 
 int idTemp = 0;
 int battleID = 0;
-int grotempA = 0;
+int globalTempA = 0;
 int timerFlag = 0;
 int enemyAlldeadFlag = 0;// 0なら、敵はまだ全滅してない。1で敵が全滅。
 
@@ -358,8 +358,8 @@ static int positionX_enemy[5];
 static int positionY_enemy[5];
 
 
-static int iCount = 0; // 主に自動進行（敵の行動など）に使用
-static int kCount = 0; // 主にキー入力の時間制限に使用
+static int TimeCount = 0; // 主に自動進行（敵の行動など）に使用
+static int keyCount = 0; // 主にキー入力の時間制限に使用
 
 
 // マップチップ用ハンドル // チップ画像のロードは WM_CREATE などで行われる。
@@ -525,7 +525,7 @@ void check_movable(HWND hWnd) {
 			UpdateWindow(hWnd);
 		}
 
-		kCount = 0;
+		keyCount = 0;
 
 	}
 }
@@ -910,7 +910,7 @@ void draw_battle_common_after(HDC hdc) {
 
 
 	/* タイマーのテスト */
-	_stprintf_s(strCount, MAX_LENGTH, TEXT("iCountだ %d"), iCount);
+	_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCountだ %d"), TimeCount);
 	TextOut(hdc, 510, 110, strCount, lstrlen(strCount));
 
 }
@@ -1373,116 +1373,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 
 		if (mode_scene == MODE_MAP) {
-			kCount++;
+			keyCount++;
 			// MODE_BATTLE_COMMAND
 		}
 
 		if (mode_scene == MODE_BATTLE_NOW ) {
 			
-			iCount++; // バトル時以外はカウントしない
-			int timerCheckCount = 0;
+			TimeCount++; // バトル時以外はカウントしない
+			int timerCheckeyCount = 0;
 
-			//for (grotempA = 0; grotempA <= partyNinzu - 1 + enemyNinzu; ++grotempA)
-			//{
-
-				if (encount_mons_alive == 1 && iCount >= (3 + 4 * 0) && timerFlag == 0) //&& timerFlag >= grotempA+1  && timerCheckCount == loctempA
-				{
-					//　どうもこのカッコのなかで、戦闘の長引いたときにしか、grotempA=1 になれてないっぽい 
-
-					timerFlag = 1;
+			for (int battleTempA = 0; battleTempA <= partyNinzu - 1 + enemyNinzu; ++battleTempA) {
+				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckeyCount == loctempA
+				{					
+					timerFlag = 1 + battleTempA;
+					globalTempA = battleTempA;
 
 					// 行動者が味方側の場合
-					if (actionOrder[0] < partyNinzu) {
-						grotempA = 0;
+					if (actionOrder[battleTempA] < partyNinzu) {						
 						heroside_attack(hWnd);
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
 					}
 
 					// 行動者が敵側の場合					
-					if (actionOrder[0] >= partyNinzu) {
-						grotempA = 0;
+					if (actionOrder[battleTempA] >= partyNinzu) {						
 						if (encount_mons_alive == 1) {
 							enemy_attack(hWnd);
 						}
 
-
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}
-
 				}
-
-				if (encount_mons_alive == 1 && iCount >= 7 && timerFlag == 1) //&& timerFlag >= grotempA+1  && timerCheckCount == loctempA
-				{
-					//　どうもこのカッコのなかで、戦闘の長引いたときにしか、grotempA=1 になれてないっぽい 
-
-					timerFlag = 2;
-					grotempA = 1;
-
-					// 行動者が味方側の場合
-					if (actionOrder[1] < partyNinzu) {
-
-						heroside_attack(hWnd);
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-
-					// 行動者が敵側の場合					
-					if (actionOrder[1] >= partyNinzu) {
-
-						if (encount_mons_alive == 1) {
-							enemy_attack(hWnd);
-						}
-
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-
-				}
-	
-
-
-				if (encount_mons_alive == 1 && iCount >= 10 && timerFlag == 2) //&& timerFlag >= grotempA+1  && timerCheckCount == loctempA
-				{
-					//　どうもこのカッコのなかで、戦闘の長引いたときにしか、grotempA=1 になれてないっぽい 
-
-					timerFlag = 3;
-					grotempA = 2;
-
-					// 行動者が味方側の場合
-					if (actionOrder[2] < partyNinzu) {
-
-						heroside_attack(hWnd);
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-
-					// 行動者が敵側の場合					
-					if (actionOrder[2] >= partyNinzu) {
-
-						if (encount_mons_alive == 1) {
-							enemy_attack(hWnd);
-						}
-
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-
-				}
-
-
-
+			}
 
 					// モンスターの死亡判定
 
 				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
-						iCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
+						TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
 						enemyAlldeadFlag = 1;
 
 						//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);
@@ -1490,7 +1416,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 					InvalidateRect(hWnd, NULL, FALSE);
-					// timerCheckCount = timerCheckCount + 1;
+					// timerCheckeyCount = timerCheckeyCount + 1;
 					// battleID = battleID + 1;
 				
 
@@ -1502,13 +1428,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				timerCheckCount = 0;
+				timerCheckeyCount = 0;
 				battleID = battleID + 1; 
 
 				//////////////////////////////////
 
 				// 敵が全滅している場合
-				if (encount_mons_alive == 0 && enemyAlldeadFlag == 1 && iCount >= 3 ) {
+				if (encount_mons_alive == 0 && enemyAlldeadFlag == 1 && TimeCount >= 3 ) {
 
 					//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
 
@@ -1528,28 +1454,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					//KillTimer(hWnd, 1);
 					battleTimeFlag = 0;
-				  iCount = 0; 
-					grotempA = 0;
+				  TimeCount = 0; 
+					globalTempA = 0;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 					break;
 				}
 
-				if (encount_mons_alive == 1 && iCount >= 13) {
+				if (encount_mons_alive == 1 && TimeCount >= 13) {
 
 					mode_scene = MODE_BATTLE_COMMAND;
-					iCount = 0;
+					TimeCount = 0;
 					timerFlag = 0;
-					grotempA = 0;
+					globalTempA = 0;
 				}
 
-				// なんらかの理由で上記のiCountリセットがされない場合、
+				// なんらかの理由で上記のTimeCountリセットがされない場合、
 				//		安全のため50カウントで強制リセット
-				if (iCount >= 50) {
+				if (TimeCount >= 50) {
 					//KillTimer(hWnd, 1);
 					battleTimeFlag = 0;
-					iCount = 0;
+					TimeCount = 0;
 					battleID = 0;
 				}
 
@@ -1560,11 +1486,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// } // for文の終わり
 
 
-//			grotempA = 0;
+//			globalTempA = 0;
 				//MessageBox(NULL, TEXT("for文を抜けた。"), TEXT("場所テスト"), MB_OK);
 			// ここに来れる!
 
-			// iCount = 0; // ループフリーズを導く
+			// TimeCount = 0; // ループフリーズを導く
 			battleID = 0;
 			// timerFlag = 1;
 		} // if (mode_scene == MODE_BATTLE_NOW  ) { // のカッコ
@@ -1947,8 +1873,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
 
-			if (actionOrder[grotempA] <= partyNinzu-1) {
-				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[grotempA]].heros_name, TEXT("の攻撃"));
+			if (actionOrder[globalTempA] <= partyNinzu-1) {
+				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃"));
 				TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
 
 				// ここにダメージ表記の関数を追加。
@@ -1957,7 +1883,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				draw_battle_common_after(hdc);
 			}
 
-			if (actionOrder[grotempA] >= partyNinzu) {
+			if (actionOrder[globalTempA] >= partyNinzu) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
 				TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
 
@@ -1968,11 +1894,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[grotempA], TEXT("actionOrder[grotempA]"));
+			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]"));
 			TextOut(hdc, 50, 410 - 300, mojibuf, lstrlen(mojibuf));
 
 
-			_stprintf_s(mojibuf, TEXT("%d %s"), grotempA, TEXT("grotempA"));
+			_stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA"));
 			TextOut(hdc, 50, 410 - 270, mojibuf, lstrlen(mojibuf));
 
 
@@ -2231,7 +2157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_MAP && key_remain > 0 && kCount > 0) { ///////
+		if (mode_scene == MODE_MAP && key_remain > 0 && keyCount > 0) { ///////
 			switch (wParam)
 			{
 				// メニュー画面に遷移
