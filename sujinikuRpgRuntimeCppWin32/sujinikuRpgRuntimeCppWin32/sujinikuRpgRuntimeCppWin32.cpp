@@ -28,6 +28,8 @@
 #define MODE_ITEM_MENU 410 // アイテムメニューのモード
 
 #define MODE_SAVE_MENU 440 // セーブメニューのモード
+#define MODE_saving_Now 445 // セーブ中
+
 
 #define MODE_BATTLE_COMMAND 500 // 戦闘画面のモード番号
 #define MODE_BATTLE_NOW 520 // 戦闘画面の戦闘中のモード番号（コマンド受付け不可能）
@@ -1217,6 +1219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_CREATE:
 		SetTimer(hWnd, 2, 500, NULL);
+		// SetTimer(hWnd, 5, 500, NULL); // セーブ画面で使う
 
 		// マップ描画
 		// 初期化用		// この初期化処理を消すとコンパイルエラーになる。消しちゃ駄目
@@ -1349,6 +1352,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// MODE_BATTLE_COMMAND
 		}
 
+		if (mode_scene == MODE_saving_Now) {			
+			TimeCount++;
+			if (TimeCount >= 4) {
+				// MessageBox(NULL, TEXT("セーブタイマー4以上;"), TEXT("場所テスト"), MB_OK);
+
+				mode_scene = MODE_MENU;
+				TimeCount = 0;
+			 }		
+
+			InvalidateRect(hWnd, NULL, FALSE); // 引数3番目はここではfalseに。
+			UpdateWindow(hWnd);
+		}
+
 		if (mode_scene == MODE_BATTLE_NOW ) {
 			
 			TimeCount++; // バトル時以外はカウントしない
@@ -1378,7 +1394,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 					// モンスターの死亡判定
-
 				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
 						TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
 						enemyAlldeadFlag = 1;
@@ -1388,16 +1403,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 					InvalidateRect(hWnd, NULL, FALSE);
-					// timerCheckCount = timerCheckCount + 1;
-					// battleID = battleID + 1;
+
 				
-
 				// MessageBox(NULL, TEXT("battleIDの次にいる。"), TEXT("場所テスト"), MB_OK);
-
-
-
-
-
 
 
 				timerCheckCount = 0;
@@ -1453,18 +1461,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				InvalidateRect(hWnd, NULL, FALSE);
 
-
 					// break;
 			// } // for文の終わり
 
+				battleID = 0;
 
-//			globalTempA = 0;
-				//MessageBox(NULL, TEXT("for文を抜けた。"), TEXT("場所テスト"), MB_OK);
-			// ここに来れる!
-
-			// TimeCount = 0; // ループフリーズを導く
-			battleID = 0;
-			// timerFlag = 1;
 		} // if (mode_scene == MODE_BATTLE_NOW  ) { // のカッコ
 
 		
@@ -1683,10 +1684,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_ITEM_MENU) {
-
-
-
-
 			/* アイテムの表示欄 */
 			/* コマンド用ウィンドウ */
 			HPEN pen_blue;
@@ -1784,7 +1781,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-
+		if (mode_scene == MODE_saving_Now) {
+			_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
+			TextOut(hdc, 500, 110, strCount, lstrlen(strCount));			
+		}
 
 
 
@@ -2289,7 +2289,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 					}
 
-					mode_scene = MODE_MENU; // セーブ終了後にメニュー画面に復帰。忘れないように。
+					TimeCount = 0;
+					mode_scene = MODE_saving_Now; // セーブ終了後にタイマーでしばらく表示。
+					// MessageBox(NULL, TEXT("いまここ"), TEXT("メッセージ"), MB_OK);
+
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
