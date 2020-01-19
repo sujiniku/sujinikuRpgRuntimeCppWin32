@@ -835,68 +835,40 @@ void draw_battle_common_after(HDC hdc) {
 
 
 	// 素早さ配列の表示テスト
+	int agilityProcMonitorX = 370;
+	int agilityProcMonitorY = 180;
+
 
 	lstrcpy(mojibuf, TEXT("素早さ配列"));
-	TextOut(hdc, 370, 180, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, agilityProcMonitorX, agilityProcMonitorY, mojibuf, lstrlen(mojibuf));
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[0]);
-	TextOut(hdc, 300 + 100, 180 + 40, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[1]);
-	TextOut(hdc, 300 + 100 + 30, 180 + 40, mojibuf, lstrlen(mojibuf));
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor *30, agilityProcMonitorY + 20, mojibuf, lstrlen(mojibuf));
+	}
 
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[2]);
-	//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgilityHairetu[2]);
-	TextOut(hdc, 300 + 100 + 30 + 30, 180 + 40, mojibuf, lstrlen(mojibuf));
+		// 行動順配列の表示テスト 
+		lstrcpy(mojibuf, TEXT("行動順配列"));
+	TextOut(hdc, agilityProcMonitorX , agilityProcMonitorY +50, mojibuf, lstrlen(mojibuf));
 
+	lstrcpy(mojibuf, TEXT("irem"));
+	TextOut(hdc, agilityProcMonitorX -10, agilityProcMonitorY + 40 + 30, mojibuf, lstrlen(mojibuf));
 
-
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoOrderHairetu[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30, mojibuf, lstrlen(mojibuf));
+	}
 	
 
+	// 行動順配列の表示テスト // こっちはactionOrder
+	lstrcpy(mojibuf, TEXT("act"));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 + 30, mojibuf, lstrlen(mojibuf));
 
-
-		// 行動順配列の表示テスト //iremonoOrderHairetu
-	//actionOrder[0]);
-		lstrcpy(mojibuf, TEXT("行動順配列"));
-	TextOut(hdc, 370, 180 +30, mojibuf, lstrlen(mojibuf));
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoOrderHairetu[0]);
-	TextOut(hdc, 300 + 100, 180 + 40 + 30, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoOrderHairetu[1]);
-	TextOut(hdc, 300 + 100 + 30, 180 + 40 + 30, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoOrderHairetu[2]);
-	//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgilityHairetu[2]);
-	TextOut(hdc, 300 + 100 + 30 + 30, 180 + 40 + 30, mojibuf, lstrlen(mojibuf));
-
-
-
-
-	// 行動順配列の表示テスト //iremonoOrderHairetu
-//actionOrder[0]);
-	//lstrcpy(mojibuf, TEXT("行動順配列"));
-	//TextOut(hdc, 370, 180 + 30+30, mojibuf, lstrlen(mojibuf));
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[0]);
-	TextOut(hdc, 300 + 100, 180 + 40 + 30+30, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[1]);
-	TextOut(hdc, 300 + 100 + 30, 180 + 40 + 30+30, mojibuf, lstrlen(mojibuf));
-
-
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[2]);
-	//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgilityHairetu[2]);
-	TextOut(hdc, 300 + 100 + 30 + 30, 180 + 40 + 30+30, mojibuf, lstrlen(mojibuf));
-
-
-
-
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 + 30, mojibuf, lstrlen(mojibuf));
+	}
 
 
 	/* モンスターの表示 */
@@ -906,12 +878,12 @@ void draw_battle_common_after(HDC hdc) {
 	lstrcpy(mojibuf, TEXT("HP"));
 	TextOut(hdc, 270, 180, mojibuf, lstrlen(mojibuf));
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), monster_hp);
-	TextOut(hdc, 300, 180, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, 270+30, 180, mojibuf, lstrlen(mojibuf));
 
 
 	/* タイマーのテスト */
-	_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCountだ %d"), TimeCount);
-	TextOut(hdc, 510, 110, strCount, lstrlen(strCount));
+	_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
+	TextOut(hdc, 500, 110, strCount, lstrlen(strCount));
 
 }
 
@@ -1893,23 +1865,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-
+			int debugMonitorX = 30; int debugMonitorY = 400-300;
 			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]"));
-			TextOut(hdc, 50, 410 - 300, mojibuf, lstrlen(mojibuf));
-
+			TextOut(hdc, debugMonitorX, debugMonitorY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA"));
-			TextOut(hdc, 50, 410 - 270, mojibuf, lstrlen(mojibuf));
-
+			TextOut(hdc, debugMonitorX, debugMonitorY +30, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag"));
-			TextOut(hdc, 50, 410 - 240, mojibuf, lstrlen(mojibuf));
-
-
+			TextOut(hdc, debugMonitorX, debugMonitorY + 30 +30, mojibuf, lstrlen(mojibuf));
 
 
 			draw_battle_common_after(hdc);
-
 		}
 
 
