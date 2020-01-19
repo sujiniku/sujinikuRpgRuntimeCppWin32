@@ -1380,10 +1380,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_BATTLE_NOW ) {
 			
 			TimeCount++; // バトル時以外はカウントしない
-			int timerCheckeyCount = 0;
+			int timerCheckCount = 0;
 
 			for (int battleTempA = 0; battleTempA <= partyNinzu - 1 + enemyNinzu; ++battleTempA) {
-				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckeyCount == loctempA
+				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
 				{					
 					timerFlag = 1 + battleTempA;
 					globalTempA = battleTempA;
@@ -1416,7 +1416,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 					InvalidateRect(hWnd, NULL, FALSE);
-					// timerCheckeyCount = timerCheckeyCount + 1;
+					// timerCheckCount = timerCheckCount + 1;
 					// battleID = battleID + 1;
 				
 
@@ -1428,7 +1428,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				timerCheckeyCount = 0;
+				timerCheckCount = 0;
 				battleID = battleID + 1; 
 
 				//////////////////////////////////
