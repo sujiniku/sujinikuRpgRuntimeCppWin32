@@ -108,7 +108,6 @@ int partyNarabijyun[5] = { 0,1,2,3,4 }; // パーティ隊列の並び替えの�
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
 
-
 struct item_def
 {
 	int item_id;
@@ -283,7 +282,15 @@ static int maptable[10][10] = {
 };
 
 
-// map1 のデータ
+struct map_def
+{
+	int map_table[10][10];
+
+};
+
+static struct map_def map_def_list[8];
+
+
 int map1table[10][10] = {
 	{ 1,1,1,1,1,1,1,1,1,1 }, //0 x
 { 1,0,0,0,0,0,0,0,0,1 }, //1
@@ -668,9 +675,9 @@ void check_MapTransition(HWND hWnd) {
 				// 代入内容は、移動先マップの代入をすることに注意
 
 				if (where_map == 1) {
-					maptable[y_map][x_map] = map1table[y_map][x_map];
+					maptable[y_map][x_map] = map_def_list[0].map_table[y_map][x_map];
 				}
-
+				
 				if (where_map == 2) {
 					maptable[y_map][x_map] = map2table[y_map][x_map];
 				}
@@ -945,6 +952,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// TODO: ここにコードを挿入してください。
 
+	// map のデータ
+	memcpy(map_def_list[1].map_table, map1table, sizeof(map1table));
+	memcpy(map_def_list[2].map_table, map2table, sizeof(map1table));
+
 
 	// 敵の位置の読み込み
 	positionX_enemy[0] = 6;
@@ -1037,7 +1048,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 
-
+	// キャラクターの定義
 	lstrcpy(heros_def_list[0].heros_name, TEXT("エロス"));
 	heros_def_list[0].heros_hp = 20;
 	heros_def_list[0].heros_hp_max = 25;
@@ -1426,7 +1437,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					//KillTimer(hWnd, 1);
 					battleTimeFlag = 0;
-				  TimeCount = 0; 
+				  
+					TimeCount = 0; 
 					globalTempA = 0;
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -1495,19 +1507,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int OpCommandX = 150; int OpCommandY = 200; int ComOffsetPerY = 50;
 				Rectangle(hdc, OpCommandX, OpCommandY + (selecting_OP - 1) * ComOffsetPerY,
 					OpCommandX + 80, OpCommandY + 20 + (selecting_OP - 1) * ComOffsetPerY);
-				lstrcpy(mojibuf, TEXT("はじめから"));
-				TextOut(hdc, OpCommandX, OpCommandY, mojibuf, lstrlen(mojibuf));
 
-				lstrcpy(mojibuf, TEXT("つづきから"));
-				TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * 1, mojibuf, lstrlen(mojibuf));
 
-				lstrcpy(mojibuf, TEXT("おわる"));
-				TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
+				for (int j = 0; j <= 2; ++j) {
+
+					//ここに共通する前段階の作業を記述;
+
+					// 非共通の部分
+					if (j == 0) { lstrcpy(mojibuf, TEXT("はじめから")); }
+					if (j == 1) { lstrcpy(mojibuf, TEXT("つづきから")); }
+					if (j == 2) { lstrcpy(mojibuf, TEXT("おわる")); }
+
+					//ここに共通する後段階の作業を記述;
+					TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * j, mojibuf, lstrlen(mojibuf));
+				}				
 			}
 
 
 			if (mode_scene == MODE_INITIAL) {
-
 
 				HPEN pen_blue;
 
@@ -1519,13 +1536,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
 
 
-
 				HBRUSH brasi_pink_1;
 				brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 				SelectObject(hdc, brasi_pink_1);
 
 				SetBkMode(hdc, TRANSPARENT);
-
 
 
 				// 会話モードの背景マップ (会話中は移動不可能)
@@ -1538,14 +1553,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					50 + 500, 400);
 
 				int TalkLineBaseX = 150; int TalkLineBaseY = 250; int TalkOffsetPerY = 50;
-				lstrcpy(mojibuf, drawTalkString1);
-				TextOut(hdc, TalkLineBaseX, TalkLineBaseY, mojibuf, lstrlen(mojibuf));
 
-				lstrcpy(mojibuf, drawTalkString2);
-				TextOut(hdc, TalkLineBaseX, TalkLineBaseY + TalkOffsetPerY, mojibuf, lstrlen(mojibuf));
+				for (int j = 0; j <= 2; ++j) {
 
-				lstrcpy(mojibuf, drawTalkString3);
-				TextOut(hdc, TalkLineBaseX, TalkLineBaseY + TalkOffsetPerY *2, mojibuf, lstrlen(mojibuf));
+					//ここに共通する前段階の作業を記述;
+
+					// 非共通の部分
+					if (j == 0) { lstrcpy(mojibuf, drawTalkString1); }
+					if (j == 1) { lstrcpy(mojibuf, drawTalkString2); }
+					if (j == 2) { lstrcpy(mojibuf, drawTalkString3); }
+
+					//ここに共通する後段階の作業を記述;
+					TextOut(hdc, TalkLineBaseX, TalkLineBaseY + TalkOffsetPerY * j, mojibuf, lstrlen(mojibuf));
+				}
+
 			}
 
 			//DeleteObject(pen_blue); //ペンのメモリ解放
@@ -1570,12 +1591,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					// 代入内容は、移動先マップの代入をすることに注意
 
-					if (where_map == 1) {
-						maptable[y_map][x_map] = map1table[y_map][x_map];
-					}
-
-					if (where_map == 2) {
-						maptable[y_map][x_map] = map2table[y_map][x_map];
+					for (int i = 1; i <= 1; ++i) { // こっちのforはマスク作業用
+						if (where_map == i) {
+							maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];
+						}
 					}
 
 				}
@@ -1611,17 +1630,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int menuComBaseY = 20;
 
 			SetBkMode(hdc, TRANSPARENT);
-			lstrcpy(mojibuf, TEXT("道具"));
-			TextOut(hdc, menuComBaseX, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
-			lstrcpy(mojibuf, TEXT("装備"));
-			TextOut(hdc, menuComBaseX + 100, menuComBaseY, mojibuf, lstrlen(mojibuf));
+			for (int j = 0; j <= 3; ++j) {
 
-			lstrcpy(mojibuf, TEXT("技能"));
-			TextOut(hdc, menuComBaseX + menuComOffsetPerX *2, menuComBaseY, mojibuf, lstrlen(mojibuf));
+				// ここに共通する前段階の作業を記述;
 
-			lstrcpy(mojibuf, TEXT("セーブ"));
-			TextOut(hdc, menuComBaseX + menuComOffsetPerX * 3, menuComBaseY, mojibuf, lstrlen(mojibuf));
+				// 非共通;
+				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
+				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
+				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
+				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
+
+				// ここに共通する後段階の作業を記述;
+				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
+
+			}
 
 
 			/* 所持金の表示欄 */
@@ -1643,40 +1666,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/* キャラのステータス欄 */
 			Rectangle(hdc, 10, 100,
 				300, 200);
-
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
-			TextOut(hdc, StatsHPbaseX, StatsHPbaseY -25, mojibuf, lstrlen(mojibuf));
-
-			
-			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, StatsHPbaseX, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
-			TextOut(hdc, StatsHPbaseX +30, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
-			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
-
-
 			int offsetY = 120;
 
-			Rectangle(hdc, 10, 100 + offsetY,
-				300, 200 + offsetY);
+			for (int j = 0; j <= 1; ++j) {
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[1].heros_name);
-			TextOut(hdc, StatsHPbaseX, 105 + offsetY, mojibuf, lstrlen(mojibuf));
+				Rectangle(hdc, 10, 100 + offsetY * j,
+					300, 200 + offsetY * j);
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
+				lstrcpy(mojibuf, TEXT("HP"));
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY *j, mojibuf, lstrlen(mojibuf));
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[1].heros_hp);
-			TextOut(hdc, StatsHPbaseX+30, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[1].heros_hp_max);
-			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
+			}
 		}
 
 
@@ -1810,20 +1821,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			/* コマンド */
 			SetBkMode(hdc, TRANSPARENT);
-			lstrcpy(mojibuf, TEXT("戦う"));
+
 			int comandoOffset = 100;
 			
+			for (int j = 1; j <= 3; ++j) {
+				
+				if (j == 0) { lstrcpy(mojibuf, TEXT("戦う")); }
+				if (j == 1) { lstrcpy(mojibuf, TEXT("逃げる")); }
+				if (j == 2) { lstrcpy(mojibuf, TEXT("未定1")); }
+				if (j == 3) { lstrcpy(mojibuf, TEXT("未定2")); }
 
-			TextOut(hdc, BattleComBaseX, BattleComBaseY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("逃げる"));
-			TextOut(hdc, BattleComBaseX + 1* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("未定1"));
-			TextOut(hdc, BattleComBaseX + 2* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("未定2"));
-			TextOut(hdc, BattleComBaseX + 3* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, BattleComBaseX + j * comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
+			}		
 
 			draw_battle_common_after(hdc); // ステータス
 		}
@@ -1841,7 +1850,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 				
-
 				// ここにダメージ表記の関数を追加。
 				draw_battle_EnemyDamage(hdc);
 
@@ -1861,19 +1869,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int debugMonitorX = 30; int debugMonitorY = 400 - 300; 
 			int MonitorPerY = FontYoffset; // = 30;
 
-			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]"));
-			TextOut(hdc, debugMonitorX, debugMonitorY, mojibuf, lstrlen(mojibuf));
 
-			_stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA"));
-			TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY , mojibuf, lstrlen(mojibuf));
+			for (int j = 0; j <= 2; ++j) {
 
-			_stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag"));
-			TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY * 2, mojibuf, lstrlen(mojibuf));
-
+				
+				if (j == 0) { _stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]")); }
+				if (j == 1) { _stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA")); }
+				if (j == 2) { _stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag")); }
+				
+				TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY * j, mojibuf, lstrlen(mojibuf));
+			}
 
 			draw_battle_common_after(hdc);
 		}
-
 
 
 		if (mode_scene == MODE_BATTLE_WIN) {
