@@ -1799,16 +1799,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 			SelectObject(hdc, brasi_pink_1);
 
+			int BattleComBaseX = 20; int BattleComBaseY = 20;
 
 			/* カーソル */
-			Rectangle(hdc, 20 + (selecting_battle_mainmenu - 1) * 100, 20,
-				100 + (selecting_battle_mainmenu - 1) * 100, 70);
+			Rectangle(hdc, BattleComBaseX + (selecting_battle_mainmenu - 1) * 100, BattleComBaseY,
+				BattleComBaseY + 80 + (selecting_battle_mainmenu - 1) * 100, BattleComBaseY +50);
 
 			/* コマンド */
 			SetBkMode(hdc, TRANSPARENT);
 			lstrcpy(mojibuf, TEXT("戦う"));
 			int comandoOffset = 100;
-			int BattleComBaseX = 20; int BattleComBaseY = 20;
+			
 
 			TextOut(hdc, BattleComBaseX, BattleComBaseY, mojibuf, lstrlen(mojibuf));
 
@@ -1829,13 +1830,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_BATTLE_NOW) {
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
-			int battleMassBaseX = 50;
+			int battleMassBaseX = 50; int battleMassBaseY = 410 - 230; // 410 は「windowTempA」
+
 			// 「○○の攻撃！」を表示
 			if (actionOrder[globalTempA] <= partyNinzu-1) {
 				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃！"));
-				TextOut(hdc, battleMassBaseX, 410 - 230, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
-				// 410 は「windowTempA」
+				
 
 				// ここにダメージ表記の関数を追加。
 				draw_battle_EnemyDamage(hdc);
@@ -1845,7 +1847,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (actionOrder[globalTempA] >= partyNinzu) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
-				TextOut(hdc, battleMassBaseX, 410 - 230, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 				draw_battle_HeroDamage(hdc);
 
@@ -1896,25 +1898,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkMode(hdc, TRANSPARENT);
 
 			/* 戦闘終了メッセージ */
+
+
 			lstrcpy(mojibuf, TEXT("戦闘に勝利した。"));
 			TextOut(hdc, 270, 110, mojibuf, lstrlen(mojibuf));
 
+			int BattleWinTextBaseX = 210; int BattleWinTextBaseY = 110;
+			int WinTextOffsetPerY = 30;
+
 			lstrcpy(mojibuf, TEXT("経験値"));
-			TextOut(hdc, 210, 110 + 30, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleWinTextBaseX, BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d  EXP"), monster_def_list[encount_monters_id - 1].mon_exp);
-			TextOut(hdc, 300, 110 + 30, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleWinTextBaseX + 90 , BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
 
 
 			lstrcpy(mojibuf, TEXT("金"));
-			TextOut(hdc, 210, 110 + 30 * 2, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleWinTextBaseX, BattleWinTextBaseY + WinTextOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d  G"), monster_def_list[encount_monters_id - 1].mon_gold);
-			TextOut(hdc, 300, 110 + 30 * 2, mojibuf, lstrlen(mojibuf));
-
+			TextOut(hdc, BattleWinTextBaseX + 90, BattleWinTextBaseY + WinTextOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
 		}
-
-
 
 
 		EndPaint(hWnd, &ps);
@@ -2433,8 +2437,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				battle_key = 1;
 				{
-
-
 					if (selecting_battle_mainmenu == 1) {
 						// SetTimer(hWnd, 1, 1000, NULL);
 						battleTimeFlag = 1;
@@ -2453,7 +2455,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 
 
-
 						for (int loctempQ = 0; loctempQ <= partyNinzu + enemyNinzu - 1; ++loctempQ)
 						{
 							iremonoAgilityHairetu[loctempQ] = sankaAgility[loctempQ];
@@ -2462,10 +2463,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						} // 初期値の代入
 
 
-
-						// ソートで実装しよう
-
-
+						// ソートで実装
 
 						for (int loctempB = 0; loctempB <= partyNinzu - 1 + enemyNinzu; ++loctempB)
 						{
@@ -2508,22 +2506,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int loctempA = 0; loctempA <= partyNinzu - 1 + enemyNinzu; ++loctempA)
 						{
 							actionOrder[loctempA] = iremonoOrderHairetu[loctempA];
-
-							//							 = iremonoAgilityHairetu[loctempA] ;
-
 						}
 
 						mode_scene = MODE_BATTLE_NOW;
 
 						//heros_def_list[0].heros_agility >= monster_def_list[encount_monters_id -1].mon_agility)
 
-
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
-
 					}
-
-
 
 
 					if (selecting_battle_mainmenu == 2)
@@ -2587,12 +2578,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_BATTLE_WIN) {
 		//	MessageBox(NULL, TEXT("応急処置のカッコ内"), TEXT("戦闘テスト"), MB_OK);
-			// 入れた
-
-
+	
 			key_remain = 1; // バグの応急処置
-			// 応急処置できた？
-
+			// 応急処置できた
 
 		}
 		if (mode_scene == MODE_BATTLE_WIN && key_remain > 0) {
