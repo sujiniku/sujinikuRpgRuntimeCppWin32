@@ -39,6 +39,8 @@
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 
+int FontYoffset = 30;
+
 int idTemp = 0;
 int battleID = 0;
 int globalTempA = 0;
@@ -865,11 +867,11 @@ void draw_battle_common_after(HDC hdc) {
 
 	// 行動順配列の表示テスト // こっちはactionOrder
 	lstrcpy(mojibuf, TEXT("act"));
-	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 + 30, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 *2, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
-		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 + 30, mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 *2, mojibuf, lstrlen(mojibuf));
 	}
 
 
@@ -883,7 +885,7 @@ void draw_battle_common_after(HDC hdc) {
 	lstrcpy(mojibuf, TEXT("HP"));
 	TextOut(hdc, monsterMiddleX, 180, mojibuf, lstrlen(mojibuf));
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), monster_hp);
-	TextOut(hdc, monsterMiddleX +30, monsterMiddleY+30, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, monsterMiddleX +30, monsterMiddleY+ FontYoffset, mojibuf, lstrlen(mojibuf));
 
 
 	/* タイマーのテスト */
@@ -1642,10 +1644,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 10, 100,
 				300, 200);
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
-			TextOut(hdc, 130, 105, mojibuf, lstrlen(mojibuf));
-
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
+			TextOut(hdc, StatsHPbaseX, StatsHPbaseY -25, mojibuf, lstrlen(mojibuf));
+
+			
 			lstrcpy(mojibuf, TEXT("HP"));
 			TextOut(hdc, StatsHPbaseX, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
 
@@ -1656,23 +1659,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
 
 
-			int offset = 120;
+			int offsetY = 120;
 
-			Rectangle(hdc, 10, 100 + offset,
-				300, 200 + offset);
+			Rectangle(hdc, 10, 100 + offsetY,
+				300, 200 + offsetY);
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[1].heros_name);
-			TextOut(hdc, StatsHPbaseX, 105 + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX, 105 + offsetY, mojibuf, lstrlen(mojibuf));
 
 
 			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[1].heros_hp);
-			TextOut(hdc, StatsHPbaseX+30, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX+30, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[1].heros_hp_max);
-			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY + offsetY, mojibuf, lstrlen(mojibuf));
 
 		}
 
@@ -1856,7 +1859,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			int debugMonitorX = 30; int debugMonitorY = 400 - 300; 
-			int MonitorPerY = 30;
+			int MonitorPerY = FontYoffset; // = 30;
 
 			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]"));
 			TextOut(hdc, debugMonitorX, debugMonitorY, mojibuf, lstrlen(mojibuf));
@@ -1904,7 +1907,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 270, 110, mojibuf, lstrlen(mojibuf));
 
 			int BattleWinTextBaseX = 210; int BattleWinTextBaseY = 110;
-			int WinTextOffsetPerY = 30;
+			int WinTextOffsetPerY = FontYoffset; // = 30;
 
 			lstrcpy(mojibuf, TEXT("経験値"));
 			TextOut(hdc, BattleWinTextBaseX, BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
@@ -2574,8 +2577,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-
-
 		if (mode_scene == MODE_BATTLE_WIN) {
 		//	MessageBox(NULL, TEXT("応急処置のカッコ内"), TEXT("戦闘テスト"), MB_OK);
 	
@@ -2586,8 +2587,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_BATTLE_WIN && key_remain > 0) {
 
 //			MessageBox(NULL, TEXT("ばとうぃんのカッコ内"), TEXT("戦闘テスト"), MB_OK);
-			// 入れた
-
+			// 入れる
 
 			switch (wParam)
 
