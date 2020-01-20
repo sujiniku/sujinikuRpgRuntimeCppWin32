@@ -875,12 +875,15 @@ void draw_battle_common_after(HDC hdc) {
 
 	/* モンスターの表示 */
 	// 試作なので名前とHPを表示。本番ではグラフィックに。
-	TextOut(hdc, 270, 150, monster_def_list[encount_monters_id - 1].monster_name, lstrlen(monster_def_list[0].monster_name));
+
+	int monsterMiddleX = 270; int monsterMiddleY = 150;
+	TextOut(hdc, monsterMiddleX, monsterMiddleY, monster_def_list[encount_monters_id - 1].monster_name, lstrlen(monster_def_list[0].monster_name));
+
 
 	lstrcpy(mojibuf, TEXT("HP"));
-	TextOut(hdc, 270, 180, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, monsterMiddleX, 180, mojibuf, lstrlen(mojibuf));
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), monster_hp);
-	TextOut(hdc, 270+30, 180, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, monsterMiddleX +30, monsterMiddleY+30, mojibuf, lstrlen(mojibuf));
 
 
 	/* タイマーのテスト */
@@ -892,7 +895,6 @@ void draw_battle_common_after(HDC hdc) {
 
 
 void draw_battle_HeroDamage(HDC hdc) {
-
 	/* 文字の透過設定 */
 	SetBkMode(hdc, TRANSPARENT);
 
@@ -906,7 +908,6 @@ void draw_battle_HeroDamage(HDC hdc) {
 
 
 void draw_battle_EnemyDamage(HDC hdc) {
-
 	/* 文字の透過設定 */
 	SetBkMode(hdc, TRANSPARENT);
 
@@ -965,12 +966,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	//武器の定義
-
-
 	weapon_def_list[0].weapon_id = 0;
-	lstrcpy(weapon_def_list[0].weapon_name, TEXT("鉄の剣"));
+	lstrcpy(weapon_def_list[0].weapon_name, TEXT("鉄の槍"));
 	weapon_def_list[0].material = mateIron;
-	weapon_def_list[0].weapon_type = sword;
+	weapon_def_list[0].weapon_type = spear ;
 	weapon_def_list[0].weaponPower = 7; // 攻撃力
 
 
@@ -1028,7 +1027,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	lstrcpy(monster_def_list[1].monster_name, TEXT("コボルト"));
-	monster_def_list[1].mon_hp_max = 30;
+	monster_def_list[1].mon_hp_max = 15;
 	monster_def_list[1].mon_agility = 76;
 	monster_def_list[1].monster_id = 2;
 	monster_def_list[1].mon_gold = 10;
@@ -1080,25 +1079,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	static TCHAR file_mapchip9[100] = TEXT("GameData\\mapchip\\MapTrans_dot.bmp");
 
 
-
-
-
-
 	for (idTemp = 0; idTemp <= partyNinzu - 1; idTemp = idTemp + 1)
 	{
 		mikataAgility[idTemp] = heros_def_list[idTemp].heros_agility;
 	}
 
 
-
 	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc -1 ; ++loctempA)
 	{
 		actionOrder[loctempA] = loctempA ;
 		iremonoOrderHairetu[loctempA] = loctempA ;
-
 	}
-
-
 
 
 	// グローバル文字列を初期化しています。
@@ -1398,8 +1389,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
 						enemyAlldeadFlag = 1;
 
-						//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);
-					
+						//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);					
 				}
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -1500,18 +1490,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				SetBkMode(hdc, TRANSPARENT);
 
 
-
-				Rectangle(hdc, 150, 200 + (selecting_OP - 1) * 50,
-					150 + 80, 200 + 20 + (selecting_OP - 1) * 50);
+				int OpCommandX = 150; int OpCommandY = 200; int ComOffsetPerY = 50;
+				Rectangle(hdc, OpCommandX, OpCommandY + (selecting_OP - 1) * ComOffsetPerY,
+					OpCommandX + 80, OpCommandY + 20 + (selecting_OP - 1) * ComOffsetPerY);
 				lstrcpy(mojibuf, TEXT("はじめから"));
-				TextOut(hdc, 150, 200, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, OpCommandX, OpCommandY, mojibuf, lstrlen(mojibuf));
 
 				lstrcpy(mojibuf, TEXT("つづきから"));
-				TextOut(hdc, 150, 250, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * 1, mojibuf, lstrlen(mojibuf));
 
 				lstrcpy(mojibuf, TEXT("おわる"));
-				TextOut(hdc, 150, 300, mojibuf, lstrlen(mojibuf));
-
+				TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
 			}
 
 
@@ -1546,14 +1535,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				Rectangle(hdc, 50, 250,
 					50 + 500, 400);
 
+				int TalkLineBaseX = 150; int TalkLineBaseY = 250; int TalkOffsetPerY = 50;
 				lstrcpy(mojibuf, drawTalkString1);
-				TextOut(hdc, 150, 250, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, TalkLineBaseX, TalkLineBaseY, mojibuf, lstrlen(mojibuf));
 
 				lstrcpy(mojibuf, drawTalkString2);
-				TextOut(hdc, 150, 300, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, TalkLineBaseX, TalkLineBaseY + TalkOffsetPerY, mojibuf, lstrlen(mojibuf));
 
 				lstrcpy(mojibuf, drawTalkString3);
-				TextOut(hdc, 150, 350, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, TalkLineBaseX, TalkLineBaseY + TalkOffsetPerY *2, mojibuf, lstrlen(mojibuf));
 			}
 
 			//DeleteObject(pen_blue); //ペンのメモリ解放
@@ -1615,18 +1605,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 				100 + (selecting_mainmenu - 1) * 100, 70);
 
+			int	menuComBaseX = 20; int menuComOffsetPerX = 100;
+			int menuComBaseY = 20;
+
 			SetBkMode(hdc, TRANSPARENT);
 			lstrcpy(mojibuf, TEXT("道具"));
-			TextOut(hdc, 20, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, menuComBaseX, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("装備"));
-			TextOut(hdc, 120, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, menuComBaseX + 100, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("技能"));
-			TextOut(hdc, 220, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, menuComBaseX + menuComOffsetPerX *2, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("セーブ"));
-			TextOut(hdc, 320, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, menuComBaseX + menuComOffsetPerX * 3, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 
 			/* 所持金の表示欄 */
@@ -1635,11 +1628,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 500, 250,
 				600, 350);
 
+			int GoldViewBaseX = 510; int GoldViewBaseY = 260;
 			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, 510, 260, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
-			TextOut(hdc, 510, 300, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY +40, mojibuf, lstrlen(mojibuf));
 
 			// _itot_s(your_money , p,200, 10);
 
@@ -1651,15 +1645,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
 			TextOut(hdc, 130, 105, mojibuf, lstrlen(mojibuf));
 
-
+			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, 130, 130, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
-			TextOut(hdc, 160, 130, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX +30, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
-			TextOut(hdc, 190, 130, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY, mojibuf, lstrlen(mojibuf));
 
 
 			int offset = 120;
@@ -1668,17 +1662,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				300, 200 + offset);
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[1].heros_name);
-			TextOut(hdc, 130, 105 + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX, 105 + offset, mojibuf, lstrlen(mojibuf));
 
 
 			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, 130, 130 + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[1].heros_hp);
-			TextOut(hdc, 160, 130 + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX+30, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[1].heros_hp_max);
-			TextOut(hdc, 190, 130 + offset, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, StatsHPbaseX + 30*2, StatsHPbaseY + offset, mojibuf, lstrlen(mojibuf));
 
 		}
 
@@ -1772,14 +1766,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		////
 
 		if (mode_scene == MODE_SAVE_MENU) {
-
 			/* セーブの表示欄 */
 
 			lstrcpy(mojibuf, TEXT("セーブしました。"));
 			TextOut(hdc, 280, 250, mojibuf, lstrlen(mojibuf));
-
 		}
-
 
 		if (mode_scene == MODE_saving_Now) {
 			_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
@@ -1789,9 +1780,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND) {
-
 			draw_battle_common_before(hdc);
-
 
 			/* コマンドウィンドウ */
 			HPEN pen_blue;
@@ -1811,7 +1800,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(hdc, brasi_pink_1);
 
 
-
 			/* カーソル */
 			Rectangle(hdc, 20 + (selecting_battle_mainmenu - 1) * 100, 20,
 				100 + (selecting_battle_mainmenu - 1) * 100, 70);
@@ -1820,34 +1808,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkMode(hdc, TRANSPARENT);
 			lstrcpy(mojibuf, TEXT("戦う"));
 			int comandoOffset = 100;
-			TextOut(hdc, 20, 20, mojibuf, lstrlen(mojibuf));
+			int BattleComBaseX = 20; int BattleComBaseY = 20;
+
+			TextOut(hdc, BattleComBaseX, BattleComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("逃げる"));
-			TextOut(hdc, 20 + 1* comandoOffset, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleComBaseX + 1* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("未定1"));
-			TextOut(hdc, 20 + 2* comandoOffset, 20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleComBaseX + 2* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("未定2"));
-			TextOut(hdc, 20 + 3* comandoOffset, 20, mojibuf, lstrlen(mojibuf));
-
-
+			TextOut(hdc, BattleComBaseX + 3* comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
 
 			draw_battle_common_after(hdc); // ステータス
-
-
 		}
 
 
 
 		if (mode_scene == MODE_BATTLE_NOW) {
-
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
-
+			int battleMassBaseX = 50;
+			// 「○○の攻撃！」を表示
 			if (actionOrder[globalTempA] <= partyNinzu-1) {
-				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃"));
-				TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃！"));
+				TextOut(hdc, battleMassBaseX, 410 - 230, mojibuf, lstrlen(mojibuf));
+
+				// 410 は「windowTempA」
 
 				// ここにダメージ表記の関数を追加。
 				draw_battle_EnemyDamage(hdc);
@@ -1857,7 +1845,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (actionOrder[globalTempA] >= partyNinzu) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
-				TextOut(hdc, 50, 410 - 230, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, battleMassBaseX, 410 - 230, mojibuf, lstrlen(mojibuf));
 
 				draw_battle_HeroDamage(hdc);
 
@@ -1865,15 +1853,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-			int debugMonitorX = 30; int debugMonitorY = 400-300;
+			int debugMonitorX = 30; int debugMonitorY = 400 - 300; 
+			int MonitorPerY = 30;
+
 			_stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]"));
 			TextOut(hdc, debugMonitorX, debugMonitorY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA"));
-			TextOut(hdc, debugMonitorX, debugMonitorY +30, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY , mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag"));
-			TextOut(hdc, debugMonitorX, debugMonitorY + 30 +30, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY * 2, mojibuf, lstrlen(mojibuf));
 
 
 			draw_battle_common_after(hdc);
