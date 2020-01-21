@@ -49,6 +49,8 @@ int enemyAlldeadFlag = 0;// 0なら、敵はまだ全滅してない。1で敵�
 
 int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
 
+int tourokuMapSuu = 2;
+
 int sankaAgility[BATTLE_Agility_proc]; // 素早さ配列
 int iremonoAgilityHairetu[BATTLE_Agility_proc]; // 入れ物すばやさ配列
 int actionOrder[BATTLE_Agility_proc]; // 行動順配列
@@ -374,8 +376,18 @@ static int keyCount = 0; // 主にキー入力の時間制限に使用
 
 
 // マップチップ用ハンドル // チップ画像のロードは WM_CREATE などで行われる。
-static HBITMAP hbmp_mapchip1;
-static HBITMAP hbmp_mapchip2;
+
+struct mapchip_def {
+
+	HBITMAP hbmp_mapchip; // 
+};
+
+// マップ遷移用の構造体変数の作成
+static struct mapchip_def hbmp_mapchip_list[8]; // hbmp_mapchip;
+
+
+// static HBITMAP hbmp_mapchip1;
+// static HBITMAP hbmp_mapchip2;
 
 
 // キャラチップ用ハンドル // チップ画像のロードは WM_CREATE などで行われる。
@@ -429,16 +441,11 @@ void Draw_map(HDC hdc) {
 	{
 		for (y_map = 0; y_map <= 6; ++y_map)
 		{
-
-			switch (maptable[y_map][x_map])
-			{
-			case (0):
-				hbmp = hbmp_mapchip1;
-				break;
-
-			case (1):
-				hbmp = hbmp_mapchip2;
-				break;
+			for (int i = 1; i <= tourokuMapSuu; ++i) {
+				if (maptable[y_map][x_map] == i - 1) {
+					hbmp = hbmp_mapchip_list[i].hbmp_mapchip;
+					break;
+				}
 			}
 
 			SelectObject(hMdc, hbmp);
@@ -674,14 +681,12 @@ void check_MapTransition(HWND hWnd) {
 			{
 				// 代入内容は、移動先マップの代入をすることに注意
 
-				if (where_map == 1) {
-					maptable[y_map][x_map] = map_def_list[0].map_table[y_map][x_map];
+				for (int i = 0; i <= tourokuMapSuu-1; ++i){ // 全マップをチェック
+					if (where_map == i + 1) {
+						maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];					
+					}			
 				}
 				
-				if (where_map == 2) {
-					maptable[y_map][x_map] = map2table[y_map][x_map];
-				}
-
 			}
 		}
 
@@ -1235,7 +1240,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		lstrcpy(chip_name, TEXT("mapchip_grass.bmp"));
 		lstrcat(chip_temp, chip_name); // 合成
 
-		hbmp_mapchip1 = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
+		hbmp_mapchip_list[1].hbmp_mapchip = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
 			LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
 		// hbmp_mapchip1 = (HBITMAP)LoadImage(NULL, TEXT("GameData\\mapchip_grass.bmp"), IMAGE_BITMAP, 0, 0,		
@@ -1246,7 +1251,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		lstrcpy(chip_name, TEXT("mapchip_wall.bmp"));
 		lstrcat(chip_temp, chip_name); // 合成
 
-		hbmp_mapchip2 = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
+		hbmp_mapchip_list[2].hbmp_mapchip = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
 			LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
 
@@ -1591,7 +1596,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					// 代入内容は、移動先マップの代入をすることに注意
 
-					for (int i = 1; i <= 1; ++i) { // こっちのforはマスク作業用
+					for (int i = 1; i <= tourokuMapSuu ; ++i) { // こっちのforはマスク作業用
 						if (where_map == i) {
 							maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];
 						}
@@ -1824,7 +1829,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			int comandoOffset = 100;
 			
-			for (int j = 1; j <= 3; ++j) {
+			for (int j = 0; j <= 3; ++j) {
 				
 				if (j == 0) { lstrcpy(mojibuf, TEXT("戦う")); }
 				if (j == 1) { lstrcpy(mojibuf, TEXT("逃げる")); }
