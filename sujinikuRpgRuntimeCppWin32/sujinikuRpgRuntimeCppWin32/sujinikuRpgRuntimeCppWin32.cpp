@@ -1352,6 +1352,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		fclose(fp50);
 
 
+
+		// とりあえずマップデータのエキスポート（出力）をここで間借り。
+		FILE* fileMapDatabasePointer;
+
+		fileMapDatabasePointer = fopen("fileMapDatabase1.txt", "w");
+
+		if ((fileMapDatabasePointer = fopen("fileMapDatabase1.txt", "w")) == NULL) {
+			MessageBox(NULL, TEXT("マップのエクスポートが失敗しました。対象ファイルが存在しないようです。"), TEXT("メッセージ"), MB_OK);
+			break;
+		}
+		else {
+
+			for (int y_mapTemp = 0; y_mapTemp <= 6; ++y_mapTemp)
+			{
+				for (int x_mapTemp = 0; x_mapTemp <= 9; ++x_mapTemp)
+				{
+					fprintf(fileMapDatabasePointer, "%d,", maptable[y_mapTemp][x_mapTemp]);
+
+					if (x_mapTemp == 9) {
+						fprintf(fileMapDatabasePointer, "\n");
+					}
+				}
+			}
+
+		}
+					
+			fclose(fileMapDatabasePointer);
+		
+
 		break;
 
 	case WM_TIMER:
