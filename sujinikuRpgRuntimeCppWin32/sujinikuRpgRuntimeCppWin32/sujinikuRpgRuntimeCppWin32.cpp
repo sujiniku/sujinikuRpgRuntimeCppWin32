@@ -958,8 +958,71 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// TODO: ここにコードを挿入してください。
 
 	// map のデータ
-	memcpy(map_def_list[1].map_table, map1table, sizeof(map1table));
-	memcpy(map_def_list[2].map_table, map2table, sizeof(map1table));
+
+
+	FILE* fileMapDatabasePointer;
+
+	fileMapDatabasePointer = fopen("GameData\\maptable\\fileMapDatabase_map1.txt", "r");
+
+	if ((fileMapDatabasePointer = fopen("GameData\\maptable\\fileMapDatabase_map1.txt", "r")) == NULL) {
+		MessageBox(NULL, TEXT("マップ1のインポートが失敗しました。対象ファイルが存在しないようです。"), TEXT("メッセージ"), MB_OK);
+		//break;
+	}
+	else {
+
+
+		char buffer1[150];
+
+		struct seisekihyou {
+			char str[150];
+		};
+
+		struct seisekihyou row[20]; // 構造体配列の宣言
+
+
+		char str1[150];
+		char str2[150];
+
+		int henkan[10][10];// = 0;
+
+		for (int j = 0; j <= 6; ++j) {
+
+			fgets(buffer1, 150, fileMapDatabasePointer);
+
+			strncpy(row[0].str, strtok(buffer1, ","), 150);
+			henkan[j][0] = atoi(row[0].str);
+
+			map_def_list[1].map_table[j][0] = henkan[j][0];
+
+			for (int temp = 1; temp <= 9; ++temp) {
+				strncpy(row[temp].str, strtok(NULL, ","), 150);
+				henkan[j][temp] = atoi(row[temp].str);
+					
+				map_def_list[1].map_table[j][temp]= henkan[j][temp];
+
+			}
+
+		}
+
+	}
+
+	/*
+	for (int y_mapTemp = 0; y_mapTemp <= 6; ++y_mapTemp)
+	{
+		for (int x_mapTemp = 0; x_mapTemp <= 9; ++x_mapTemp)
+		{
+			fprintf(fileMapDatabasePointer, "%d,", map1table[y_mapTemp][x_mapTemp]);
+
+			if (x_mapTemp == 9) {
+				fprintf(fileMapDatabasePointer, "\n");
+			}
+		}
+	}
+	*/
+
+
+	//memcpy(map_def_list[1].map_table, map1table, sizeof(map1table));
+	memcpy(map_def_list[2].map_table, map2table, sizeof(map2table));
 
 
 	// 敵の位置の読み込み
