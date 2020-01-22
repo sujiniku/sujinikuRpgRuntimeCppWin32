@@ -1377,8 +1377,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		}
-					
-			fclose(fileMapDatabasePointer);
+
+		fileMapDatabasePointer = fopen("GameData\\maptable\\fileMapDatabase_map1.txt", "w");
+
+		if ((fileMapDatabasePointer = fopen("GameData\\maptable\\fileMapDatabase_map1.txt", "w")) == NULL) {
+			MessageBox(NULL, TEXT("マップ1のエクスポートが失敗しました。対象ファイルが存在しないようです。"), TEXT("メッセージ"), MB_OK);
+			break;
+		}
+		else {
+
+			for (int y_mapTemp = 0; y_mapTemp <= 6; ++y_mapTemp)
+			{
+				for (int x_mapTemp = 0; x_mapTemp <= 9; ++x_mapTemp)
+				{
+					fprintf(fileMapDatabasePointer, "%d,", map1table[y_mapTemp][x_mapTemp]);
+
+					if (x_mapTemp == 9) {
+						fprintf(fileMapDatabasePointer, "\n");
+					}
+				}
+			}
+
+		}
+
+
+									
+		fclose(fileMapDatabasePointer);
 		
 
 		break;
