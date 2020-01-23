@@ -287,7 +287,7 @@ static int maptable[10][10] = {
 struct map_def
 {
 	int map_table[10][10];
-
+	//int mapTransGoto[10][10][10];
 };
 
 static struct map_def map_def_list[8];
@@ -2126,6 +2126,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							}
 							fclose(fp1);
+
+							desti_x = chara_x; // とりあえず移動先に現在位置を代入
+							desti_y = chara_y;
 
 							MapTrans_position_x = MapTrans_def_list[where_map - 1].positionX;
 							MapTrans_position_y = MapTrans_def_list[where_map - 1].positionY;
