@@ -68,6 +68,10 @@ sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32
 
 です。
 
+バージョンは古いですが、
+sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32\x64\Release に、実行ファイルがあります。
+
+
 # GitHubに上書き保存する場合の保存場所（自分用メモ）
 解凍したファイル内の
 
