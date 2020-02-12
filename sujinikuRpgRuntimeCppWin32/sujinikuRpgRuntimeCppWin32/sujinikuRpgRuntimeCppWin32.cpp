@@ -49,7 +49,7 @@ int enemyAlldeadFlag = 0;// 0なら、敵はまだ全滅してない。1で敵�
 
 int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作用のとりあえずのフラグ。
 
-int tourokuMapSuu = 2;
+int tourokuMapChip = 2;
 
 int sankaAgility[BATTLE_Agility_proc]; // 素早さ配列
 int iremonoAgilityHairetu[BATTLE_Agility_proc]; // 入れ物すばやさ配列
@@ -274,7 +274,7 @@ static int desti_y; // 進行先の壁判定のためのx座標変数
 
 // maptable の初期化 // 中身はとりあえず0. 安全のため、オーバーフロー時の影響を防ぐ。
 static int maptable[10][10] = {
-	{ 0,0,0,0,0,0,0,0,0,0 }, //0 x
+	{ 0,0,0,0,0,0,0,0,0,0 }, //0 y
 	{ 0,0,0,0,0,0,0,0,0,0 }, //1
 	{ 0,0,0,0,0,0,0,0,0,0 }, //2
 	{ 0,0,0,0,0,0,0,0,0,0 }, //3
@@ -294,7 +294,7 @@ static struct map_def map_def_list[8];
 
 
 int map1table[10][10] = {
-	{ 1,1,1,1,1,1,1,1,1,1 }, //0 x
+	{ 1,1,1,1,1,1,1,1,1,1 }, //0 y
 { 1,0,0,0,0,0,0,0,0,1 }, //1
 { 1,0,0,0,0,0,0,0,0,1 }, //2
 { 1,0,0,0,0,0,0,0,0,1 }, //3
@@ -441,7 +441,7 @@ void Draw_map(HDC hdc) {
 	{
 		for (y_map = 0; y_map <= 6; ++y_map)
 		{
-			for (int i = 1; i <= tourokuMapSuu; ++i) {
+			for (int i = 1; i <= tourokuMapChip; ++i) {
 				if (maptable[y_map][x_map] == i - 1) {
 					hbmp = hbmp_mapchip_list[i].hbmp_mapchip;
 					break;
@@ -681,7 +681,7 @@ void check_MapTransition(HWND hWnd) {
 			{
 				// 代入内容は、移動先マップの代入をすることに注意
 
-				for (int i = 0; i <= tourokuMapSuu-1; ++i){ // 全マップをチェック
+				for (int i = 0; i <= tourokuMapChip-1; ++i){ // 全マップをチェック
 					if (where_map == i + 1) {
 						maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];					
 					}			
@@ -1712,7 +1712,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					// 代入内容は、移動先マップの代入をすることに注意
 
-					for (int i = 1; i <= tourokuMapSuu ; ++i) { // こっちのforはマスク作業用
+					for (int i = 1; i <= tourokuMapChip ; ++i) { // こっちのforはマスク作業用
 						if (where_map == i) {
 							maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];
 						}
