@@ -436,17 +436,15 @@ void Draw_map(HDC hdc) {
 
 	int x_map = 0; // マップ描画の開始位置 // これは消しちゃ駄目。for文の記述の簡略化のため
 	int y_map = 0;
+	int iTemp;
 
 	for (x_map = 0; x_map <= 9; ++x_map)
 	{
 		for (y_map = 0; y_map <= 6; ++y_map)
 		{
-			for (int i = 1; i <= tourokuMapChip; ++i) {
-				if (maptable[y_map][x_map] == i - 1) {
-					hbmp = hbmp_mapchip_list[i].hbmp_mapchip;
-					break;
-				}
-			}
+
+			iTemp = maptable[y_map][x_map] + 1;
+					hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
 
 			SelectObject(hMdc, hbmp);
 			BitBlt(hbackDC, 225 + x_map * 32, 140 + y_map * 32, 32, 32, hMdc, 0, 0, SRCCOPY);
