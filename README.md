@@ -83,7 +83,7 @@ sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32\sujinikuRpgRuntimeC
 
 
 # その他の書類 Other documents
-ソースコードの関数や変数などの説明といった、ゲームの仕様については `specification.md` に記載されています。  
+ソースコードの関数や変数などの説明といった、ゲームのコード解説書については `specification.md` に記載されています。  
 Specifications of games such as explanations of functions and variables in source code are described in `specification.md` .  
 
 # 更新履歴 update history
