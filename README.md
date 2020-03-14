@@ -83,8 +83,8 @@ sujinikuRpgRuntimeCppWin32-master\sujinikuRpgRuntimeCppWin32\sujinikuRpgRuntimeC
 
 
 # その他の書類 Other documents
-ソースコードの関数や変数などの説明といった、ゲームのコード解説書については `specification.md` に記載されています。  
-Specifications of games such as explanations of functions and variables in source code are described in `specification.md` .  
+ソースコードの関数や変数などの説明といった、ゲームのコード解説書については `CodeCommentaryBook_jpn.md` に記載されています。  
+Specifications of games such as explanations of functions and variables in source code are described in `CodeCommentaryBook_jpn.md` .  
 
 # 更新履歴 update history
 2018年9月2日 : 履歴の記録を開始。  
