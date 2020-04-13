@@ -27,6 +27,10 @@
 #define MODE_MENU 400 // メニュー画面のモード番号
 #define MODE_ITEM_MENU 410 // アイテムメニューのモード
 
+
+#define MODE_ITEM_WHOM 420 // アイテム対象者の選択
+
+
 #define MODE_SAVE_MENU 440 // セーブメニューのモード
 #define MODE_saving_Now 445 // セーブ中
 
@@ -38,6 +42,8 @@
 
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
+
+int whomCHARA = 1;
 
 int FontYoffset = 30;
 
@@ -1878,6 +1884,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 			}
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
 		}
 
 
@@ -1963,9 +1973,141 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
 			TextOut(hdc, 400 + 60, 300 + 30, mojibuf, lstrlen(mojibuf));
 
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
+		}
+
+
+
+
+
+
+		if (mode_scene == MODE_ITEM_WHOM) {
+
+			/* コマンド用ウィンドウ */
+			HPEN pen_blue;
+
+			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
+			SelectObject(hdc, pen_blue);
+
+
+			HBRUSH blue_thin_1, blue_thin_2;
+			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
+			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 10, 610, 80);
+
+
+			HBRUSH brasi_pink_1;
+			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
+			SelectObject(hdc, brasi_pink_1);
+
+			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+				100 + (selecting_mainmenu - 1) * 100, 70);
+
+			int	menuComBaseX = 20; int menuComOffsetPerX = 100;
+			int menuComBaseY = 20;
+
+			SetBkMode(hdc, TRANSPARENT);
+
+			for (int j = 0; j <= 3; ++j) {
+
+				// ここに共通する前段階の作業を記述;
+
+				// 非共通;
+				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
+				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
+				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
+				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
+
+				// ここに共通する後段階の作業を記述;
+				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
+
+			}
+
+
+			/* 所持金の表示欄 */
+			SelectObject(hdc, blue_thin_1);
+
+			Rectangle(hdc, 500, 250,
+				600, 350);
+
+			int GoldViewBaseX = 510; int GoldViewBaseY = 260;
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+			// _itot_s(your_money , p,200, 10);
+
+
+			/* キャラのステータス欄 */
+			Rectangle(hdc, 10, 100,
+				300, 200);
+			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
+			int offsetY = 120;
+
+
+
+
+
+
+
+
+			for (int j = 0; j <= 1; ++j) {
+
+				// 背景の青
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, 10, 100 + offsetY * j,
+					300, 200 + offsetY * j);
+
+				// カーソル
+				if (whomCHARA == j+1 ) {
+					brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
+					SelectObject(hdc, brasi_pink_1);
+
+					Rectangle(hdc, 10 + 10, 100 +  10 + 120*(whomCHARA -1),
+						300 - 10, 100 + 70 + 120 * (whomCHARA - 1));
+
+				}
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+				lstrcpy(mojibuf, TEXT("HP"));
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
+			}
+
 
 
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		////
 
@@ -2582,12 +2724,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_ITEM_MENU && key_remain > 0) {
+			
 			switch (wParam)
 			{
+
 			case 'Z':
 			{
+
+
+				
 				key_remain = 0;
 				if (selecting_item == 1) {
+
+					mode_scene = MODE_ITEM_WHOM;
+					
+					InvalidateRect(hWnd, NULL, TRUE);
+					UpdateWindow(hWnd);
+
+					/*
 
 					if (heros_def_list[0].heros_hp < heros_def_list[0].heros_hp_max) {
 						if (item_have_list[0].have_kosuu > 0) {
@@ -2604,9 +2758,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}
-				}
+					 */
 
-			}
+				}
+				 
+
+			} //caseZ　の終わり
+
+
+
+
 
 			break;
 
@@ -2656,6 +2817,110 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 		}
+
+
+		if (mode_scene == MODE_ITEM_WHOM && key_remain > 0) {
+
+			switch (wParam)
+			{
+
+			case 'Z':
+			{
+				key_remain = 0;
+				if (selecting_item == 1) {
+
+					// mode_scene = MODE_ITEM_WHOM;
+
+					// InvalidateRect(hWnd, NULL, TRUE);
+					// UpdateWindow(hWnd);
+
+					/*
+
+					if (heros_def_list[0].heros_hp < heros_def_list[0].heros_hp_max) {
+						if (item_have_list[0].have_kosuu > 0) {
+							heros_def_list[0].heros_hp = heros_def_list[0].heros_hp + 5;
+
+							if (heros_def_list[0].heros_hp > heros_def_list[0].heros_hp_max) {
+								heros_def_list[0].heros_hp = heros_def_list[0].heros_hp_max;
+							}
+
+							item_have_list[0].have_kosuu = item_have_list[0].have_kosuu - 1;
+
+						}
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					}
+					 */
+
+				}
+
+
+			} //caseZ　の終わり
+
+
+
+			break;
+
+			case 'X':
+				//アイテム選択画面に戻る
+			{
+
+				mode_scene = MODE_ITEM_MENU;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
+
+				if (whomCHARA > 2) {
+					whomCHARA = 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				InvalidateRect(hWnd, NULL, TRUE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
+
+				if (whomCHARA >= 2) {
+					whomCHARA = 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				InvalidateRect(hWnd, NULL, TRUE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
+			}
+
+
+
+		}
+
+
+
+
+
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND && key_remain > 0) {
