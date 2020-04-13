@@ -264,8 +264,16 @@ static int key_remain = 1;
 static int chara_x;
 static int chara_y;
 
+static int before_chara_x; // 退却処理で1歩前に戻るときに使う。
+static int before_chara_y; //
+
+
 static int start_x = 3;
 static int start_y = 4;
+
+
+
+
 
 
 // マップのサイズの変数
@@ -540,8 +548,16 @@ void check_movable(HWND hWnd) {
 		}
 		else if (maptable[desti_y][desti_x] != 1) // 進行先に移動可能
 		{
-			chara_x = desti_x;
-			chara_y = desti_y;
+	
+				// 一歩前座標の更新
+				before_chara_x = chara_x ;				
+				before_chara_y = chara_y ;
+				
+				// 現在位置の更新
+				chara_x = desti_x;
+				chara_y = desti_y;
+
+
 
 			InvalidateRect(hWnd, NULL, FALSE);
 			UpdateWindow(hWnd);
@@ -2276,6 +2292,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					chara_x = start_x;
 					chara_y = start_y;
 
+					before_chara_x = start_x ; // 退却処理で1歩前に戻るときに使う。
+					before_chara_x = start_y ;
+
 
 					_stprintf_s(mojibuf, TEXT("%s %s"), TEXT("俺の名は"), heros_def_list[0].heros_name);
 
@@ -2730,7 +2749,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					if (selecting_battle_mainmenu == 2)
 					{
-						MessageBox(NULL, TEXT("逃亡（開発中）"), TEXT("戦闘テスト"), MB_OK);
+						// MessageBox(NULL, TEXT("逃亡（開発中）"), TEXT("戦闘テスト"), MB_OK);
+					
+
+						desti_x = before_chara_x;
+						desti_y = before_chara_y;
+					
+						chara_x = before_chara_x;
+						chara_y = before_chara_y;
+
+						before_chara_x = chara_x;
+						before_chara_y = chara_y;
+
+
+
+
+						mode_scene = MODE_MAP;
+					
+
+
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					
+					
+					
+					
+					
 					}
 
 					if (selecting_battle_mainmenu == 3)
