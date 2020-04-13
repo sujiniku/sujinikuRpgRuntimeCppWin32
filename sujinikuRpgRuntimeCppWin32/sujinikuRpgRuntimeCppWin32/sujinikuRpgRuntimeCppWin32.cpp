@@ -160,6 +160,9 @@ struct monster_def
 	int mon_hp_max;
 	int mon_agility;
 
+	int mon_attackPower;
+
+
 	int mon_gold;
 	int mon_exp;
 };
@@ -176,6 +179,9 @@ struct heros_def
 
 	int heros_gold; // ウィザードリィみたいに各キャラごとにゴールドを持てるようになってる。
 	int heros_exp;
+
+	int heros_HP0_flag;
+
 };
 
 
@@ -706,32 +712,37 @@ static int damage_EnemyAttack = 0;
 
 void heroside_attack(HWND hWnd) {
 
-	// 主人公たちの攻撃
-	{
-
-		/* 乱数の種 */
-		// wWinMain で定義済み
+	if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 0) {
+		// 主人公たちの攻撃
 
 
-		/* サイコロ */
-		damage_HeroAttack = rand() % 6 + 2 + equipWeaponPower;
+		{
 
-		// 敵にダメージ
-		monster_hp = monster_hp - damage_HeroAttack;
+			/* 乱数の種 */
+			// wWinMain で定義済み
 
-		// モンスターの死亡の処理
-		if (monster_hp < 1) {
-			monster_hp = 0;
 
-			enemy_alive[(encount_monters_id)-1] = 0; // フィールド上の敵の除去
+			/* サイコロ */
+			damage_HeroAttack = rand() % 6 + 2 + equipWeaponPower;
 
-			encount_mons_alive = 0; // 現在戦闘中の敵を死亡にフラグ設定
+			// 敵にダメージ
+			monster_hp = monster_hp - damage_HeroAttack;
 
+			// モンスターの死亡の処理
+			if (monster_hp < 1) {
+				monster_hp = 0;
+
+				enemy_alive[(encount_monters_id)-1] = 0; // フィールド上の敵の除去
+
+				encount_mons_alive = 0; // 現在戦闘中の敵を死亡にフラグ設定
+
+			}
+
+			InvalidateRect(hWnd, NULL, TRUE);
+			UpdateWindow(hWnd);
 		}
-
-		InvalidateRect(hWnd, NULL, TRUE);
-		UpdateWindow(hWnd);
 	}
+
 }
 
 
@@ -745,18 +756,38 @@ void enemy_attack(HWND hWnd) {
 		// wWinMain で定義済み
 
 		/* サイコロ */
-		damage_EnemyAttack = rand() % (6 / 2) + 0;
+		damage_EnemyAttack = rand() % (6 / 2) + 0 + 2 * monster_def_list[encount_monters_id - 1].mon_attackPower;
 
 		// 主人公にダメージ
-		heros_def_list[0].heros_hp = heros_def_list[0].heros_hp - damage_EnemyAttack;
+		if (heros_def_list[0].heros_HP0_flag != 1) {
+			heros_def_list[0].heros_hp = heros_def_list[0].heros_hp - damage_EnemyAttack;
+		}
 
-		// 主人公の死亡判定
+		if (heros_def_list[0].heros_HP0_flag == 1) {
+			heros_def_list[1].heros_hp = heros_def_list[0].heros_hp - damage_EnemyAttack;
+		}
+
+
+		// 主人公の戦闘不能 判定
 		if (heros_def_list[0].heros_hp < 1) {
 			heros_def_list[0].heros_hp = 0;
 
 			// ここにゲームオーバーへのモード遷移
+			heros_def_list[0].heros_HP0_flag = 1;
 
 		}
+
+
+		if (heros_def_list[1].heros_hp < 1) {
+			heros_def_list[1].heros_hp = 0;
+
+			// ここにゲームオーバーへのモード遷移
+			heros_def_list[1].heros_HP0_flag = 1;
+
+		}
+
+
+
 	}
 
 	InvalidateRect(hWnd, NULL, TRUE);
@@ -914,7 +945,16 @@ void draw_battle_HeroDamage(HDC hdc) {
 
 	/* キャラの負ったダメージ */
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ダメージ %d "), damage_EnemyAttack);
-	TextOut(hdc, 20, 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
+	
+
+	if (heros_def_list[0].heros_HP0_flag != 1) {
+		TextOut(hdc, 20, 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
+	}
+
+
+	if (heros_def_list[0].heros_HP0_flag == 1) {
+		TextOut(hdc, 20 + chara_window_size_x , 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
+	}
 
 }
 
@@ -927,7 +967,8 @@ void draw_battle_EnemyDamage(HDC hdc) {
 
 	/* 敵に与えたダメージ */
 	_stprintf_s(mojibuf, 300, TEXT("ダメージ %d "), damage_HeroAttack);
-	TextOut(hdc, 300, 130, mojibuf, lstrlen(mojibuf));
+
+		TextOut(hdc, 300, 130, mojibuf, lstrlen(mojibuf));
 
 }
 
@@ -1103,7 +1144,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	monster_def_list[0].monster_id = 1;
 	monster_def_list[0].mon_gold = 1;
 	monster_def_list[0].mon_exp = 2;
-
+	monster_def_list[0].mon_attackPower = 0;
 
 	lstrcpy(monster_def_list[1].monster_name, TEXT("コボルト"));
 	monster_def_list[1].mon_hp_max = 15;
@@ -1111,7 +1152,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	monster_def_list[1].monster_id = 2;
 	monster_def_list[1].mon_gold = 10;
 	monster_def_list[1].mon_exp = 5;
-
+	monster_def_list[1].mon_attackPower = 8;
 
 
 	// キャラクターの定義
@@ -1122,6 +1163,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[0].heros_exp = 0;
 
+	heros_def_list[0].heros_HP0_flag =0;
 
 	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
 	heros_def_list[1].heros_hp = 18;
@@ -1129,6 +1171,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	heros_def_list[1].heros_agility = 100;
 
 	heros_def_list[1].heros_exp = 0;
+
+	heros_def_list[0].heros_HP0_flag = 0;
 
 
 	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
@@ -1493,28 +1537,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TimeCount++; // バトル時以外はカウントしない
 			int timerCheckCount = 0;
 
-			for (int battleTempA = 0; battleTempA <= partyNinzu - 1 + enemyNinzu; ++battleTempA) {
-				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
-				{					
-					timerFlag = 1 + battleTempA;
-					globalTempA = battleTempA;
 
-					// 行動者が味方側の場合
-					if (actionOrder[battleTempA] < partyNinzu) {						
-						heroside_attack(hWnd);
-					}
-
-					// 行動者が敵側の場合					
-					if (actionOrder[battleTempA] >= partyNinzu) {						
-						if (encount_mons_alive == 1) {
-							enemy_attack(hWnd);
-						}
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-				}
-			}
 
 					// モンスターの死亡判定
 				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
@@ -1580,19 +1603,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					battleTimeFlag = 0;
 					TimeCount = 0;
 					battleID = 0;
+
+					mode_scene = MODE_BATTLE_COMMAND;
 				}
+
+
+
+				for (int battleTempA = 0; battleTempA <= partyNinzu - 1 + enemyNinzu; ++battleTempA) {
+					if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
+					{
+						timerFlag = 1 + battleTempA;
+						globalTempA = battleTempA;
+
+						// 行動者が味方側の場合
+						if (actionOrder[battleTempA] < partyNinzu) {
+							heroside_attack(hWnd);
+						}
+
+						// 行動者が敵側の場合					
+						if (actionOrder[battleTempA] >= partyNinzu) {
+							if (encount_mons_alive == 1) {
+								enemy_attack(hWnd);
+							}
+
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+					}
+				}
+
+
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 
 					// break;
 			// } // for文の終わり
 
+				
+
 				battleID = 0;
 
 		} // if (mode_scene == MODE_BATTLE_NOW  ) { // のカッコ
 
+		// ここは誰かの行動のたびに繰り返すので、戦闘終了処理はココに入れちゃダメ
 		
-
 		break;
 
 	case WM_PAINT:
