@@ -2019,16 +2019,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int battleMassBaseX = 50; int battleMassBaseY = 410 - 230; // 410 は「windowTempA」
 
 			// 「○○の攻撃！」を表示
-			if (actionOrder[globalTempA] <= partyNinzu-1) {
-				_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃！"));
-				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
+			// actionOrder[globalTempA]
+			if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 0) {
+				if (actionOrder[globalTempA] <= partyNinzu - 1) {
+					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃！"));
+					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
-				
-				// ここにダメージ表記の関数を追加。
-				draw_battle_EnemyDamage(hdc);
 
-				draw_battle_common_after(hdc);
+					// ここにダメージ表記の関数を追加。
+					draw_battle_EnemyDamage(hdc);
+
+					draw_battle_common_after(hdc);
+				}
+
 			}
+
+
+
+			if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 1) {
+				if (actionOrder[globalTempA] <= partyNinzu - 1) {
+					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("は戦闘不能で動けない"));
+					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
+
+
+					// ここにダメージ表記の関数を追加。
+					// draw_battle_EnemyDamage(hdc);
+
+					draw_battle_common_after(hdc);
+				}
+
+			}
+
+
+
 
 			if (actionOrder[globalTempA] >= partyNinzu) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
