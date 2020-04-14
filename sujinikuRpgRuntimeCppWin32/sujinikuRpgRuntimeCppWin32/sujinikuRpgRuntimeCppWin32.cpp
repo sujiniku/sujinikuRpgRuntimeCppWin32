@@ -44,6 +44,8 @@
 
 
 int whomCHARA = 1;
+int whomTemp = 0;
+
 
 int FontYoffset = 30;
 
@@ -2063,12 +2065,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					300, 200 + offsetY * j);
 
 				// カーソル
-				if (whomCHARA == j+1 ) {
+				if (whomTemp == j ) {
 					brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 					SelectObject(hdc, brasi_pink_1);
 
-					Rectangle(hdc, 10 + 10, 100 +  10 + 120*(whomCHARA -1),
-						300 - 10, 100 + 70 + 120 * (whomCHARA - 1));
+					Rectangle(hdc, 10 + 10, 100 +  10 + 120*(whomTemp ),
+						300 - 10, 100 + 70 + 120 * (whomTemp));
 
 				}
 
@@ -2834,14 +2836,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// InvalidateRect(hWnd, NULL, TRUE);
 					// UpdateWindow(hWnd);
 
-					/*
+					whomTemp = whomCHARA - 1;
 
-					if (heros_def_list[0].heros_hp < heros_def_list[0].heros_hp_max) {
+					if (heros_def_list[whomTemp].heros_hp < heros_def_list[whomTemp].heros_hp_max) {
 						if (item_have_list[0].have_kosuu > 0) {
-							heros_def_list[0].heros_hp = heros_def_list[0].heros_hp + 5;
+							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 5;
 
-							if (heros_def_list[0].heros_hp > heros_def_list[0].heros_hp_max) {
-								heros_def_list[0].heros_hp = heros_def_list[0].heros_hp_max;
+							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
+								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
 							}
 
 							item_have_list[0].have_kosuu = item_have_list[0].have_kosuu - 1;
@@ -2851,7 +2853,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}
-					 */
+					
 
 				}
 
@@ -2887,6 +2889,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
+				whomTemp = whomCHARA - 1;
+
 				InvalidateRect(hWnd, NULL, TRUE);
 				UpdateWindow(hWnd);
 			}
@@ -2904,6 +2908,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
+				whomTemp = whomCHARA - 1;
+
 				InvalidateRect(hWnd, NULL, TRUE);
 				UpdateWindow(hWnd);
 			}
