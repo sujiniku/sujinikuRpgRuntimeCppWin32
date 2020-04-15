@@ -10,6 +10,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+#pragma	comment(lib,"Gdiplus.lib")
+#include <ole2.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+
+
 // nkaAgility[partyNinzu + idTemp] = monster_def_list[i
 
 // #include "resource.h"
@@ -28,8 +34,8 @@
 #define MODE_ITEM_MENU 410 // アイテムメニューのモード
 
 
-#define MODE_ITEM_WHOM 420 // アイテム対象者の選択
-
+#define MODE_ITEM_WHOM_BACK 420 // アイテム対象者の選択
+#define MODE_ITEM_WHOM_FRONT 425
 
 #define MODE_SAVE_MENU 440 // セーブメニューのモード
 #define MODE_saving_Now 445 // セーブ中
@@ -1020,6 +1026,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// TODO: ここにコードを挿入してください。
 
+						 // GDI+ の初期化
+	GdiplusStartupInput gdiplusStartupInput; // MSDNにそのままのコードがある.
+	ULONG_PTR gdiplusToken;
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+	// 以上、MSDN からの引用.
+
+
+
+
+	// 画像の読み込み「image1」は変数名。
+	//Image image1(L"background.png");
+
+
 	// map のデータ
 
 
@@ -1362,6 +1382,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// マップ描画
 		// 初期化用		// この初期化処理を消すとコンパイルエラーになる。消しちゃ駄目
 		// マップチップ画像をファイルから読み込む
+
+
+
 
 
 
@@ -1985,7 +2008,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_ITEM_WHOM) {
+		if (mode_scene == MODE_ITEM_WHOM_BACK) {
 
 			/* コマンド用ウィンドウ */
 			HPEN pen_blue;
@@ -2047,15 +2070,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/* キャラのステータス欄 */
 			Rectangle(hdc, 10, 100,
 				300, 200);
+			
+
+
+
+			// ここまで、背景フィルターで隠される。
+
+			
+
+
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hdc);
+
+			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			//graphics.DrawImage(&image1, 0, 0, image1.GetWidth(), image1.GetHeight());
+
+
+			// 画像の読み込み「image2」は変数名。
+			Image image2(L"filter.png");
+
+			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+
+
+			mode_scene = MODE_ITEM_WHOM_FRONT;
+
+		}
+
+
+		if (mode_scene == MODE_ITEM_WHOM_FRONT) {
+
+			HBRUSH blue_thin_1, blue_thin_2;
+			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
+			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+
+			HBRUSH brasi_pink_1;
+			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
+			SelectObject(hdc, brasi_pink_1);
+
+			// Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+			//	100 + (selecting_mainmenu - 1) * 100, 70);
+
+
+
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 			int offsetY = 120;
-
-
-
-
-
-
-
 
 			for (int j = 0; j <= 1; ++j) {
 
@@ -2065,11 +2127,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					300, 200 + offsetY * j);
 
 				// カーソル
-				if (whomTemp == j ) {
+				if (whomTemp == j) {
 					brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 					SelectObject(hdc, brasi_pink_1);
 
-					Rectangle(hdc, 10 + 10, 100 +  10 + 120*(whomTemp ),
+					Rectangle(hdc, 10 + 10, 100 + 10 + 120 * (whomTemp),
 						300 - 10, 100 + 70 + 120 * (whomTemp));
 
 				}
@@ -2092,18 +2154,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
 				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
+
 			}
 
-
-
 		}
-
-
-
-
-
-
-
 
 
 
@@ -2738,7 +2792,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				if (selecting_item == 1) {
 
-					mode_scene = MODE_ITEM_WHOM;
+					mode_scene = MODE_ITEM_WHOM_BACK;
 					
 					InvalidateRect(hWnd, NULL, TRUE);
 					UpdateWindow(hWnd);
@@ -2821,7 +2875,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_ITEM_WHOM && key_remain > 0) {
+		if (mode_scene == MODE_ITEM_WHOM_FRONT && key_remain > 0) {
 
 			switch (wParam)
 			{
@@ -2831,7 +2885,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				if (selecting_item == 1) {
 
-					// mode_scene = MODE_ITEM_WHOM;
+					// mode_scene = MODE_ITEM_WHOM_BACK;
 
 					// InvalidateRect(hWnd, NULL, TRUE);
 					// UpdateWindow(hWnd);
@@ -2891,7 +2945,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				whomTemp = whomCHARA - 1;
 
-				InvalidateRect(hWnd, NULL, TRUE);
+				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
 			}
 
@@ -2910,7 +2964,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				whomTemp = whomCHARA - 1;
 
-				InvalidateRect(hWnd, NULL, TRUE);
+				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
 			}
 			break;
