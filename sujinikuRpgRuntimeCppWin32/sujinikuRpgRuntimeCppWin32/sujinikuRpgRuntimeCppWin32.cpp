@@ -868,13 +868,7 @@ void draw_battle_common_after(HDC hdc) {
 
 	HPEN pen_blue;
 
-	pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-	SelectObject(hdc, pen_blue);
-
-
-	HBRUSH blue_thin_1, blue_thin_2;
-	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-	blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+	BrushBlue_set(hdc);
 
 
 	/* カーソル */
@@ -1732,21 +1726,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			if (mode_scene == MODE_OP) {
-				HPEN pen_blue;
-
-				pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-				SelectObject(hdc, pen_blue);
-
-				HBRUSH blue_thin_1, blue_thin_2;
-				blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-				blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+				BrushBlue_set(hdc);
 
 				Rectangle(hdc, 120, 150, 120 + 200, 150 + 200);
 
 
-				HBRUSH brasi_pink_1;
-				brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-				SelectObject(hdc, brasi_pink_1);
+				BrushPink_set(hdc);
 
 				SetBkMode(hdc, TRANSPARENT);
 
@@ -1772,20 +1757,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			if (mode_scene == MODE_INITIAL) {
-
-				HPEN pen_blue;
-
-				pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-				SelectObject(hdc, pen_blue);
-
-				HBRUSH blue_thin_1, blue_thin_2;
-				blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-				blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+				BrushBlue_set(hdc);
 
 
-				HBRUSH brasi_pink_1;
-				brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-				SelectObject(hdc, brasi_pink_1);
+				BrushPink_set(hdc);
 
 				SetBkMode(hdc, TRANSPARENT);
 
