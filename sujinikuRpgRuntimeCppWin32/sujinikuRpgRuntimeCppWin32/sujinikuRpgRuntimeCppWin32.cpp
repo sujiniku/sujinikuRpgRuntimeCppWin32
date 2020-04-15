@@ -442,6 +442,7 @@ static HBITMAP hbmp_MapTrans;
 
 //青ペンと青ブラシ設定
 
+
 static HPEN pen_blue;
 static HBRUSH blue_thin_1, blue_thin_2;
 
@@ -452,8 +453,9 @@ static void BrushBlue_set(HDC hdc) {
 	SelectObject(hdc, pen_blue);
 
 	// HBRUSH blue_thin_1, blue_thin_2;
-	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
+	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255)); 
 	blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+
 }
 
 
@@ -464,6 +466,12 @@ static void BrushPink_set(HDC hdc) {
 	brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
 	SelectObject(hdc, brasi_pink_1);
 }
+
+
+
+
+
+
 
 
 
@@ -655,6 +663,88 @@ static struct heros_def heros_def_list[8];
 
 
 static struct monsterTairetu_def monsterTairetu_def_list[50];
+
+
+
+
+
+static void ItemMenu(HDC hdc) {
+	/* コマンド用ウィンドウ */
+
+	BrushBlue_set(hdc);
+	Rectangle(hdc, 10, 10, 610, 80);
+
+
+	BrushPink_set(hdc);
+	Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+		100 + (selecting_mainmenu - 1) * 100, 70);
+
+	int	menuComBaseX = 20; int menuComOffsetPerX = 100;
+	int menuComBaseY = 20;
+
+	SetBkMode(hdc, TRANSPARENT);
+
+	for (int j = 0; j <= 3; ++j) {
+
+		// ここに共通する前段階の作業を記述;
+
+		// 非共通;
+		if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
+		if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
+		if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
+		if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
+
+		// ここに共通する後段階の作業を記述;
+		TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
+
+	}
+
+
+	/* 所持金の表示欄 */
+	SelectObject(hdc, blue_thin_1);
+
+	Rectangle(hdc, 500, 250,
+		600, 350);
+
+	int GoldViewBaseX = 510; int GoldViewBaseY = 260;
+	lstrcpy(mojibuf, TEXT("所持金"));
+	TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
+	TextOut(hdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+	// _itot_s(your_money , p,200, 10);
+
+
+	/* キャラのステータス欄 */
+	Rectangle(hdc, 10, 100,
+		300, 200);
+	int StatsHPbaseX = 130; int StatsHPbaseY = 130;
+	int offsetY = 120;
+
+	for (int j = 0; j <= 1; ++j) {
+
+		Rectangle(hdc, 10, 100 + offsetY * j,
+			300, 200 + offsetY * j);
+
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+		TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+		lstrcpy(mojibuf, TEXT("HP"));
+		TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+		TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+		TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+	}
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+	TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+}
 
 
 
@@ -1831,172 +1921,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_MENU) {
 
-			/* コマンド用ウィンドウ */
-
-			BrushBlue_set(hdc);
-			Rectangle(hdc, 10, 10, 610, 80);
-
-				
-			BrushPink_set(hdc);
-			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
-				100 + (selecting_mainmenu - 1) * 100, 70);
-
-			int	menuComBaseX = 20; int menuComOffsetPerX = 100;
-			int menuComBaseY = 20;
-
-			SetBkMode(hdc, TRANSPARENT);
-
-			for (int j = 0; j <= 3; ++j) {
-
-				// ここに共通する前段階の作業を記述;
-
-				// 非共通;
-				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
-				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
-				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
-				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
-
-				// ここに共通する後段階の作業を記述;
-				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
-
-			}
+			ItemMenu(hdc);
 
 
-			/* 所持金の表示欄 */
-			SelectObject(hdc, blue_thin_1);
-
-			Rectangle(hdc, 500, 250,
-				600, 350);
-
-			int GoldViewBaseX = 510; int GoldViewBaseY = 260;
-			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
-			TextOut(hdc, GoldViewBaseX, GoldViewBaseY +40, mojibuf, lstrlen(mojibuf));
-
-			// _itot_s(your_money , p,200, 10);
-
-
-			/* キャラのステータス欄 */
-			Rectangle(hdc, 10, 100,
-				300, 200);
-			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
-			int offsetY = 120;
-
-			for (int j = 0; j <= 1; ++j) {
-
-				Rectangle(hdc, 10, 100 + offsetY * j,
-					300, 200 + offsetY * j);
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
-				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-
-				lstrcpy(mojibuf, TEXT("HP"));
-				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY *j, mojibuf, lstrlen(mojibuf));
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
-				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
-				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-			}
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
-			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
 		}
 
 
 		if (mode_scene == MODE_ITEM_MENU_BACK) {
 
-			/* コマンド用ウィンドウ */
-
-			BrushBlue_set(hdc);
-			Rectangle(hdc, 10, 10, 610, 80);
-
-
-			BrushPink_set(hdc);
-			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
-				100 + (selecting_mainmenu - 1) * 100, 70);
-
-			int	menuComBaseX = 20; int menuComOffsetPerX = 100;
-			int menuComBaseY = 20;
-
-			SetBkMode(hdc, TRANSPARENT);
-
-			for (int j = 0; j <= 3; ++j) {
-
-				// ここに共通する前段階の作業を記述;
-
-				// 非共通;
-				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
-				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
-				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
-				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
-
-				// ここに共通する後段階の作業を記述;
-				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
-
-			}
-
-
-			/* 所持金の表示欄 */
-			SelectObject(hdc, blue_thin_1);
-
-			Rectangle(hdc, 500, 250,
-				600, 350);
-
-			int GoldViewBaseX = 510; int GoldViewBaseY = 260;
-			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
-			TextOut(hdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
-
-			// _itot_s(your_money , p,200, 10);
-
-
-			/* キャラのステータス欄 */
-			Rectangle(hdc, 10, 100,
-				300, 200);
-			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
-			int offsetY = 120;
-
-			for (int j = 0; j <= 1; ++j) {
-
-				Rectangle(hdc, 10, 100 + offsetY * j,
-					300, 200 + offsetY * j);
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
-				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-
-				lstrcpy(mojibuf, TEXT("HP"));
-				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
-				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
-				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
-
-			}
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
-			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-
-
-
-			mode_scene = MODE_ITEM_MENU_FRONT;
-		}
-
-
-		if (mode_scene == MODE_ITEM_MENU_FRONT) {
-			/* アイテムの表示欄 */
-			/* コマンド用ウィンドウ */
+			ItemMenu(hdc);
 
 			// ここまで、背景フィルターで隠される。
 
@@ -2010,7 +1944,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
 
 
+			mode_scene = MODE_ITEM_MENU_FRONT;
+		}
 
+
+		if (mode_scene == MODE_ITEM_MENU_FRONT) {
+			
 
 			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 100,
