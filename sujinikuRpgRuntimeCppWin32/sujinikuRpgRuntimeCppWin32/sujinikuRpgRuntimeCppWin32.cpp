@@ -1919,6 +1919,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_ITEM_MENU) {
 			/* アイテムの表示欄 */
 			/* コマンド用ウィンドウ */
+
 			HPEN pen_blue;
 
 			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
@@ -2101,6 +2102,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT) {
 
+			HPEN pen_blue;
+
+			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
+			SelectObject(hdc, pen_blue);
+
 			HBRUSH blue_thin_1, blue_thin_2;
 			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
 			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
@@ -2135,6 +2141,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						300 - 10, 100 + 70 + 120 * (whomTemp));
 
 				}
+
+
+				SetBkMode(hdc, TRANSPARENT);
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
 				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
