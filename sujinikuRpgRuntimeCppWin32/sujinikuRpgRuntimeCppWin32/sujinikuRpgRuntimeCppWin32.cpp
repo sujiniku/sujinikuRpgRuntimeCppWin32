@@ -437,6 +437,31 @@ static struct chara_chip_def chara_chip_list[8];
 static HBITMAP hbmp_enemy;
 static HBITMAP hbmp_MapTrans;
 
+//青ペンと青ブラシ設定
+
+static HPEN pen_blue;
+static HBRUSH blue_thin_1, blue_thin_2;
+
+static void BrushBlue_set(HDC hdc) {
+	// HPEN pen_blue;
+
+	pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
+	SelectObject(hdc, pen_blue);
+
+	// HBRUSH blue_thin_1, blue_thin_2;
+	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
+	blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+}
+
+
+static HBRUSH brasi_pink_1;
+
+static void BrushPink_set(HDC hdc) {
+	// HBRUSH brasi_pink_1;
+	brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
+	SelectObject(hdc, brasi_pink_1);
+}
+
 
 
 // マップ画面の描画用の関数
@@ -1715,6 +1740,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				HBRUSH blue_thin_1, blue_thin_2;
 				blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
 				blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+
 				Rectangle(hdc, 120, 150, 120 + 200, 150 + 200);
 
 
@@ -1828,22 +1854,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_MENU) {
 
 			/* コマンド用ウィンドウ */
-			HPEN pen_blue;
 
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 10, 610, 80);
 
-
-			HBRUSH brasi_pink_1;
-			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-			SelectObject(hdc, brasi_pink_1);
-
+				
+			BrushPink_set(hdc);
 			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 				100 + (selecting_mainmenu - 1) * 100, 70);
 
@@ -1920,24 +1936,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/* アイテムの表示欄 */
 			/* コマンド用ウィンドウ */
 
-			HPEN pen_blue;
-
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			BrushBlue_set(hdc);
 
 
 			Rectangle(hdc, 10, 100,
 				600, 400);
 
 
-			HBRUSH brasi_pink_1;
-			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-			SelectObject(hdc, brasi_pink_1);
+			BrushPink_set(hdc);
 
 			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
 				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
@@ -2012,21 +2018,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_ITEM_WHOM_BACK) {
 
 			/* コマンド用ウィンドウ */
-			HPEN pen_blue;
-
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 10, 610, 80);
 
 
-			HBRUSH brasi_pink_1;
-			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-			SelectObject(hdc, brasi_pink_1);
+			BrushPink_set(hdc);
 
 			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 				100 + (selecting_mainmenu - 1) * 100, 70);
@@ -2102,20 +2098,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT) {
 
-			HPEN pen_blue;
-
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
-			// Rectangle(hdc, 10, 10, 610, 80);
+			BrushBlue_set(hdc);
 
 
-			HBRUSH brasi_pink_1;
-			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-			SelectObject(hdc, brasi_pink_1);
+			BrushPink_set(hdc);
 
 			// Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 			//	100 + (selecting_mainmenu - 1) * 100, 70);
@@ -2134,8 +2120,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// カーソル
 				if (whomTemp == j) {
-					brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-					SelectObject(hdc, brasi_pink_1);
+					BrushPink_set(hdc);
 
 					Rectangle(hdc, 10 + 10, 100 + 10 + 120 * (whomTemp),
 						300 - 10, 100 + 70 + 120 * (whomTemp));
@@ -2194,21 +2179,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			draw_battle_common_before(hdc);
 
 			/* コマンドウィンドウ */
-			HPEN pen_blue;
-
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 10, 610, 80);
 
 
-			HBRUSH brasi_pink_1;
-			brasi_pink_1 = CreateSolidBrush(RGB(255, 180, 180));
-			SelectObject(hdc, brasi_pink_1);
+			BrushPink_set(hdc);
 
 			int BattleComBaseX = 20; int BattleComBaseY = 20;
 
@@ -2312,15 +2287,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// ここから先、戦勝の報告メッセージ
 
 			/* ペンとブラシ設定 */
-			HPEN pen_blue;
-
-			pen_blue = CreatePen(PS_SOLID, 0, RGB(210, 210, 255));
-			SelectObject(hdc, pen_blue);
-
-
-			HBRUSH blue_thin_1, blue_thin_2;
-			blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
-			blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
+			BrushBlue_set(hdc);
 
 
 			/* 描写: 戦闘終了ウィンドウ背景 */
