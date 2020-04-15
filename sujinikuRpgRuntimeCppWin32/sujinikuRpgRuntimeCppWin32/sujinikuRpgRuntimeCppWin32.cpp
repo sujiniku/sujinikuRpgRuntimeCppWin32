@@ -31,7 +31,10 @@ using namespace Gdiplus;
 #define MODE_MAP 300 // マップ画面のモード番号
 
 #define MODE_MENU 400 // メニュー画面のモード番号
-#define MODE_ITEM_MENU 410 // アイテムメニューのモード
+#define MODE_ITEM_MENU_BACK 410 // アイテムメニューのモード
+#define MODE_ITEM_MENU_FRONT 415
+
+
 
 
 #define MODE_ITEM_WHOM_BACK 420 // アイテム対象者の選択
@@ -1907,19 +1910,114 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_ITEM_MENU) {
-			/* アイテムの表示欄 */
+		if (mode_scene == MODE_ITEM_MENU_BACK) {
+
 			/* コマンド用ウィンドウ */
 
 			BrushBlue_set(hdc);
+			Rectangle(hdc, 10, 10, 610, 80);
 
 
+			BrushPink_set(hdc);
+			Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+				100 + (selecting_mainmenu - 1) * 100, 70);
+
+			int	menuComBaseX = 20; int menuComOffsetPerX = 100;
+			int menuComBaseY = 20;
+
+			SetBkMode(hdc, TRANSPARENT);
+
+			for (int j = 0; j <= 3; ++j) {
+
+				// ここに共通する前段階の作業を記述;
+
+				// 非共通;
+				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
+				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
+				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
+				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
+
+				// ここに共通する後段階の作業を記述;
+				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
+
+			}
+
+
+			/* 所持金の表示欄 */
+			SelectObject(hdc, blue_thin_1);
+
+			Rectangle(hdc, 500, 250,
+				600, 350);
+
+			int GoldViewBaseX = 510; int GoldViewBaseY = 260;
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
+			TextOut(hdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+			// _itot_s(your_money , p,200, 10);
+
+
+			/* キャラのステータス欄 */
+			Rectangle(hdc, 10, 100,
+				300, 200);
+			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
+			int offsetY = 120;
+
+			for (int j = 0; j <= 1; ++j) {
+
+				Rectangle(hdc, 10, 100 + offsetY * j,
+					300, 200 + offsetY * j);
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+				lstrcpy(mojibuf, TEXT("HP"));
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+			}
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
+
+
+			mode_scene = MODE_ITEM_MENU_FRONT;
+		}
+
+
+		if (mode_scene == MODE_ITEM_MENU_FRONT) {
+			/* アイテムの表示欄 */
+			/* コマンド用ウィンドウ */
+
+			// ここまで、背景フィルターで隠される。
+
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hdc);
+
+			// 画像の読み込み「image2」は変数名。
+			Image image2(L"filter.png");
+
+			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+
+
+
+			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 100,
 				600, 400);
 
 
 			BrushPink_set(hdc);
-
 			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
 				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
 
@@ -2586,7 +2684,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 1) {
 					//	MessageBox(NULL, TEXT("道具を選択しました。"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene = MODE_ITEM_MENU;
+					mode_scene = MODE_ITEM_MENU_BACK;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -2730,7 +2828,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_ITEM_MENU && key_remain > 0) {
+		if (mode_scene == MODE_ITEM_MENU_FRONT && key_remain > 0) {
 			
 			switch (wParam)
 			{
@@ -2873,9 +2971,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//アイテム選択画面に戻る
 			{
 
-				mode_scene = MODE_ITEM_MENU;
+				mode_scene = MODE_ITEM_MENU_BACK ;
 
-				InvalidateRect(hWnd, NULL, FALSE);
+				InvalidateRect(hWnd, NULL, TRUE);
 				UpdateWindow(hWnd);
 
 			}
