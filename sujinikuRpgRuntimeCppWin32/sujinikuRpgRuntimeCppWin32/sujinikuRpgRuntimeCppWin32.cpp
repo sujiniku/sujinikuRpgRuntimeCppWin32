@@ -57,6 +57,7 @@ using namespace Gdiplus;
 int whomCHARA = 1;
 int whomTemp = 0;
 
+int filterFlag = 0;
 
 int FontYoffset = 30;
 
@@ -2147,13 +2148,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/* キャラのステータス欄 */
 			Rectangle(hdc, 10, 100,
 				300, 200);
-			
+
 
 
 
 			// ここまで、背景フィルターで隠される。
 
-			
+
 
 
 			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
@@ -2163,12 +2164,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//graphics.DrawImage(&image1, 0, 0, image1.GetWidth(), image1.GetHeight());
 
 
-			// 画像の読み込み「image2」は変数名。
-			Image image2(L"filter.png");
+			// 画像の読み込み「image2」は変数名。これが背景フィルター。
+			if (filterFlag == 0){
+			
+				Image image2(L"filter.png");
 
 			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
-
+			
+				graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+				filterFlag = 1;
+			}
 
 
 			mode_scene = MODE_ITEM_WHOM_FRONT;
@@ -2853,26 +2858,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 
-					/*
-
-					if (heros_def_list[0].heros_hp < heros_def_list[0].heros_hp_max) {
-						if (item_have_list[0].have_kosuu > 0) {
-							heros_def_list[0].heros_hp = heros_def_list[0].heros_hp + 5;
-
-							if (heros_def_list[0].heros_hp > heros_def_list[0].heros_hp_max) {
-								heros_def_list[0].heros_hp = heros_def_list[0].heros_hp_max;
-							}
-
-							item_have_list[0].have_kosuu = item_have_list[0].have_kosuu - 1;
-
-						}
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-					 */
-
 				}
+
+
+
+				if (selecting_item == 2) {
+
+					mode_scene = MODE_ITEM_WHOM_BACK;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+				if (selecting_item == 3) {
+
+					mode_scene = MODE_ITEM_WHOM_BACK;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
 				 
 
 			} //caseZ　の終わり
@@ -2939,33 +2945,79 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			{
 				key_remain = 0;
+				whomTemp = whomCHARA - 1;
+
 				if (selecting_item == 1) {
 
-					// mode_scene = MODE_ITEM_WHOM_BACK;
 
-					// InvalidateRect(hWnd, NULL, TRUE);
-					// UpdateWindow(hWnd);
-
-					whomTemp = whomCHARA - 1;
+					
 
 					if (heros_def_list[whomTemp].heros_hp < heros_def_list[whomTemp].heros_hp_max) {
-						if (item_have_list[0].have_kosuu > 0) {
+						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
 							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 5;
+							// MessageBox(NULL, TEXT("いまココ2"), TEXT("メッセージ"), MB_OK);
+							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
+								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
+							}
+
+							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
+
+						}					
+						
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					}					
+				}
+
+
+
+				if (selecting_item == 2) {
+					
+					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
+					if (heros_def_list[whomTemp].heros_hp < heros_def_list[whomTemp].heros_hp_max) {
+
+						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
+							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 1;
 
 							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
 								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
 							}
 
-							item_have_list[0].have_kosuu = item_have_list[0].have_kosuu - 1;
+							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
+
+						}
+
+						mode_scene = MODE_ITEM_WHOM_BACK;
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					}
+
+				}
+
+	
+				if (selecting_item == 3) {
+				
+					if (heros_def_list[whomTemp].heros_hp <= 0) {
+						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
+							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 1;
+
+							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
+								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
+							}
+
+							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
 
 						}
 
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}
-					
+
 
 				}
+
+
 
 
 			} //caseZ　の終わり
@@ -2977,7 +3029,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'X':
 				//アイテム選択画面に戻る
 			{
-
+				filterFlag = 0;
 				mode_scene = MODE_ITEM_MENU_BACK ;
 
 				InvalidateRect(hWnd, NULL, FALSE);
