@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>  // 切り上げ計算で使用
+
 
 #pragma	comment(lib,"Gdiplus.lib")
 #include <ole2.h>
@@ -1284,6 +1286,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	item_def_list[0].item_id = 1;
 
 
+	lstrcpy(item_def_list[1].item_name, TEXT("毒消し草"));
+	item_def_list[1].item_type = 2;
+	item_def_list[1].item_id = 2;
+
+
+
+	lstrcpy(item_def_list[2].item_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
+	item_def_list[2].item_type = 3;
+	item_def_list[2].item_id = 3;
+
 
 
 	//武器の定義
@@ -1307,6 +1319,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	item_have_list[0].have_kosuu = 3;
 
 
+	item_have_list[1].have_item_id = 2;
+	item_have_list[1].have_kosuu = 5;
+
+
+	item_have_list[2].have_item_id = 3;
+	item_have_list[2].have_kosuu = 8;
 
 
 	//初期装備の武器
@@ -2010,12 +2028,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
 			//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
-			SetBkMode(hdc, TRANSPARENT);
-			lstrcpy(mojibuf, item_def_list[(item_have_list[0].have_item_id - 1)].item_name);
-			TextOut(hdc, 30, 130, mojibuf, lstrlen(mojibuf));
+			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+			{
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[0].have_kosuu);
-			TextOut(hdc, 160, 130, mojibuf, lstrlen(mojibuf));
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, item_def_list[idTemp].item_name);
+					TextOut(hdc, 30 + 300 * floor(idTemp % 2), 130 + 30 * floor(idTemp/2), mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
+					TextOut(hdc, 160 + 300 * floor(idTemp % 2), 130 + 30 * floor(idTemp/2), mojibuf, lstrlen(mojibuf));
+						
+			}
 
 			//	_stprintf_s(pmojibuf, 200, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
 				//TextOut(hdc, 190, 130, mojibuf, lstrlen(pmojibuf));
