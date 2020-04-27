@@ -671,18 +671,53 @@ static struct monsterTairetu_def monsterTairetu_def_list[50];
 static void ItemMenu(HDC hdc) {
 	/* コマンド用ウィンドウ */
 
-	BrushBlue_set(hdc);
-	Rectangle(hdc, 10, 10, 610, 80);
+
+		// ハンドルなどの定義。 static にしたら駄目（表示されなくなる）。
+	//HDC hdc;
+	HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+
+	// 中間作業用 （完成しても消したら駄目） static にしたら駄目（表示されなくなる）。
+	HDC hMdc = CreateCompatibleDC(hdc); // 中間作業用ハンドル
+
+	static HBITMAP hbmp; // 中間作業用 // こいつは static にしてもオッケー
 
 
-	BrushPink_set(hdc);
-	Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+	// マップサイズの読み込む
+	hbmp = CreateCompatibleBitmap(hdc, 640 + 100, 480 + 100);
+	SelectObject(hbackDC, hbmp); // hbackDCにマップサイズを読み込ませている
+
+	// 前回の SelectObject でhbmpが消去されてるので、もう一回、読み込む。
+	hbmp = CreateCompatibleBitmap(hdc, 640 + 100, 480 + 100);
+	SelectObject(hMdc, hbmp);
+
+	// 実際にマップを裏画面に描画開始する
+
+	int x_map = 0; // マップ描画の開始位置 // これは消しちゃ駄目。for文の記述の簡略化のため
+	int y_map = 0;
+	int iTemp;
+
+
+			//iTemp = maptable[y_map][x_map] + 1;
+			//hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
+
+
+
+
+
+
+
+	BrushBlue_set(hMdc);
+	Rectangle(hMdc, 10, 10, 610, 80);
+
+
+	BrushPink_set(hMdc);
+	Rectangle(hMdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 		100 + (selecting_mainmenu - 1) * 100, 70);
 
 	int	menuComBaseX = 20; int menuComOffsetPerX = 100;
 	int menuComBaseY = 20;
 
-	SetBkMode(hdc, TRANSPARENT);
+	SetBkMode(hMdc, TRANSPARENT);
 
 	for (int j = 0; j <= 3; ++j) {
 
@@ -695,55 +730,68 @@ static void ItemMenu(HDC hdc) {
 		if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
 
 		// ここに共通する後段階の作業を記述;
-		TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
+		TextOut(hMdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 	}
 
 
 	/* 所持金の表示欄 */
-	SelectObject(hdc, blue_thin_1);
+	SelectObject(hMdc, blue_thin_1);
 
-	Rectangle(hdc, 500, 250,
+	Rectangle(hMdc, 500, 250,
 		600, 350);
 
 	int GoldViewBaseX = 510; int GoldViewBaseY = 260;
 	lstrcpy(mojibuf, TEXT("所持金"));
-	TextOut(hdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
+	TextOut(hMdc, GoldViewBaseX, GoldViewBaseY, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), your_money);
-	TextOut(hdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
+	TextOut(hMdc, GoldViewBaseX, GoldViewBaseY + 40, mojibuf, lstrlen(mojibuf));
 
 	// _itot_s(your_money , p,200, 10);
 
 
 	/* キャラのステータス欄 */
-	Rectangle(hdc, 10, 100,
+	Rectangle(hMdc, 10, 100,
 		300, 200);
 	int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 	int offsetY = 120;
 
 	for (int j = 0; j <= 1; ++j) {
 
-		Rectangle(hdc, 10, 100 + offsetY * j,
+		Rectangle(hMdc, 10, 100 + offsetY * j,
 			300, 200 + offsetY * j);
 
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
-		TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
+		TextOut(hMdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
 		lstrcpy(mojibuf, TEXT("HP"));
-		TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+		TextOut(hMdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
-		TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+		TextOut(hMdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
-		TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+		TextOut(hMdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 	}
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
-	TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+	TextOut(hMdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
+
+
+
+	
+	BitBlt(hdc, 0, 0, 700, 500,  hMdc, 0, 0, SRCCOPY);
+
+	// DeleteDC(hMdc); // これを入れると、マップが表示されない。
+
+	// 裏画面から本画面に転送
+	//BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+
 }
 
 
@@ -1937,10 +1985,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
 			Graphics graphics(hdc);
 
-			// 画像の読み込み「image2」は変数名。
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
 			Image image2(L"filter.png");
 
-			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
 			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
 
 
