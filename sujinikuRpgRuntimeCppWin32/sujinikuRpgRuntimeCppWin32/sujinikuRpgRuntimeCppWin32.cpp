@@ -54,6 +54,8 @@ using namespace Gdiplus;
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 
+int goukeiItem = 0;
+
 int whomCHARA = 1;
 int whomTemp = 0;
 
@@ -631,6 +633,10 @@ void item_select(HWND hWnd) {
 
 	if (selecting_item < 1) {
 		selecting_item = 1;
+	}
+
+	if (selecting_item > goukeiItem) {
+		selecting_item = goukeiItem;
 	}
 
 	selecting_item_x = ((selecting_item - 1) % 2) + 1;
@@ -2030,6 +2036,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
 			int itemskip = 0;
+			goukeiItem = 0;
+
 			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
@@ -2044,6 +2052,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
 					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
 				}
 
 				if (item_have_list[idTemp].have_kosuu == 0) {
