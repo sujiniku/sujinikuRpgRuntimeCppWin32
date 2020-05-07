@@ -351,6 +351,10 @@ int MapTrans_position_x_map1to_map2 = 7;
 int MapTrans_position_y_map1to_map2 = 6;
 
 
+int guild_X = 3;
+int guild_Y = 5;
+
+
 static int MapTrans_position_x = MapTrans_position_x_map1to_map2;
 static int MapTrans_position_y = MapTrans_position_y_map1to_map2;
 
@@ -453,6 +457,7 @@ static struct chara_chip_def chara_chip_list[8];
 
 
 static HBITMAP hbmp_enemy;
+static HBITMAP hbmp_what;
 static HBITMAP hbmp_MapTrans;
 
 //青ペンと青ブラシ設定
@@ -559,6 +564,16 @@ void Draw_map(HDC hdc) {
 
 
 	// マップ上の他キャラ（主人公以外）のBMP画像をファイルから読み込む
+
+	if (where_map == 1) {
+
+				hbmp = hbmp_what; // ギルドのチップ。
+
+				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
+				BitBlt(hbackDC, 320 + (guild_X - start_x) * 32, 270 + (guild_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+
+	}
+	
 
 	if (where_map == 2) {
 
@@ -1694,6 +1709,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hbmp_enemy = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
 			LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
+
+
+		lstrcpy(chip_temp, TEXT("GameData\\charachip\\"));
+		lstrcpy(chip_name, TEXT("what_dot.bmp"));
+		lstrcat(chip_temp, chip_name); // 合成
+
+		hbmp_what = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
+			LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
 
 
