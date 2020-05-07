@@ -690,6 +690,10 @@ static void OffScreenBefore(HDC hdc) {
 
 }
 
+HDC hbackDC;// = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+
+HDC hbackDCsave;// = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+
 
 static void MainGraMenu(HDC hdc) {
 	/* コマンド用ウィンドウ */
@@ -697,7 +701,7 @@ static void MainGraMenu(HDC hdc) {
 	// 裏画面テンプレ
 		// ハンドルなどの定義。 static にしたら駄目（表示されなくなる）。
 	//HDC hdc;
-	HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+	hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
 
 	// 中間作業用 （完成しても消したら駄目） static にしたら駄目（表示されなくなる）。
 	HDC hMdc = CreateCompatibleDC(hdc); // 中間作業用ハンドル
@@ -707,7 +711,7 @@ static void MainGraMenu(HDC hdc) {
 
 	// OffScreenBefore(hdc);
 
-	// マップサイズの読み込む
+	// マップサイズの読み込む // ここはマップ画面でないので注意!
 	hbmp = CreateCompatibleBitmap(hdc, 640 + 100, 480 + 100);
 	SelectObject(hbackDC, hbmp); // hbackDCにマップサイズを読み込ませている
 
@@ -808,8 +812,27 @@ static void MainGraMenu(HDC hdc) {
 	//BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
 
 
+
+
+	// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+	Graphics graphics(hbackDC);
+
+	// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+	Image image2(L"filter.png");
+
+	// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+	graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+
+
 }
 
+static void MainGraFrontMenu(HDC hdc) {
+
+	// ここまで、背景フィルターで隠される。
+
+	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+}
 
 
 // 戦闘への突入の処理 // のちのマップ判定で呼びだすので、戦闘突入とマップ判定の順序は固定のこと。
@@ -2033,6 +2056,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_ITEM_MENU_FRONT) {
 			
 
+			MainGraFrontMenu(hdc);
+
+
+
+
+
 			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 100,
 				600, 400);
@@ -2217,6 +2246,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT) {
+
+			MainGraFrontMenu(hdc);
+
+
 
 			BrushBlue_set(hdc);
 
