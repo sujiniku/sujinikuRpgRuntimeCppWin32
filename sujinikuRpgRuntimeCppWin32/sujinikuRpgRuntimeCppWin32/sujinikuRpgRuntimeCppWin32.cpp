@@ -777,7 +777,7 @@ static void MainGraMenu(HDC hdc) {
 	int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 	int offsetY = 120;
 
-	for (int j = 0; j <= 1; ++j) {
+	for (int j = 0; j <= partyNinzu - 1; ++j) {
 
 		Rectangle(hbackDC, 10, 100 + offsetY * j,
 			300, 200 + offsetY * j);
@@ -1424,6 +1424,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[0].heros_HP0_flag =0;
 
+
 	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
 	heros_def_list[1].heros_hp = 18;
 	heros_def_list[1].heros_hp_max = 18;
@@ -1431,7 +1432,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[1].heros_exp = 0;
 
-	heros_def_list[0].heros_HP0_flag = 0;
+	heros_def_list[1].heros_HP0_flag = 0;
+
+
+
+
+
+	lstrcpy(heros_def_list[2].heros_name, TEXT("ゴンザレス"));
+	heros_def_list[2].heros_hp = 55;
+	heros_def_list[2].heros_hp_max = 55;
+	heros_def_list[2].heros_agility = 55;
+
+	heros_def_list[2].heros_exp = 0;
+
+	heros_def_list[2].heros_HP0_flag = 0;
+
+
+
 
 
 	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
@@ -2264,7 +2281,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 			int offsetY = 120;
 
-			for (int j = 0; j <= 1; ++j) {
+			for (int j = 0; j <= partyNinzu - 1; ++j) {
 
 				// 背景の青
 				SelectObject(hdc, blue_thin_1);
