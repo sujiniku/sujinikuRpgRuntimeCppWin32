@@ -898,6 +898,22 @@ void check_encount_enemy(HWND hWnd) {
 }
 
 
+int gonzFlag = 0;
+
+void check_encount_guild(HWND hWnd) {
+
+	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y && gonzFlag == 0) {
+
+		MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+
+		gonzFlag = 1;
+		partyNinzu = partyNinzu + 1;
+	}
+
+
+}
+
+
 void check_MapTransition(HWND hWnd) {
 	//MessageBox(NULL, TEXT("マップ遷移の判定にいる。"), TEXT("キーテスト"), MB_OK);
 
@@ -1096,7 +1112,7 @@ void draw_battle_common_after(HDC hdc) {
 
 	int offsetBattleX = 170;
 
-	for (int iTemp = 0; iTemp <= 1; iTemp++)
+	for (int iTemp = 0; iTemp <= partyNinzu - 1; iTemp++)
 	{
 		Rectangle(hdc, 10 + iTemp * offsetBattleX, windowTempA - chara_window_size_x,
 			10 + chara_window_size_x + iTemp * offsetBattleX, 410);
@@ -2750,6 +2766,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
+				check_encount_guild(hWnd);
+
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
 
@@ -2764,6 +2782,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
+
+				check_encount_guild(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -2780,6 +2800,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
+				check_encount_guild(hWnd);
+
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
 
@@ -2794,6 +2816,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
+
+				check_encount_guild(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -3165,8 +3189,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > 2) {
-					whomCHARA = 2;
+				if (whomCHARA > partyNinzu) {
+					whomCHARA = partyNinzu;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -3184,8 +3208,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= 2) {
-					whomCHARA = 2;
+				if (whomCHARA >= partyNinzu) {
+					whomCHARA = partyNinzu;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
