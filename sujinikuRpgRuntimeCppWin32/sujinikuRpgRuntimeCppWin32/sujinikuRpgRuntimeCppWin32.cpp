@@ -54,6 +54,13 @@ using namespace Gdiplus;
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 
+int event_tekiFast = 0 ;
+
+int event_tekiSoutou = 0;
+
+
+
+
 int goukeiItem = 0;
 
 int whomCHARA = 1;
@@ -405,6 +412,9 @@ static int mapTrans_flag_is = 1;
 // モンスターの位置。とりあえず2匹ぶん // なおフィールドマップにいる
 static int positionX_enemy[5];
 static int positionY_enemy[5];
+
+int tekiSuu = 2; // イベント処理用に、このエリアの敵パーティ数を算出。
+int gekiha_tekiSuu = 0;
 
 
 static int TimeCount = 0; // 主に自動進行（敵の行動など）に使用
@@ -1373,12 +1383,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	monster_def_list[0].mon_attackPower = 0;
 
 	lstrcpy(monster_def_list[1].monster_name, TEXT("コボルト"));
-	monster_def_list[1].mon_hp_max = 15;
+	monster_def_list[1].mon_hp_max = 5;
 	monster_def_list[1].mon_agility = 76;
 	monster_def_list[1].monster_id = 2;
 	monster_def_list[1].mon_gold = 10;
 	monster_def_list[1].mon_exp = 5;
-	monster_def_list[1].mon_attackPower = 8;
+	monster_def_list[1].mon_attackPower = 1;
 
 
 	// キャラクターの定義
@@ -1798,6 +1808,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 					heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 
+
+					gekiha_tekiSuu = gekiha_tekiSuu + 1; // クエスト系イベント処理のテスト
 
 					// モード遷移
 					mode_scene = MODE_BATTLE_WIN; key_remain = 1;
@@ -2318,11 +2330,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
+		int battleMassBaseX = 50; int battleMassBaseY = 410 - 230; // 410 は「windowTempA」
 
 		if (mode_scene == MODE_BATTLE_NOW) {
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
-			int battleMassBaseX = 50; int battleMassBaseY = 410 - 230; // 410 は「windowTempA」
+			
 
 			// 「○○の攻撃！」を表示
 			// actionOrder[globalTempA]
@@ -2424,6 +2437,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d  G"), monster_def_list[encount_monters_id - 1].mon_gold);
 			TextOut(hdc, BattleWinTextBaseX + 90, BattleWinTextBaseY + WinTextOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
+		
+		
+		
+		
+			if (gekiha_tekiSuu >= tekiSuu) {
+				lstrcpy(mojibuf, TEXT("このエリアの敵をすべて倒した。"));
+				TextOut(hdc, battleMassBaseX, battleMassBaseY + 50, mojibuf, lstrlen(mojibuf));
+
+			}
+		
+		
 		}
 
 
