@@ -2035,8 +2035,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (item_have_list[idTemp].have_kosuu != 0) {
 
-					int xcommon = 30 + 300 * floor(idTemp % 2);
-					int ycommon = 130 + 30 * floor(idTemp / 2);
+					int xcommon = 30 + 300 * floor((idTemp - itemskip) % 2);
+					int ycommon = 130 + 30 * floor((idTemp - itemskip ) / 2);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, item_def_list[idTemp].item_name);
@@ -2048,7 +2048,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (item_have_list[idTemp].have_kosuu == 0) {
 
-					itemskip = 1;
+					itemskip = itemskip + 1;
 
 				}
 
