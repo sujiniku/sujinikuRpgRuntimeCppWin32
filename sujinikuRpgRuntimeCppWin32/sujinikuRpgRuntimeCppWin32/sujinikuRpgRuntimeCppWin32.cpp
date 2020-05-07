@@ -2029,16 +2029,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
 			//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
+			int itemskip = 0;
 			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
+				if (item_have_list[idTemp].have_kosuu != 0) {
+
+					int xcommon = 30 + 300 * floor(idTemp % 2);
+					int ycommon = 130 + 30 * floor(idTemp / 2);
+
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, item_def_list[idTemp].item_name);
-					TextOut(hdc, 30 + 300 * floor(idTemp % 2), 130 + 30 * floor(idTemp/2), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
-					TextOut(hdc, 160 + 300 * floor(idTemp % 2), 130 + 30 * floor(idTemp/2), mojibuf, lstrlen(mojibuf));
-						
+					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+				}
+
+				if (item_have_list[idTemp].have_kosuu == 0) {
+
+					itemskip = 1;
+
+				}
+
 			}
 
 			//	_stprintf_s(pmojibuf, 200, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
@@ -2233,7 +2246,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
 				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
-
+				
 			}
 
 		}
