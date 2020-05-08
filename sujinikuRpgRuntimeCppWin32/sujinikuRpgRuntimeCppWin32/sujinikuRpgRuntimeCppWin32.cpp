@@ -997,8 +997,9 @@ static int damage_HeroAttack = 1;
 static int damage_EnemyAttack = 0;
 
 void heroside_attack(HWND hWnd) {
+	int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
 
-	if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 0) {
+	if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
 		// 主人公たちの攻撃
 
 
@@ -2203,17 +2204,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 				if (item_have_list[idTemp].have_kosuu == 0) {
-
 					itemskip = itemskip + 1;
-
 				}
-
 			}
-
-			//	_stprintf_s(pmojibuf, 200, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
-				//TextOut(hdc, 190, 130, mojibuf, lstrlen(pmojibuf));
-
-
 
 				// デバッグ用
 			lstrcpy(mojibuf, TEXT("sele_item :"));
@@ -2259,9 +2252,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
 		}
-
-
-
 
 
 
@@ -2354,16 +2344,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			MainGraFrontMenu(hdc);
 
-
-
 			BrushBlue_set(hdc);
-
 
 			BrushPink_set(hdc);
 
 			// Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
 			//	100 + (selecting_mainmenu - 1) * 100, 70);
-
 
 
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
@@ -2405,16 +2391,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
 				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-
 				
 			}
-
 		}
-
-
-
-
-
 
 
 		////
@@ -2431,21 +2410,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 500, 110, strCount, lstrlen(strCount));			
 		}
 
-
-
 		
 		if (mode_scene == MODE_Guild) {
 
-		// MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
-
-
-		//	Rectangle(hdc, 10, 100,	300, 200);
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
 			BrushBlue_set(hdc);
 			// Rectangle(hdc, 10, 10, 610, 80);
 
-
 			BrushPink_set(hdc);
+			//	Rectangle(hdc, 10, 100,	300, 200);
 
 			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
@@ -2459,7 +2433,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			BrushPink_set(hdc);
 
-			// whomTargetID = 0;
+			
 			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
 				150, 160 + 60 * (whomTargetID));
 
@@ -2471,17 +2445,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 				if (heros_def_list[temp].PartyIn == 1) {
-					// skipF = skipF + 1;
-				
+									
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
 					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
 				
 				}
 			}
 
-			lstrcpy(mojibuf, TEXT("Xボタンで退出。決定(Z)は未実装。"));
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
-
 
 		}
 
@@ -2489,7 +2461,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_Guild_Responce) {
 
-			// MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
 
 			//	Rectangle(hdc, 10, 100,	300, 200);
@@ -2502,7 +2474,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
-
 
 
 			SelectObject(hdc, blue_thin_1);
@@ -2538,13 +2509,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 
-
-
-
 			mode_scene = MODE_Guild;
 		}
-
-
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND) {
@@ -2591,9 +2557,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// 「○○の攻撃！」を表示
 			// actionOrder[globalTempA]
-			if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 0) {
-				if (actionOrder[globalTempA] <= partyNinzu - 1) {
-					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("の攻撃！"));
+			// int ActVal = partyNarabijyun[globalTempA];
+
+			
+			int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]] ;
+
+			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
+				if (ActNaraGrob <= partyNinzu - 1) {
+					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[ActNaraGrob].heros_name, TEXT("の攻撃！"));
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -2607,9 +2578,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			if (heros_def_list[actionOrder[globalTempA]].heros_HP0_flag == 1) {
-				if (actionOrder[globalTempA] <= partyNinzu - 1) {
-					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[actionOrder[globalTempA]].heros_name, TEXT("は戦闘不能で動けない"));
+			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 1) {
+				if (ActNaraGrob <= partyNinzu - 1) {
+					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[ActNaraGrob].heros_name, TEXT("は戦闘不能で動けない"));
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -2624,7 +2595,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			if (actionOrder[globalTempA] >= partyNinzu) {
+			if (ActNaraGrob >= partyNinzu) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
 				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
@@ -2641,7 +2612,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			for (int j = 0; j <= 2; ++j) {
 
 				
-				if (j == 0) { _stprintf_s(mojibuf, TEXT("%d %s"), actionOrder[globalTempA], TEXT("actionOrder[globalTempA]")); }
+				if (j == 0) { _stprintf_s(mojibuf, TEXT("%d %s"), ActNaraGrob, TEXT("ActNaraGrob")); }
 				if (j == 1) { _stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA")); }
 				if (j == 2) { _stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag")); }
 				
