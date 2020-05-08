@@ -143,7 +143,7 @@ int sankaNinzu = partyNinzu + enemyNinzu;
 
 int hikaeNinzu = 2;
 
-int partyNarabijyun[5] = { 0,1,2,3,4 }; // パーティ隊列の並び替えの処理に使う予定
+int partyNarabijyun[5] = { 1,2,3,4,0 }; // パーティ隊列の並び替えの処理に使う予定
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
 
@@ -802,22 +802,24 @@ static void MainGraMenu(HDC hdc) {
 	int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 	int offsetY = 120;
 
+	// partyNarabijyun[3] = 3; partyNarabijyun[j]
+
 	for (int j = 0; j <= partyNinzu - 1; ++j) {
 
 		Rectangle(hbackDC, 10, 100 + offsetY * j,
 			300, 200 + offsetY * j);
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[j]].heros_name);
 		TextOut(hbackDC, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
 		lstrcpy(mojibuf, TEXT("HP"));
 		TextOut(hbackDC, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[j]].heros_hp);
 		TextOut(hbackDC, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[partyNarabijyun[j]].heros_hp_max);
 		TextOut(hbackDC, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 	}
@@ -1129,7 +1131,7 @@ void draw_battle_common_after(HDC hdc) {
 	// _itot_s(your_money , p,200, 10);
 
 	int offsetBattleX = 170;
-
+	// partyNarabijyun[2] = 3;
 	for (int iTemp = 0; iTemp <= partyNinzu - 1; iTemp++)
 	{
 		Rectangle(hdc, 10 + iTemp * offsetBattleX, windowTempA - chara_window_size_x,
@@ -1513,6 +1515,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	heros_def_list[3].heros_HP0_flag = 0;
 
 	heros_def_list[3].PartyIn = 0;
+
+
+	partyNarabijyun[0] = 0; // 
+	partyNarabijyun[1] = 1;
+	partyNarabijyun[2] = -1; // マイナス番なら、そこで終了
+ 
 
 
 
@@ -2372,18 +2380,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				SetBkMode(hdc, TRANSPARENT);
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+				
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[j]].heros_name);
 				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
 				lstrcpy(mojibuf, TEXT("HP"));
 				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[j].heros_hp);
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[j]].heros_hp);
 				TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[j].heros_hp_max);
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[partyNarabijyun[j]].heros_hp_max);
 				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
@@ -2515,13 +2523,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
 					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
 
+
+					// ここが上書きされている。
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[temp].heros_name);
+					TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
 				}
 			}
 
 
-			// ここが上書きされている。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[2].heros_name);
-			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
 
 			mode_scene = MODE_Guild;
 		}
@@ -3228,6 +3239,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT && key_remain > 0) {
 
+			int tempVal ;
+
 			switch (wParam)
 			{
 
@@ -3239,14 +3252,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_item == 1) {
 
 
+					tempVal = partyNarabijyun[whomTargetID] ;
 					
-
-					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
+					if (heros_def_list[tempVal].heros_hp < heros_def_list[tempVal].heros_hp_max) {
 						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
-							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 5;
-							// MessageBox(NULL, TEXT("いまココ2"), TEXT("メッセージ"), MB_OK);
-							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
-								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
+							heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp + 5;
+							
+							if (heros_def_list[tempVal].heros_hp > heros_def_list[tempVal].heros_hp_max) {
+								heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp_max;
 							}
 
 							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
@@ -3376,7 +3389,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-
+		
 		if (mode_scene == MODE_Guild && key_remain > 0) {
 			switch (wParam)
 			{
@@ -3391,6 +3404,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					
 					heros_def_list[2].PartyIn = 1;
+					partyNarabijyun[2]=2;
+
+
+					uwagaki = 1;
+
+					mode_scene = MODE_Guild_Responce;
+				}
+
+				if (whomTargetID == 1) {
+					partyNinzu = partyNinzu + 1;
+
+
+					heros_def_list[3].PartyIn = 1;
+					partyNarabijyun[2] = 3;
 
 					uwagaki = 1;
 
@@ -3464,7 +3491,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			switch (wParam)
 			{
-				MessageBox(NULL, TEXT("battle_enemy_startにいる。"), TEXT("キーテスト"), MB_OK);
+				//MessageBox(NULL, TEXT("battle_enemy_startにいる。"), TEXT("キーテスト"), MB_OK);
 
 
 
