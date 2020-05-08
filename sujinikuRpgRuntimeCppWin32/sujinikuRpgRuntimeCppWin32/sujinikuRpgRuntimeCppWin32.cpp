@@ -217,6 +217,8 @@ struct heros_def
 
 	int heros_HP0_flag;
 
+	int PartyIn;
+
 };
 
 
@@ -904,12 +906,12 @@ void check_encount_enemy(HWND hWnd) {
 }
 
 
-int gonzFlag = 0;
+
 
 void check_encount_guild(HWND hWnd) {
 
-	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y && gonzFlag == 0) {
-
+	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y && heros_def_list[2].PartyIn == 0) {
+		
 		//MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
 
 		key_remain = 0;
@@ -917,8 +919,7 @@ void check_encount_guild(HWND hWnd) {
 		whomTargetID = 0; whomCHARA = 1;
 		mode_scene = MODE_Guild;
 
-		// gonzFlag = 1;
-		// partyNinzu = partyNinzu + 1;
+
 
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
@@ -1470,6 +1471,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[0].heros_HP0_flag =0;
 
+	heros_def_list[0].PartyIn = 1;
+	
+
 
 	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
 	heros_def_list[1].heros_hp = 18;
@@ -1480,7 +1484,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[1].heros_HP0_flag = 0;
 
-
+	heros_def_list[1].PartyIn = 1;
 
 
 
@@ -1493,7 +1497,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[2].heros_HP0_flag = 0;
 
-
+	heros_def_list[2].PartyIn = 0;
 
 
 
@@ -1506,7 +1510,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	heros_def_list[3].heros_HP0_flag = 0;
 
-
+	heros_def_list[3].PartyIn = 0;
 
 
 
@@ -2442,14 +2446,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
 				150, 160 + 60 * (whomTargetID));
 
+			if (heros_def_list[2].PartyIn == 0) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
+				TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
+			}
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
-			TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
-			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
-
+			if (heros_def_list[3].PartyIn == 0) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
+				TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+			}
 
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。決定(Z)は未実装。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
@@ -2489,14 +2494,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				150, 160 + 60 * (whomTargetID));
 
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
-			TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
+			if (heros_def_list[2].PartyIn == 0) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
+				TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
+			}
 
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
-			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
-
-
+			if (heros_def_list[3].PartyIn == 0) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
+				TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+			}
 
 
 			// ここが上書きされている。
@@ -3369,7 +3375,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 0) {
 					partyNinzu = partyNinzu + 1;
 
-					gonzFlag = 1;
+					
+					heros_def_list[2].PartyIn = 1;
 
 					uwagaki = 1;
 
