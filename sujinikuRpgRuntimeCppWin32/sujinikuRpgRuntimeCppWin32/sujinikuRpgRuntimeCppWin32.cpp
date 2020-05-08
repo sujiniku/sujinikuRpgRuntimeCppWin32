@@ -1495,6 +1495,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 
+	lstrcpy(heros_def_list[3].heros_name, TEXT("ペドロ"));
+	heros_def_list[3].heros_hp = 12;
+	heros_def_list[3].heros_hp_max = 34;
+	heros_def_list[3].heros_agility = 23;
+
+	heros_def_list[3].heros_exp = 0;
+
+	heros_def_list[3].heros_HP0_flag = 0;
+
+
+
+
+
 	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
 
 	tempHairetu[0] = 0;
@@ -2430,12 +2443,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				150, 160 + 60 * (whomTargetID));
 
 
-
-			lstrcpy(mojibuf, TEXT("ゴンザレス"));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
 			TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, TEXT("ペドロ"));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
 			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
 
 
