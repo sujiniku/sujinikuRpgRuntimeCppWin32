@@ -135,6 +135,8 @@ enum resource_embedded_flag { on, off };
 enum resource_embedded_flag resource_embedded_var = off;
 
 
+int tourokuNakama = 3;
+
 int partyNinzu = 2, enemyNinzu = 1;
 int sankaNinzu = partyNinzu + enemyNinzu;
 
@@ -2446,14 +2448,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
 				150, 160 + 60 * (whomTargetID));
 
-			if (heros_def_list[2].PartyIn == 0) {
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
-				TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
-			}
+			int skipF = 2;
+			for (int temp = 2; temp <= tourokuNakama; temp=temp+1) {
+				if (heros_def_list[temp].PartyIn == 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+				}
 
-			if (heros_def_list[3].PartyIn == 0) {
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
-				TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+				if (heros_def_list[temp].PartyIn == 1) {
+					// skipF = skipF + 1;
+				
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
+					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+				
+				}
 			}
 
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。決定(Z)は未実装。"));
@@ -2494,14 +2502,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				150, 160 + 60 * (whomTargetID));
 
 
-			if (heros_def_list[2].PartyIn == 0) {
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
-				TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
-			}
+			int skipF = 2;
+			for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
+				if (heros_def_list[temp].PartyIn == 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+				}
 
-			if (heros_def_list[3].PartyIn == 0) {
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
-				TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+				if (heros_def_list[temp].PartyIn == 1) {
+					// skipF = skipF + 1;
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
+					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+
+				}
 			}
 
 
