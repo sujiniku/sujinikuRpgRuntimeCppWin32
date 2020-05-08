@@ -54,13 +54,15 @@ using namespace Gdiplus;
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 #define MODE_Guild 10000 // ギルド処理
+#define MODE_Guild_Responce 20100
+
 
 
 int event_tekiFast = 0 ;
 
 int event_tekiSoutou = 0;
 
-
+int uwagaki = 0;
 
 
 int goukeiItem = 0;
@@ -2425,8 +2427,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BrushPink_set(hdc);
 
 			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
-
-			// lstrcpy(mojibuf, TEXT("ゴンザレスが仲間になった。"));
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
@@ -2451,23 +2451,60 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
 
 
-
-
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。決定(Z)は未実装。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
 
-
-			// 表示位置テスト
-			// _stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
-			// TextOut(hdc, 500, 110, strCount, lstrlen(strCount));
-
-
-			//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
-			//TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
-
 		}
 
+
+
+		if (mode_scene == MODE_Guild_Responce) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+
+
+			//	Rectangle(hdc, 10, 100,	300, 200);
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 100,
+				200, 400);
+
+
+			BrushPink_set(hdc);
+
+			// whomTargetID = 0;
+			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
+				150, 160 + 60 * (whomTargetID));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[2].heros_name);
+			TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[3].heros_name);
+			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			// ここが上書きされている。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[2].heros_name);
+			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+			mode_scene = MODE_Guild;
+		}
 
 
 
@@ -3327,7 +3364,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				mode_scene = MODE_MAP;
+				// 
+
+				if (whomTargetID == 0) {
+					partyNinzu = partyNinzu + 1;
+
+					gonzFlag = 1;
+
+					uwagaki = 1;
+
+					mode_scene = MODE_Guild_Responce;
+				}
+
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3385,23 +3434,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			} // switch (wParam) の終わり
 		} // ギルドの終わり
 
+
+
+		if (mode_scene == MODE_Guild_Responce && key_remain > 0)  {
+
+			switch (wParam)
+			{
+				MessageBox(NULL, TEXT("battle_enemy_startにいる。"), TEXT("キーテスト"), MB_OK);
+
+
+
+			case 'Z':
+			{
+				key_remain = 0;
+				mode_scene = MODE_Guild;
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+			}
+		}
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND && key_remain > 0) {
