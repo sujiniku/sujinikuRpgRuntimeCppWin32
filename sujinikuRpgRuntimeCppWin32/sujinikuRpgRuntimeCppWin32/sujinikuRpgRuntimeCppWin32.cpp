@@ -53,6 +53,8 @@ using namespace Gdiplus;
 
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
+#define MODE_Guild 10000 // ギルド処理
+
 
 int event_tekiFast = 0 ;
 
@@ -904,10 +906,16 @@ void check_encount_guild(HWND hWnd) {
 
 	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y && gonzFlag == 0) {
 
-		MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+		//MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+
+		mode_scene = MODE_Guild;
 
 		gonzFlag = 1;
 		partyNinzu = partyNinzu + 1;
+
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
+
 	}
 
 
@@ -2384,6 +2392,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+		
+		if (mode_scene == MODE_Guild) {
+
+		// MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+
+
+		//	Rectangle(hdc, 10, 100,				300, 200);
+
+			BrushBlue_set(hdc);
+			//Rectangle(hdc, 10, 10, 610, 80);
+
+
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("ゴンザレスが仲間になった。"));
+			TextOut(hdc, 130, 200, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("ZまたはXボタンで退出。"));
+			TextOut(hdc, 280, 250, mojibuf, lstrlen(mojibuf));
+
+
+
+			// 表示位置テスト
+			// _stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
+			// TextOut(hdc, 500, 110, strCount, lstrlen(strCount));
+
+
+			//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[j].heros_name);
+			//TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+		}
+
+
+
+
+
 		if (mode_scene == MODE_BATTLE_COMMAND) {
 			draw_battle_common_before(hdc);
 
@@ -2675,7 +2720,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
-		}
+		} // OPモードの終わり
 
 		if (mode_scene == MODE_INITIAL) {
 			switch (wParam)
@@ -2739,7 +2784,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
-		}
+		} // イニシャルの終わり
 
 
 
@@ -2827,7 +2872,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			break;
 			}
-		}
+		} // マップ モードの終わり
 
 
 		if (mode_scene == MODE_MENU && key_remain > 0) {
@@ -2981,7 +3026,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 			}
 
-		}
+		} // メニューの終わり
 
 
 		if (mode_scene == MODE_ITEM_MENU_FRONT && key_remain > 0) {
@@ -3078,7 +3123,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 			}
-		}
+		} // アイテム メニューフロントの終わり
 
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT && key_remain > 0) {
@@ -3227,11 +3272,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		}
+		} // アイテム対象者フロントの終わり
 
 
 
 
+		if (mode_scene == MODE_Guild && key_remain > 0) {
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_MAP;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+			case 'B':
+			{
+				key_remain = 0;
+				// MessageBox(NULL, TEXT("ボタン反応テスト。"), TEXT("キーテスト"), MB_OK);
+
+				mode_scene = MODE_MAP;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+			case 'X':
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_MAP;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+			
+			} // switch (wParam) の終わり
+		} // ギルドの終わり
 
 
 
