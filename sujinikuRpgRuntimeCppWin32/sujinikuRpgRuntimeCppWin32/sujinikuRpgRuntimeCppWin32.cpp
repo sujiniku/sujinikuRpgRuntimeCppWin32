@@ -66,7 +66,7 @@ int event_tekiSoutou = 0;
 int goukeiItem = 0;
 
 int whomCHARA = 1;
-int whomTemp = 0;
+int whomTargetID = 0;
 
 int filterFlag = 0;
 
@@ -136,6 +136,8 @@ enum resource_embedded_flag resource_embedded_var = off;
 int partyNinzu = 2, enemyNinzu = 1;
 int sankaNinzu = partyNinzu + enemyNinzu;
 
+
+int hikaeNinzu = 2;
 
 int partyNarabijyun[5] = { 0,1,2,3,4 }; // パーティ隊列の並び替えの処理に使う予定
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
@@ -908,10 +910,13 @@ void check_encount_guild(HWND hWnd) {
 
 		//MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
 
+		key_remain = 0;
+
+		whomTargetID = 0; whomCHARA = 1;
 		mode_scene = MODE_Guild;
 
-		gonzFlag = 1;
-		partyNinzu = partyNinzu + 1;
+		// gonzFlag = 1;
+		// partyNinzu = partyNinzu + 1;
 
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
@@ -2328,19 +2333,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 			int offsetY = 120;
 
+			
 			for (int j = 0; j <= partyNinzu - 1; ++j) {
-
 				// 背景の青
 				SelectObject(hdc, blue_thin_1);
 				Rectangle(hdc, 10, 100 + offsetY * j,
 					300, 200 + offsetY * j);
 
 				// カーソル
-				if (whomTemp == j) {
+				if (whomTargetID == j) {
 					BrushPink_set(hdc);
 
-					Rectangle(hdc, 10 + 10, 100 + 10 + 120 * (whomTemp),
-						300 - 10, 100 + 70 + 120 * (whomTemp));
+					Rectangle(hdc, 10 + 10, 100 + 10 + 120 * (whomTargetID),
+						300 - 10, 100 + 70 + 120 * (whomTargetID));
 
 				}
 
@@ -2398,20 +2403,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
 
 
-		//	Rectangle(hdc, 10, 100,				300, 200);
+		//	Rectangle(hdc, 10, 100,	300, 200);
 
 			BrushBlue_set(hdc);
-			//Rectangle(hdc, 10, 10, 610, 80);
+			// Rectangle(hdc, 10, 10, 610, 80);
 
 
 			BrushPink_set(hdc);
 
-			lstrcpy(mojibuf, TEXT("ゴンザレスが仲間になった。"));
-			TextOut(hdc, 130, 200, mojibuf, lstrlen(mojibuf));
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+
+			// lstrcpy(mojibuf, TEXT("ゴンザレスが仲間になった。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, TEXT("ZまたはXボタンで退出。"));
-			TextOut(hdc, 280, 250, mojibuf, lstrlen(mojibuf));
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 100 ,
+				200, 400 );
+
+
+			BrushPink_set(hdc);
+
+			// whomTargetID = 0;
+			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
+				150, 160 + 60 * (whomTargetID));
+
+
+
+			lstrcpy(mojibuf, TEXT("ゴンザレス"));
+			TextOut(hdc, 50, 130, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("ペドロ"));
+			TextOut(hdc, 50, 130 + 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。決定(Z)は未実装。"));
+			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
 
 
@@ -3134,19 +3165,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			{
 				key_remain = 0;
-				whomTemp = whomCHARA - 1;
+				whomTargetID = whomCHARA - 1;
 
 				if (selecting_item == 1) {
 
 
 					
 
-					if (heros_def_list[whomTemp].heros_hp < heros_def_list[whomTemp].heros_hp_max) {
+					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
 						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
-							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 5;
+							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 5;
 							// MessageBox(NULL, TEXT("いまココ2"), TEXT("メッセージ"), MB_OK);
-							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
-								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
+							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
+								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
 							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
@@ -3163,13 +3194,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_item == 2) {
 					
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
-					if (heros_def_list[whomTemp].heros_hp < heros_def_list[whomTemp].heros_hp_max) {
+					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
 
 						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
-							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 1;
+							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
 
-							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
-								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
+							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
+								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
 							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
@@ -3187,12 +3218,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 				if (selecting_item == 3) {
 				
-					if (heros_def_list[whomTemp].heros_hp <= 0) {
+					if (heros_def_list[whomTargetID].heros_hp <= 0) {
 						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
-							heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp + 1;
+							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
 
-							if (heros_def_list[whomTemp].heros_hp > heros_def_list[whomTemp].heros_hp_max) {
-								heros_def_list[whomTemp].heros_hp = heros_def_list[whomTemp].heros_hp_max;
+							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
+								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
 							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
@@ -3240,7 +3271,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTemp = whomCHARA - 1;
+				whomTargetID = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3259,7 +3290,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTemp = whomCHARA - 1;
+				whomTargetID = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3292,20 +3323,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-
-			case 'B':
-			{
-				key_remain = 0;
-				// MessageBox(NULL, TEXT("ボタン反応テスト。"), TEXT("キーテスト"), MB_OK);
-
-				mode_scene = MODE_MAP;
-
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
-
-			}
-			break;
-
 			case 'X':
 			{
 				key_remain = 0;
@@ -3318,6 +3335,58 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 			
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
+
+				if (whomCHARA > hikaeNinzu) {
+					whomCHARA = hikaeNinzu;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
+
+				if (whomCHARA >= hikaeNinzu) {
+					whomCHARA = hikaeNinzu;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			} // switch (wParam) の終わり
 		} // ギルドの終わり
 
