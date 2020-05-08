@@ -1050,30 +1050,27 @@ void enemy_attack(HWND hWnd) {
 		}
 
 		if (heros_def_list[0].heros_HP0_flag == 1) {
-			heros_def_list[1].heros_hp = heros_def_list[0].heros_hp - damage_EnemyAttack;
+			heros_def_list[1].heros_hp = heros_def_list[1].heros_hp - damage_EnemyAttack;
 		}
 
-
-		// 主人公の戦闘不能 判定
-		if (heros_def_list[0].heros_hp < 1) {
-			heros_def_list[0].heros_hp = 0;
-
-			// ここにゲームオーバーへのモード遷移
-			heros_def_list[0].heros_HP0_flag = 1;
-
-		}
-
-
-		if (heros_def_list[1].heros_hp < 1) {
-			heros_def_list[1].heros_hp = 0;
-
-			// ここにゲームオーバーへのモード遷移
-			heros_def_list[1].heros_HP0_flag = 1;
-
+		if (heros_def_list[0].heros_HP0_flag == 1 && heros_def_list[1].heros_HP0_flag == 1) {
+			heros_def_list[partyNarabijyun[2]].heros_hp = heros_def_list[partyNarabijyun[2]].heros_hp - damage_EnemyAttack;
 		}
 
 
 
+		int tempVal;
+		for (int temp = 0; temp < partyNinzu - 1; ++temp) {
+
+			tempVal = partyNarabijyun[temp];
+
+			if (heros_def_list[tempVal].heros_hp < 1) {
+				heros_def_list[tempVal].heros_hp = 0;
+
+				// 戦闘不能フラグがオン
+				heros_def_list[tempVal].heros_HP0_flag = 1;
+			}
+		}
 	}
 
 	InvalidateRect(hWnd, NULL, TRUE);
@@ -1131,29 +1128,33 @@ void draw_battle_common_after(HDC hdc) {
 	// _itot_s(your_money , p,200, 10);
 
 	int offsetBattleX = 170;
-	// partyNarabijyun[2] = 3;
+	int tempVAl;
+
+	// partyNarabijyun[iTemp] ;
 	for (int iTemp = 0; iTemp <= partyNinzu - 1; iTemp++)
 	{
+
+		tempVAl = partyNarabijyun[iTemp] ;
 		Rectangle(hdc, 10 + iTemp * offsetBattleX, windowTempA - chara_window_size_x,
 			10 + chara_window_size_x + iTemp * offsetBattleX, 410);
 
 		/* キャラのステータス */
-		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 10, heros_def_list[iTemp].heros_name, lstrlen(heros_def_list[iTemp].heros_name));
+		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 10, heros_def_list[tempVAl].heros_name, lstrlen(heros_def_list[tempVAl].heros_name));
 
 		lstrcpy(mojibuf, TEXT("HP"));
 		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[iTemp].heros_hp);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[tempVAl].heros_hp);
 		TextOut(hdc, 50 + iTemp * offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[iTemp].heros_hp_max);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[tempVAl].heros_hp_max);
 		TextOut(hdc, 50 + 30 + iTemp * offsetBattleX, 410 - chara_window_size_x + 40, mojibuf, lstrlen(mojibuf));
 
 
 		lstrcpy(mojibuf, TEXT("素早さ"));
 		TextOut(hdc, 20 + iTemp * offsetBattleX, windowTempA - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
 
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[iTemp]);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), sankaAgility[tempVAl]);
 		TextOut(hdc, 50 + iTemp * offsetBattleX + 30, windowTempA - chara_window_size_x + 40 + 30, mojibuf, lstrlen(mojibuf));
 	}
 
@@ -1515,6 +1516,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	heros_def_list[3].heros_HP0_flag = 0;
 
 	heros_def_list[3].PartyIn = 0;
+
+
 
 
 	partyNarabijyun[0] = 0; // 
@@ -1928,7 +1931,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 					heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+					
+					heros_def_list[partyNarabijyun[2]].heros_exp = heros_def_list[partyNarabijyun[2]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 
+
+					// partyNarabijyun[2]
 
 					gekiha_tekiSuu = gekiha_tekiSuu + 1; // クエスト系イベント処理のテスト
 
