@@ -135,7 +135,7 @@ enum resource_embedded_flag { on, off };
 enum resource_embedded_flag resource_embedded_var = off;
 
 
-int tourokuNakama = 3;
+int tourokuNakama = 3; // 実際の人数より1少ない
 
 int partyNinzu = 2, enemyNinzu = 1;
 int sankaNinzu = partyNinzu + enemyNinzu;
@@ -822,6 +822,21 @@ static void MainGraMenu(HDC hdc) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[partyNarabijyun[j]].heros_hp_max);
 		TextOut(hbackDC, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
+		
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("PN: %d"), partyNarabijyun[j] );
+		TextOut(hbackDC, StatsHPbaseX - 50 , StatsHPbaseY + 40  + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+		if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag != 1) {
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("DeFla: %d"), heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
+			TextOut(hbackDC, StatsHPbaseX + 0, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
+		}
+		if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1) {
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
+			TextOut(hbackDC, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
+		}
+
+
 	}
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
@@ -1072,6 +1087,8 @@ void enemy_attack(HWND hWnd) {
 				heros_def_list[tempVal].heros_HP0_flag = 1;
 			}
 		}
+
+
 	}
 
 	InvalidateRect(hWnd, NULL, TRUE);
@@ -1469,7 +1486,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// キャラクターの定義
 	lstrcpy(heros_def_list[0].heros_name, TEXT("エロス"));
-	heros_def_list[0].heros_hp = 20;
+	heros_def_list[0].heros_hp = -2; // 20;
 	heros_def_list[0].heros_hp_max = 25;
 	heros_def_list[0].heros_agility = 56;
 
@@ -1482,7 +1499,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
-	heros_def_list[1].heros_hp = 18;
+	heros_def_list[1].heros_hp = -8; //  18;
 	heros_def_list[1].heros_hp_max = 18;
 	heros_def_list[1].heros_agility = 100;
 
@@ -1495,7 +1512,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	lstrcpy(heros_def_list[2].heros_name, TEXT("ゴンザレス"));
-	heros_def_list[2].heros_hp = 55;
+	heros_def_list[2].heros_hp = -5; // 55;
 	heros_def_list[2].heros_hp_max = 55;
 	heros_def_list[2].heros_agility = 55;
 
@@ -1508,7 +1525,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	lstrcpy(heros_def_list[3].heros_name, TEXT("ペドロ"));
-	heros_def_list[3].heros_hp = 12;
+	heros_def_list[3].heros_hp = -3;// 12;
 	heros_def_list[3].heros_hp_max = 34;
 	heros_def_list[3].heros_agility = 23;
 
@@ -1526,7 +1543,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	partyNarabijyun[2] = -1; // マイナス番なら、そこで終了
  
 
+	// ニューゲームの時点で、戦闘不能フラグを更新
+	for (int temp = 0; temp < tourokuNakama ; ++temp) {
 
+		if (heros_def_list[temp].heros_hp < 1) {
+			heros_def_list[temp].heros_hp = 0;
+
+			// 戦闘不能フラグをオン
+			heros_def_list[temp].heros_HP0_flag = 1;
+		}
+
+		if (heros_def_list[temp].heros_hp >= 1) {
+			// 戦闘不能フラグをOFF
+			heros_def_list[temp].heros_HP0_flag = 0;
+		}
+
+
+	}
+	
 
 	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
 
@@ -1902,8 +1936,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int timerCheckCount = 0;
 
 
-
-					// モンスターの死亡判定
+			
+			// モンスターの死亡判定
 				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
 						TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
 						enemyAlldeadFlag = 1;
@@ -2373,7 +2407,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				SetBkMode(hdc, TRANSPARENT);
-				
+
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[j]].heros_name);
 				TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
@@ -2386,6 +2420,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[partyNarabijyun[j]].heros_hp_max);
 				TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
+				
+				if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1 ) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));				
+					TextOut(hdc, StatsHPbaseX , StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));	
+				}
 
 
 
@@ -2564,7 +2607,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
 				if (ActNaraGrob <= partyNinzu - 1) {
-					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[ActNaraGrob].heros_name, TEXT("の攻撃！"));
+					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[ActNaraGrob].heros_name );
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -2580,7 +2623,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 1) {
 				if (ActNaraGrob <= partyNinzu - 1) {
-					_stprintf_s(mojibuf, TEXT("%s %s"), heros_def_list[ActNaraGrob].heros_name, TEXT("は戦闘不能で動けない"));
+					_stprintf_s(mojibuf, TEXT("%s は戦闘不能で動けない"), heros_def_list[ActNaraGrob].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -2747,6 +2790,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							}
 							fclose(fp1);
+
+
+							// ロードした時点で、戦闘不能フラグを更新
+							for (int temp = 0; temp < partyNinzu - 1; ++temp) {
+
+								if (heros_def_list[temp].heros_hp < 1) {
+									heros_def_list[temp].heros_hp = 0;
+
+									// 戦闘不能フラグをオン
+									heros_def_list[temp].heros_HP0_flag = 1;
+								}
+
+								if (heros_def_list[temp].heros_hp >= 1) {
+									// 戦闘不能フラグをOFF
+									heros_def_list[temp].heros_HP0_flag = 0;
+								}
+
+
+							}
+
+
+
+
+							int tempVal;
+							for (int temp = 0; temp < partyNinzu - 1; ++temp) {
+
+								tempVal = partyNarabijyun[temp];
+
+								if (heros_def_list[tempVal].heros_hp < 1) {
+									heros_def_list[tempVal].heros_hp = 0;
+
+									// 戦闘不能フラグがオン
+									heros_def_list[tempVal].heros_HP0_flag = 1;
+								}
+							}
+
+
+
+
 
 							desti_x = chara_x; // とりあえず移動先に現在位置を代入
 							desti_y = chara_y;
