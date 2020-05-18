@@ -3339,14 +3339,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					tempVal = partyNarabijyun[whomTargetID] ;
 					
 					if (heros_def_list[tempVal].heros_hp < heros_def_list[tempVal].heros_hp_max) {
-						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
+						if (item_have_list[whatuse - 1].have_kosuu > 0) {
 							heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp + 5;
 							
 							if (heros_def_list[tempVal].heros_hp > heros_def_list[tempVal].heros_hp_max) {
 								heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp_max;
 							}
 
-							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
+							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
 
 						}					
 						
@@ -3362,14 +3362,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
 					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
 
-						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
+						if (item_have_list[whatuse - 1].have_kosuu > 0) {
 							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
-							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
+							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
 
 						}
 
@@ -3385,14 +3385,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatuse == 3) {
 				
 					if (heros_def_list[whomTargetID].heros_hp <= 0) {
-						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
+						// MessageBox(NULL, TEXT("いまココ3"), TEXT("メッセージ"), MB_OK);
+
+						if (item_have_list[whatuse - 1].have_kosuu > 0) {
 							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 3;
+
+							MessageBox(NULL, TEXT("いまココaaaa"), TEXT("メッセージ"), MB_OK);
+
+
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
-							item_have_list[selecting_item - 1].have_kosuu = item_have_list[selecting_item - 1].have_kosuu - 1;
+							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
 
 						}
 
