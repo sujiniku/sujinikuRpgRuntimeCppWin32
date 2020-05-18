@@ -831,7 +831,7 @@ static void MainGraMenu(HDC hdc) {
 
 
 		if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag != 1) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("DeFla: %d"), heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("DeFla: %d 生きてる"), heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
 			TextOut(hbackDC, StatsHPbaseX + 0, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
 		}
 		if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1) {
@@ -3384,15 +3384,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 				if (whatuse == 3) {
 				
-					if (heros_def_list[whomTargetID].heros_hp <= 0) {
-						// MessageBox(NULL, TEXT("いまココ3"), TEXT("メッセージ"), MB_OK);
+						heros_def_list[whomTargetID].heros_HP0_flag = 0;
 
-						if (item_have_list[whatuse - 1].have_kosuu > 0) {
 							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 3;
 
-							MessageBox(NULL, TEXT("いまココaaaa"), TEXT("メッセージ"), MB_OK);
+							//MessageBox(NULL, TEXT("いまココaaaa"), TEXT("メッセージ"), MB_OK);
 
-
+							
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
@@ -3400,11 +3398,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
 
-						}
 
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
-					}
 
 
 				}
