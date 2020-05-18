@@ -57,6 +57,9 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 20100
 
 
+int whatuse = 0;
+
+int itemHairetu[8];
 
 int event_tekiFast = 0 ;
 
@@ -1426,15 +1429,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//所持アイテムの初期値
 
 	item_have_list[0].have_item_id = 1;
-	item_have_list[0].have_kosuu = 3;
+	item_have_list[0].have_kosuu = 0;
 
 
 	item_have_list[1].have_item_id = 2;
-	item_have_list[1].have_kosuu = 5;
+	item_have_list[1].have_kosuu = 0;
 
 
 	item_have_list[2].have_item_id = 3;
-	item_have_list[2].have_kosuu = 8;
+	item_have_list[2].have_kosuu = 2;
 
 
 	//初期装備の武器
@@ -2219,6 +2222,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int itemskip = 0;
 			goukeiItem = 0;
 
+			int itemIDcount=0;
+
 			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
@@ -2235,18 +2240,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
 					goukeiItem = goukeiItem + 1;
+
+					itemHairetu[itemIDcount] = idTemp;
+					itemIDcount = itemIDcount +1;
+
+					// itemHairetu[1] = 1;
+					// itemHairetu[0] = 1;
 				}
 
 				if (item_have_list[idTemp].have_kosuu == 0) {
 					itemskip = itemskip + 1;
+
+
+					// itemHairetu[0] = 2;
+
+
 				}
 			}
 
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[0] %d"), itemHairetu[0]);
+			TextOut(hdc, 230, 200, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[1] %d"), itemHairetu[1]);
+			TextOut(hdc, 230, 230, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[2] %d"), itemHairetu[2]);
+			TextOut(hdc, 230, 260, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatuse %d"), whatuse);
+			TextOut(hdc, 230, 290, mojibuf, lstrlen(mojibuf));
+
+
+
+
 				// デバッグ用
 			lstrcpy(mojibuf, TEXT("sele_item :"));
-			TextOut(hdc, 430, 200, mojibuf, lstrlen(mojibuf));
+			//TextOut(hdc, 430, 200, mojibuf, lstrlen(mojibuf));
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), selecting_item);
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("SI: %d"), selecting_item);
 			TextOut(hdc, 530, 200, mojibuf, lstrlen(mojibuf));
 
 
@@ -3208,36 +3241,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			{
 
-
+				whatuse = itemHairetu[selecting_item-1]+1 ; // これをあとで訂正する。
 				
+				
+
 				key_remain = 0;
-				if (selecting_item == 1) {
+
+
 
 					mode_scene = MODE_ITEM_WHOM_BACK;
 					
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 
-				}
 
 
 
-				if (selecting_item == 2) {
-
-					mode_scene = MODE_ITEM_WHOM_BACK;
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-				}
 
 
-				if (selecting_item == 3) {
-
-					mode_scene = MODE_ITEM_WHOM_BACK;
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-				}
 
 				 
 
@@ -3309,7 +3330,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 
-				if (selecting_item == 1) {
+
+
+
+				if (whatuse == 1) {
 
 
 					tempVal = partyNarabijyun[whomTargetID] ;
@@ -3333,7 +3357,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				if (selecting_item == 2) {
+				if (whatuse == 2) {
 					
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
 					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
@@ -3358,11 +3382,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 	
-				if (selecting_item == 3) {
+				if (whatuse == 3) {
 				
 					if (heros_def_list[whomTargetID].heros_hp <= 0) {
 						if (item_have_list[selecting_item - 1].have_kosuu > 0) {
-							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
+							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 3;
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
