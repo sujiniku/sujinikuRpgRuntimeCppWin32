@@ -249,6 +249,10 @@ static int selecting_item = 1;
 static int selecting_item_x = 1;
 static int selecting_item_y = 1;
 
+static int selecting_itemBefore = 1;
+static int selecting_itemAfter = 1;
+
+
 // 戦闘中に使用する変数。 モンスター定義とは別物。
 static TCHAR monster_name[30];
 static int monster_hp = 10;
@@ -668,7 +672,7 @@ void check_movable(HWND hWnd) {
 
 // アイテムメニューでのカーソル位置の計算用
 void item_select(HWND hWnd) {
-
+	
 	if (selecting_item < 1) {
 		selecting_item = 1;
 	}
@@ -680,9 +684,15 @@ void item_select(HWND hWnd) {
 	selecting_item_x = ((selecting_item - 1) % 2) + 1;
 	selecting_item_y = ((selecting_item - 1) / 2) + 1;
 
-	InvalidateRect(hWnd, NULL, FALSE);
-	UpdateWindow(hWnd);
 
+	// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しないための処理
+	selecting_itemAfter = selecting_item;
+
+	// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しない
+	if (selecting_itemBefore != selecting_itemAfter) {
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
+	}
 }
 
 
@@ -3235,6 +3245,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_ITEM_MENU_FRONT && key_remain > 0) {
 			
+			// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しないための処理
+			selecting_itemBefore = selecting_item ;
+
 			switch (wParam)
 			{
 
