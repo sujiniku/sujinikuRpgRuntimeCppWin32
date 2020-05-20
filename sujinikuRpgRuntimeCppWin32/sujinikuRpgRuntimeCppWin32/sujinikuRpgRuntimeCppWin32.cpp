@@ -2541,6 +2541,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 
+
+
+			// パーティメンバー側も再描画の必要あり
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+			BrushPink_set(hdc);
+
+
+			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
+				offsetXtemp2 + 200, offsetYtemp2 + 300);
+
+
+			 int kasoruHeight = 50;
+			BrushPink_set(hdc);
+		//	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetID),
+		//		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+
+
+			//int skipF = 2;
+			for (int temp = 0; temp <= partyNinzu - 1; temp = temp + 1) {
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
+				TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+
+			}
+
+			// 以上パーティメンバー側の再描画
+
+
+
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
@@ -2582,7 +2620,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
 					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp ), mojibuf, lstrlen(mojibuf));
-
 
 			}
 
@@ -2640,6 +2677,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
 			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF +1), mojibuf, lstrlen(mojibuf));
+
+
+
+			// パーティメンバー側も再描画の必要あり
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+			BrushPink_set(hdc);
+
+
+			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
+				offsetXtemp2 + 200, offsetYtemp2 + 300);
+
+
+			// int kasoruHeight = 50;
+			BrushPink_set(hdc);
+			Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetID),
+				offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+
+
+			//int skipF = 2;
+			for (int temp = 0; temp <= partyNinzu - 1; temp = temp + 1) {
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
+				TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+
+			}
+
+			// 以上パーティメンバー側の再描画
+
 
 			// ここが上書きされている。
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetID + skipF].heros_name);
@@ -3686,6 +3760,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (wParam)
 			{
 
+
+			case 'Z':
+			{
+				key_remain = 0;
+
+				
+
+
+				partyNarabijyun[whomTargetID] = -1;
+
+
+				mode_scene = MODE_Guild;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
 			case 'X':
 			{
 				key_remain = 0;
@@ -3699,7 +3793,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 
-			MessageBox(NULL, TEXT("uuuuuu"), TEXT("キーテスト"), MB_OK);
+			// MessageBox(NULL, TEXT("uuuuuu"), TEXT("キーテスト"), MB_OK);
 
 			case VK_UP:
 			{
