@@ -55,7 +55,7 @@ using namespace Gdiplus;
 
 #define MODE_Guild 10000 // ギルド処理
 #define MODE_Guild_Responce 20100
-
+#define MODE_Guild_Remove 20200
 
 int whatuse = 0;
 
@@ -2542,7 +2542,71 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+
+
 		}
+
+
+
+
+		if (mode_scene == MODE_Guild_Remove) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+			BrushPink_set(hdc);
+			//	Rectangle(hdc, 10, 100,	300, 200);
+
+			//lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			//TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
+				offsetXtemp2 +200, offsetYtemp2 + 300);
+
+
+			int kasoruHeight = 50;
+			BrushPink_set(hdc);
+			Rectangle(hdc, offsetXtemp2 +10, offsetYtemp2 + 10 + 60 * (whomTargetID),
+				offsetXtemp2 +150 , offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
+
+
+			// whomTargetID = 0;
+		//	Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
+		//		150, 160 + 60 * (whomTargetID));
+
+
+
+			//			int skipF = 2;
+			for (int temp = 0; temp <= partyNinzu - 1 ; temp = temp + 1) {
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
+					TextOut(hdc, 250, offsetYtemp2 + 30 + 50 * (temp ), mojibuf, lstrlen(mojibuf));
+
+
+			}
+
+			//lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			//TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+			//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+			//TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+
+
+		}
+
+
+		
+
+
+
+
 
 
 
@@ -2563,30 +2627,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
+			int offsetYtemp1 = 100;
 			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 10, 100,
-				200, 400);
+			Rectangle(hdc, 10, offsetYtemp1,
+				200, offsetYtemp1 + 300);
 
 
 			BrushPink_set(hdc);
 
+			int kasoruHeight = 50;
 			// whomTargetID = 0;
-			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
-				150, 160 + 60 * (whomTargetID));
+			Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetID),
+				20 + 130, offsetYtemp1 + 10 + kasoruHeight + 60 * (whomTargetID));
 
 
 			int skipF = 2;
 			for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
 				if (heros_def_list[temp].PartyIn == 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, 50, offsetYtemp1 + 30 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
 				}
 
 				if (heros_def_list[temp].PartyIn == 1) {
 					// skipF = skipF + 1;
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, 50, offsetYtemp1 + 30 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
 
 
 					// ここが上書きされている。
@@ -2595,6 +2661,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 			}
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF +1), mojibuf, lstrlen(mojibuf));
 
 			mode_scene = MODE_Guild;
 		}
@@ -3509,7 +3578,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 
 
-				if (whomTargetID == 0) {
+				if (whomTargetID == 0 && heros_def_list[2].PartyIn ==0) {
 					partyNinzu = partyNinzu + 1;
 
 					
@@ -3522,7 +3591,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					mode_scene = MODE_Guild_Responce;
 				}
 
-				if (whomTargetID == 1) {
+				if (whomTargetID == 1 && heros_def_list[3].PartyIn == 0) {
 					partyNinzu = partyNinzu + 1;
 
 
@@ -3534,6 +3603,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					mode_scene = MODE_Guild_Responce;
 				}
 
+
+
+				if (whomTargetID == 2) {
+					// partyNinzu = partyNinzu ;
+
+
+					uwagaki = 1;
+
+					mode_scene = MODE_Guild_Remove;
+				}
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -3559,8 +3638,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > hikaeNinzu) {
-					whomCHARA = hikaeNinzu;
+				if (whomCHARA > hikaeNinzu + 1) {
+					whomCHARA = hikaeNinzu + 1;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -3578,8 +3657,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= hikaeNinzu) {
-					whomCHARA = hikaeNinzu;
+				if (whomCHARA >= hikaeNinzu + 1) {
+					whomCHARA = hikaeNinzu + 1;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -3618,6 +3697,68 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 			}
 		}
+
+
+
+		if (mode_scene == MODE_Guild_Remove && key_remain > 0) {
+			switch (wParam)
+			{
+
+			case 'X':
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_Guild;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+			MessageBox(NULL, TEXT("uuuuuu"), TEXT("キーテスト"), MB_OK);
+
+			case VK_UP:
+			{
+
+				whomCHARA = whomCHARA - 1;
+
+				if (whomCHARA > hikaeNinzu + 1) {
+					whomCHARA = hikaeNinzu + 1;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
+
+				if (whomCHARA >= hikaeNinzu + 1) {
+					whomCHARA = hikaeNinzu + 1;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			}
+		}
+
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND && key_remain > 0) {
