@@ -2654,16 +2654,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
 					TextOut(hdc, 50, offsetYtemp1 + 30 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
 
-
-					// ここが上書きされている。
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[temp].heros_name);
-					TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
-
 				}
 			}
-
+			
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
 			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF +1), mojibuf, lstrlen(mojibuf));
+
+			// ここが上書きされている。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetID + skipF].heros_name);
+			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+
 
 			mode_scene = MODE_Guild;
 		}
