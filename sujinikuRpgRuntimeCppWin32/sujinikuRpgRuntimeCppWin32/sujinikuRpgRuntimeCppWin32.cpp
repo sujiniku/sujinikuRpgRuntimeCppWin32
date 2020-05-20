@@ -689,6 +689,7 @@ void item_select(HWND hWnd) {
 	selecting_itemAfter = selecting_item;
 
 	// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しない
+	// 画面のチラツキ防止のため
 	if (selecting_itemBefore != selecting_itemAfter) {
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
@@ -3005,6 +3006,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_MAP && key_remain > 0 && keyCount > 0) { ///////
 			switch (wParam)
 			{
+
+
+			case 'Z':
+			{
+				check_encount_guild(hWnd);
+
+				break;
+			}
+
+
 				// メニュー画面に遷移
 			case 'X':
 
