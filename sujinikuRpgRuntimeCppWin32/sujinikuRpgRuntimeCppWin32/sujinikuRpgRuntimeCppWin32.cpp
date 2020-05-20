@@ -2512,17 +2512,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-
+			int offsetYtemp1 = 100;
 			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 10, 100 ,
-				200, 400 );
+			Rectangle(hdc, 10, offsetYtemp1,
+				offsetYtemp1 + 100, 400 );
 
 
-			BrushPink_set(hdc);
+			BrushPink_set(hdc);			
+			Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetID),
+				150, offsetYtemp1 + 60 + 60 * (whomTargetID));
 
-			
-			Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
-				150, 160 + 60 * (whomTargetID));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
+			TextOut(hdc, 50, offsetYtemp1 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
 
 			int skipF = 2;
 			for (int temp = 2; temp <= tourokuNakama; temp=temp+1) {
@@ -2553,16 +2555,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_Guild_Remove) {
 
-			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
-
 			BrushBlue_set(hdc);
 			// Rectangle(hdc, 10, 10, 610, 80);
 
 			BrushPink_set(hdc);
-			//	Rectangle(hdc, 10, 100,	300, 200);
-
-			//lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
-			//TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
 			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
@@ -2577,36 +2573,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				offsetXtemp2 +150 , offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
 
 
-			// whomTargetID = 0;
-		//	Rectangle(hdc, 20, 100 + 10 + 60 * (whomTargetID),
-		//		150, 160 + 60 * (whomTargetID));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
 
 
-
-			//			int skipF = 2;
+			//int skipF = 2;
 			for (int temp = 0; temp <= partyNinzu - 1 ; temp = temp + 1) {
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-					TextOut(hdc, 250, offsetYtemp2 + 30 + 50 * (temp ), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp ), mojibuf, lstrlen(mojibuf));
 
 
 			}
 
-			//lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
-			//TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
-
-			//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-			//TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
-
-
 		}
-
-
-		
-
-
-
-
 
 
 
@@ -2614,8 +2594,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
-
-			//	Rectangle(hdc, 10, 100,	300, 200);
 
 			BrushBlue_set(hdc);
 			// Rectangle(hdc, 10, 10, 610, 80);
@@ -2640,6 +2618,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetID),
 				20 + 130, offsetYtemp1 + 10 + kasoruHeight + 60 * (whomTargetID));
 
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー") );
+			TextOut(hdc, 50, offsetYtemp1  + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
 
 			int skipF = 2;
 			for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
