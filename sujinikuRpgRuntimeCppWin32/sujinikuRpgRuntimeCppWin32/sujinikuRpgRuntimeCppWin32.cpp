@@ -18,7 +18,7 @@
 using namespace Gdiplus;
 
 
-// nkaAgility[partyNinzuDone + idTemp] = monster_def_list[i
+
 
 // #include "resource.h"
 
@@ -954,6 +954,34 @@ void check_encount_guild(HWND hWnd) {
 		key_remain = 0;
 
 		whomTargetID = 0; whomCHARA = 1;
+
+
+
+		int skip = 0;
+		int kousinNarabijyun[5];
+
+		partyNinzuDone = partyNinzuTemp;
+
+		for (int temp = 0; temp < partymax; temp++)
+		{
+			if (partyNarabijyun[temp] >= 0) {
+				// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+			}
+
+			if (partyNarabijyun[temp] < 0) {
+				akiHairetu[skip] = temp;
+				skip = skip + 1;
+			};
+		}
+
+		for (int temp = 0; temp < partymax; temp++)
+		{
+			// partyNarabijyun[temp] = kousinNarabijyun[temp];
+		}
+
+
+
+
 		mode_scene = MODE_Guild;
 
 
@@ -3856,26 +3884,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 
 
-	int skip = 0;
-	int kousinNarabijyun[5];
+				int skip = 0;
+				int kousinNarabijyun[5];
 
-	partyNinzuDone = partyNinzuTemp;
+				partyNinzuDone = partyNinzuTemp;
 
-	for (int temp = 0; temp < partymax; temp++)
-	{
-		if (partyNarabijyun[temp] >= 0) {
-			// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
-		}
+				for (int temp = 0; temp < partymax; temp++)
+				{
+					if (partyNarabijyun[temp] >= 0) {
+						// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+					}
 
-		if (partyNarabijyun[temp] < 0) { 
-			akiHairetu[skip] = temp;
-			skip = skip + 1; };
-	}
+					if (partyNarabijyun[temp] < 0) {
+						akiHairetu[skip] = temp;
+						skip = skip + 1;
+					};
+				}
 
-	for (int temp = 0; temp < partymax; temp++)
-	{
-		// partyNarabijyun[temp] = kousinNarabijyun[temp];
-	}
+				for (int temp = 0; temp < partymax; temp++)
+				{
+					// partyNarabijyun[temp] = kousinNarabijyun[temp];
+				}
 
 
 	
