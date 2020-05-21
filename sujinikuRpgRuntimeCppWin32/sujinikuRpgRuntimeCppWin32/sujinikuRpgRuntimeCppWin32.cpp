@@ -57,8 +57,10 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
 
+int partymax = 4;
 int whatuse = 0;
 
+int akiHairetu[5];
 int itemHairetu[8];
 
 int event_tekiFast = 0 ;
@@ -2570,7 +2572,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			//int skipF = 2;
-			for (int temp = 0; temp <= 3; temp = temp + 1) {
+			for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {				
 
 				if (partyNarabijyun[temp] >= 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);				
@@ -2639,7 +2641,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
 
 
-			for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+			for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {
 
 				if (partyNarabijyun[temp] >= 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
@@ -2649,6 +2651,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (partyNarabijyun[temp] < 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
 					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+					
 				}
 
 
@@ -2736,7 +2739,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			//int skipF = 2;
-			for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+			for (int temp = 0; temp <= partymax-1; temp = temp + 1) {
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
 				TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
@@ -2749,6 +2752,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// ここが上書きされている。
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetID + skipF].heros_name);
 			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+
+
+
+
+			/*
+
+			
+			int skip = 0;
+			int kousinNarabijyun[5];
+
+			partyNinzuDone = partyNinzuTemp;
+
+			for (int temp = 0; temp < partymax; temp++)
+			{
+				if (partyNarabijyun[temp] >= 0) {
+					kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+				}
+
+				if (partyNarabijyun[temp] < 0) { skip = skip + 1; };
+			}
+
+			for (int temp = 0; temp < partymax; temp++)
+			{
+				partyNarabijyun[temp] = kousinNarabijyun[temp];
+			}
+
+
+			*/
+
+
+
 
 
 
@@ -3674,10 +3709,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						heros_def_list[shiftAndTemp].PartyIn = 1;
 
 						// 下記の順序を守ること。守らないとバグ。
-						partyNarabijyun[partyNinzuTemp ] = shiftAndTemp; // 先に代入
+						partyNarabijyun[akiHairetu[0]] = shiftAndTemp; // 先に代入
 						partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
 
-
+						akiHairetu[0] = akiHairetu[1];
+						// akiHairetu[skip]
 						uwagaki = 1;
 
 						mode_scene = MODE_Guild_Responce;
@@ -3711,7 +3747,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				partyNinzuDone = partyNinzuTemp;
 
-				for (int temp = 0; temp < 4; temp++)
+				for (int temp = 0; temp < partymax; temp++)
 				{
 					if (partyNarabijyun[temp] >= 0) {
 						kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
@@ -3720,7 +3756,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					if (partyNarabijyun[temp] < 0) { skip = skip + 1; };
 				}
 
-				for (int temp = 0; temp < 4; temp++)
+				for (int temp = 0; temp < partymax; temp++)
 				{
 					partyNarabijyun[temp] = kousinNarabijyun[temp];
 				}
@@ -3813,6 +3849,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				partyNinzuTemp = partyNinzuTemp - 1;
 
 				partyNarabijyun[whomTargetID] = -1;
+
+
+
+
+				
+
+
+	int skip = 0;
+	int kousinNarabijyun[5];
+
+	partyNinzuDone = partyNinzuTemp;
+
+	for (int temp = 0; temp < partymax; temp++)
+	{
+		if (partyNarabijyun[temp] >= 0) {
+			// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+		}
+
+		if (partyNarabijyun[temp] < 0) { 
+			akiHairetu[skip] = temp;
+			skip = skip + 1; };
+	}
+
+	for (int temp = 0; temp < partymax; temp++)
+	{
+		// partyNarabijyun[temp] = kousinNarabijyun[temp];
+	}
+
+
+	
+
+
 
 
 				mode_scene = MODE_Guild;
