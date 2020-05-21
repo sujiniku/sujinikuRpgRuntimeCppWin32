@@ -2603,6 +2603,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks1 %d"), partyNarabijyun[1]);
 			TextOut(hdc, 50, 2 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
 
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks2 %d"), partyNarabijyun[2]);
+			TextOut(hdc, 50, 3 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+
+
+
+
 		}
 
 
@@ -3663,10 +3670,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				for (int tempRow = 0; tempRow <= 1; tempRow++) {
 					shiftAndTemp = shift + tempRow;
 					if (whomTargetID == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
-						partyNinzuTemp = partyNinzuTemp + 1;
-
+						
 						heros_def_list[shiftAndTemp].PartyIn = 1;
-						partyNarabijyun[partyNinzuTemp ] = shiftAndTemp;
+
+						// 下記の順序を守ること。守らないとバグ。
+						partyNarabijyun[partyNinzuTemp ] = shiftAndTemp; // 先に代入
+						partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+
 
 						uwagaki = 1;
 
