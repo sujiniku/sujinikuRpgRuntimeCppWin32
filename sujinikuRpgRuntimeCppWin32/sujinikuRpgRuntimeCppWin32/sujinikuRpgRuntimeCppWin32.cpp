@@ -75,6 +75,10 @@ int goukeiItem = 0;
 int whomCHARA = 1;
 int whomTargetID = 0;
 
+int whomTargetIDparty = 0;
+int whomTargetIDhikae = 0;
+
+
 int filterFlag = 0;
 
 int FontYoffset = 30;
@@ -517,6 +521,15 @@ static void BrushPink_set(HDC hdc) {
 
 
 // マップ画面の描画用の関数
+
+
+
+
+
+
+
+
+
 void Draw_map(HDC hdc) {
 
 	// 最低限のマップチップ画像のロードは WM_CREATE などで既に行っている。
@@ -722,6 +735,96 @@ static struct monster_def monster_def_list[8];
 
 static struct heros_def heros_def_list[8];
 
+
+
+
+void hikaesai(HDC hdc) {
+
+	int offsetYtemp1 = 100;
+	SelectObject(hdc, blue_thin_1);
+	Rectangle(hdc, 10, offsetYtemp1,
+		offsetYtemp1 + 100, 400);
+
+
+	BrushPink_set(hdc);
+	Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetIDhikae),
+		150, offsetYtemp1 + 60 + 60 * (whomTargetIDhikae));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
+	TextOut(hdc, 50, offsetYtemp1 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+
+	int skipF = 2;
+	for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
+		if (heros_def_list[temp].PartyIn == 0) {
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+			TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+		}
+
+		if (heros_def_list[temp].PartyIn == 1) {
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
+			TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+
+		}
+	}
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+	TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+
+}
+
+
+
+void parsai(HDC hdc) {
+
+	// パーティメンバー側も再描画の必要あり
+
+	BrushBlue_set(hdc);
+	// Rectangle(hdc, 10, 10, 610, 80);
+
+	BrushPink_set(hdc);
+
+
+	int offsetXtemp2 = 220; int offsetYtemp2 = 100;
+	SelectObject(hdc, blue_thin_1);
+	Rectangle(hdc, offsetXtemp2, offsetYtemp2,
+		offsetXtemp2 + 200, offsetYtemp2 + 300);
+
+
+	int kasoruHeight = 50;
+	BrushPink_set(hdc);
+	
+	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetIDparty),
+		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
+	TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+
+
+	//int skipF = 2;
+	for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {
+
+		if (partyNarabijyun[temp] >= 0) {
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+		}
+
+		if (partyNarabijyun[temp] < 0) {
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+		}
+
+
+	}
+
+	// 以上パーティメンバー側の再描画
+
+
+
+
+}
 
 
 static struct monsterTairetu_def monsterTairetu_def_list[50];
@@ -944,6 +1047,32 @@ void check_encount_enemy(HWND hWnd) {
 
 
 
+void Akihaikeisan() {
+
+
+	int skip = 0;
+	int kousinNarabijyun[5];
+
+	partyNinzuDone = partyNinzuTemp;
+
+	for (int temp = 0; temp < partymax; temp++)
+	{
+		if (partyNarabijyun[temp] >= 0) {
+			// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+		}
+
+		if (partyNarabijyun[temp] < 0) {
+			akiHairetu[skip] = temp;
+			skip = skip + 1;
+		};
+	}
+
+	for (int temp = 0; temp < partymax; temp++)
+	{
+		// partyNarabijyun[temp] = kousinNarabijyun[temp];
+	}
+
+}
 
 void check_encount_guild(HWND hWnd) {
 
@@ -954,30 +1083,10 @@ void check_encount_guild(HWND hWnd) {
 		key_remain = 0;
 
 		whomTargetID = 0; whomCHARA = 1;
+		whomTargetIDparty = 0; whomTargetIDhikae = 0;
 
-
-
-		int skip = 0;
-		int kousinNarabijyun[5];
-
-		partyNinzuDone = partyNinzuTemp;
-
-		for (int temp = 0; temp < partymax; temp++)
-		{
-			if (partyNarabijyun[temp] >= 0) {
-				// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
-			}
-
-			if (partyNarabijyun[temp] < 0) {
-				akiHairetu[skip] = temp;
-				skip = skip + 1;
-			};
-		}
-
-		for (int temp = 0; temp < partymax; temp++)
-		{
-			// partyNarabijyun[temp] = kousinNarabijyun[temp];
-		}
+		Akihaikeisan();
+		
 
 
 
@@ -2544,88 +2653,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			int offsetYtemp1 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 10, offsetYtemp1,
-				offsetYtemp1 + 100, 400 );
-
-
-			BrushPink_set(hdc);			
-			Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetID),
-				150, offsetYtemp1 + 60 + 60 * (whomTargetID));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
-			TextOut(hdc, 50, offsetYtemp1 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
-
 			int skipF = 2;
-			for (int temp = 2; temp <= tourokuNakama; temp=temp+1) {
-				if (heros_def_list[temp].PartyIn == 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
-				}
-
-				if (heros_def_list[temp].PartyIn == 1) {
-									
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-					TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
-				
-				}
-			}
-
-
-
-			// パーティメンバー側も再描画の必要あり
-
-			BrushBlue_set(hdc);
-			// Rectangle(hdc, 10, 10, 610, 80);
-
-			BrushPink_set(hdc);
-
-
-			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
-				offsetXtemp2 + 200, offsetYtemp2 + 300);
-
-
-			 int kasoruHeight = 50;
-			BrushPink_set(hdc);
-		//	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetID),
-		//		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
-
-
-			//int skipF = 2;
-			for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {				
-
-				if (partyNarabijyun[temp] >= 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);				
-					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));			
-				}
-
-				if (partyNarabijyun[temp] < 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】") );
-					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
-				}
-
-
-			}
-
-			// 以上パーティメンバー側の再描画
+			hikaesai(hdc);
+			parsai(hdc);
 
 
 
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
-
-
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks0 %d"), partyNarabijyun[0] );
 			TextOut(hdc, 50, 30+ 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
@@ -2633,12 +2668,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks1 %d"), partyNarabijyun[1]);
 			TextOut(hdc, 50, 2 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
 
-
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks2 %d"), partyNarabijyun[2]);
 			TextOut(hdc, 50, 3 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
-
-
-
 
 		}
 
@@ -2646,44 +2677,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_Guild_Remove) {
-
-			BrushBlue_set(hdc);
-			// Rectangle(hdc, 10, 10, 610, 80);
-
+			BrushBlue_set(hdc);			
 			BrushPink_set(hdc);
 
-
-			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
-				offsetXtemp2 +200, offsetYtemp2 + 300);
-
-
-			int kasoruHeight = 50;
-			BrushPink_set(hdc);
-			Rectangle(hdc, offsetXtemp2 +10, offsetYtemp2 + 10 + 60 * (whomTargetID),
-				offsetXtemp2 +150 , offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
-
-
-			for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {
-
-				if (partyNarabijyun[temp] >= 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
-				}
-
-				if (partyNarabijyun[temp] < 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
-					
-				}
-
-
-			}
+			hikaesai(hdc);
+			parsai(hdc);
 
 		}
 
@@ -2693,126 +2691,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
-
 			BrushBlue_set(hdc);
-			// Rectangle(hdc, 10, 10, 610, 80);
-
-
 			BrushPink_set(hdc);
 
 			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			int offsetYtemp1 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 10, offsetYtemp1,
-				200, offsetYtemp1 + 300);
-
-
-			BrushPink_set(hdc);
-
-			int kasoruHeight = 50;
-			// whomTargetID = 0;
-			Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetID),
-				20 + 130, offsetYtemp1 + 10 + kasoruHeight + 60 * (whomTargetID));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー") );
-			TextOut(hdc, 50, offsetYtemp1  + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
-
 			int skipF = 2;
-			for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
-				if (heros_def_list[temp].PartyIn == 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-					TextOut(hdc, 50, offsetYtemp1 + 30 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
-				}
 
-				if (heros_def_list[temp].PartyIn == 1) {
-					// skipF = skipF + 1;
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-					TextOut(hdc, 50, offsetYtemp1 + 30 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
-
-				}
-			}
-			
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-			TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF +1), mojibuf, lstrlen(mojibuf));
-
-
-
-			// パーティメンバー側も再描画の必要あり
-
-			BrushBlue_set(hdc);
-			// Rectangle(hdc, 10, 10, 610, 80);
-
-			BrushPink_set(hdc);
-
-
-			int offsetXtemp2 = 220; int offsetYtemp2 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, offsetXtemp2, offsetYtemp2,
-				offsetXtemp2 + 200, offsetYtemp2 + 300);
-
-
-			// int kasoruHeight = 50;
-			BrushPink_set(hdc);
-			Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetID),
-				offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetID));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
-
-
-			//int skipF = 2;
-			for (int temp = 0; temp <= partymax-1; temp = temp + 1) {
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-				TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
-
-			}
-
-			// 以上パーティメンバー側の再描画
+			hikaesai(hdc);			
+			parsai(hdc);
 
 
 			// ここが上書きされている。
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetID + skipF].heros_name);
 			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
-
-
-
-
-
-			/*
-
-			
-			int skip = 0;
-			int kousinNarabijyun[5];
-
-			partyNinzuDone = partyNinzuTemp;
-
-			for (int temp = 0; temp < partymax; temp++)
-			{
-				if (partyNarabijyun[temp] >= 0) {
-					kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
-				}
-
-				if (partyNarabijyun[temp] < 0) { skip = skip + 1; };
-			}
-
-			for (int temp = 0; temp < partymax; temp++)
-			{
-				partyNarabijyun[temp] = kousinNarabijyun[temp];
-			}
-
-
-			*/
-
-
-
-
 
 
 			mode_scene = MODE_Guild;
@@ -3732,7 +3626,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				for (int tempRow = 0; tempRow <= 1; tempRow++) {
 					shiftAndTemp = shift + tempRow;
-					if (whomTargetID == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
+					if (whomTargetIDhikae == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
 						
 						heros_def_list[shiftAndTemp].PartyIn = 1;
 
@@ -3750,7 +3644,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				if (whomTargetID == 2) {					
+				if (whomTargetIDhikae == 2) {					
 					// partyNinzuDone = partyNinzuDone -1;
 
 					uwagaki = 1;
@@ -3808,7 +3702,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTargetID = whomCHARA - 1;
+				whomTargetIDhikae = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3827,7 +3721,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTargetID = whomCHARA - 1;
+				whomTargetIDhikae = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3851,7 +3745,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			{
 				key_remain = 0;
+
+
+
+
+				Akihaikeisan();
+
+
+
+
 				mode_scene = MODE_Guild;
+
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -3876,7 +3780,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 				partyNinzuTemp = partyNinzuTemp - 1;
 
-				partyNarabijyun[whomTargetID] = -1;
+				partyNarabijyun[whomTargetIDparty] = -1;
 
 
 
@@ -3884,28 +3788,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 
 
-				int skip = 0;
-				int kousinNarabijyun[5];
-
-				partyNinzuDone = partyNinzuTemp;
-
-				for (int temp = 0; temp < partymax; temp++)
-				{
-					if (partyNarabijyun[temp] >= 0) {
-						// kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
-					}
-
-					if (partyNarabijyun[temp] < 0) {
-						akiHairetu[skip] = temp;
-						skip = skip + 1;
-					};
-				}
-
-				for (int temp = 0; temp < partymax; temp++)
-				{
-					// partyNarabijyun[temp] = kousinNarabijyun[temp];
-				}
-
+				Akihaikeisan();
 
 	
 
@@ -3947,7 +3830,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTargetID = whomCHARA - 1;
+				whomTargetIDparty = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3966,7 +3849,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTargetID = whomCHARA - 1;
+				whomTargetIDparty = whomCHARA - 1;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
