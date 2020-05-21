@@ -2570,8 +2570,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//int skipF = 2;
 			for (int temp = 0; temp <= partyNinzu - 1; temp = temp + 1) {
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-				TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+				if (partyNarabijyun[temp] >= 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);				
+					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));			
+				}
+
+				if (partyNarabijyun[temp] < 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】") );
+					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+				}
+
 
 			}
 
@@ -2615,11 +2623,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
 
 
-			//int skipF = 2;
-			for (int temp = 0; temp <= partyNinzu - 1 ; temp = temp + 1) {
+			for (int temp = 0; temp <= partyNinzu - 1; temp = temp + 1) {
 
+				if (partyNarabijyun[temp] >= 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp ), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+				}
+
+				if (partyNarabijyun[temp] < 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
+					TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+				}
+
 
 			}
 
