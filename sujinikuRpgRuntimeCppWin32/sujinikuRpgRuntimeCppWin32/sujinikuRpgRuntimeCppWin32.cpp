@@ -750,27 +750,29 @@ void hikaesai(HDC hdc) {
 	Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetIDhikae),
 		150, offsetYtemp1 + 60 + 60 * (whomTargetIDhikae));
 
+	int offsetXtemp1 = 50;
+	int yspan1 = 50;
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
-	TextOut(hdc, 50, offsetYtemp1 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1, offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
-	int skipF = 2;
+	
 	for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
 		if (heros_def_list[temp].PartyIn == 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-			TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp ), mojibuf, lstrlen(mojibuf));
 		}
 
 		if (heros_def_list[temp].PartyIn == 1) {
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-			TextOut(hdc, 50, 130 + 50 * (temp - skipF), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp ), mojibuf, lstrlen(mojibuf));
 
 		}
 	}
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-	TextOut(hdc, 50, 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1, 30 + yspan1 * (tourokuNakama + 1), mojibuf, lstrlen(mojibuf));
 
 }
 
@@ -799,8 +801,10 @@ void parsai(HDC hdc) {
 		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
 
 
+	int yspan1 = 50;
+
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
-	TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 50 * (2 - 2), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 
 	//int skipF = 2;
@@ -808,12 +812,12 @@ void parsai(HDC hdc) {
 
 		if (partyNarabijyun[temp] >= 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
 		}
 
 		if (partyNarabijyun[temp] < 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + 50 * (temp), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
 		}
 
 
@@ -2353,19 +2357,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			MainGraFrontMenu(hdc);
 
-
-
-
-
 			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 100,
 				600, 400);
 
-
 			BrushPink_set(hdc);
 			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
 				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
-
 
 
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
@@ -2375,14 +2373,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			goukeiItem = 0;
 
 			int itemIDcount=0;
+			int column = 2;
+
+			int xcommon ;
+			int ycommon ;
 
 			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
 				if (item_have_list[idTemp].have_kosuu != 0) {
-
-					int xcommon = 30 + 300 * floor((idTemp - itemskip) % 2);
-					int ycommon = 130 + 30 * floor((idTemp - itemskip ) / 2);
+					
+					xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
+					ycommon = 130 + 30 * floor((idTemp - itemskip ) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, item_def_list[idTemp].item_name);
@@ -2396,21 +2398,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					itemHairetu[itemIDcount] = idTemp;
 					itemIDcount = itemIDcount +1;
 
-					// itemHairetu[1] = 1;
-					// itemHairetu[0] = 1;
 				}
 
 				if (item_have_list[idTemp].have_kosuu == 0) {
 					itemskip = itemskip + 1;
 
-
-					// itemHairetu[0] = 2;
-
-
 				}
 			}
 
-
+			// デバッグ用モニター
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[0] %d"), itemHairetu[0]);
 			TextOut(hdc, 230, 200, mojibuf, lstrlen(mojibuf));
 
@@ -2427,7 +2423,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				// デバッグ用
+			// デバッグ用
 			lstrcpy(mojibuf, TEXT("sele_item :"));
 			//TextOut(hdc, 430, 200, mojibuf, lstrlen(mojibuf));
 
@@ -2624,7 +2620,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		////
+		//
 
 		if (mode_scene == MODE_SAVE_MENU) {
 			/* セーブの表示欄 */
@@ -2653,7 +2649,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			int skipF = 2;
+			// int skipF = 2;
 			hikaesai(hdc);
 			parsai(hdc);
 
@@ -2662,14 +2658,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
+			// デバッグ用
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks0 %d"), partyNarabijyun[0] );
-			TextOut(hdc, 50, 30+ 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 1 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks1 %d"), partyNarabijyun[1]);
-			TextOut(hdc, 50, 2 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 2 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks2 %d"), partyNarabijyun[2]);
-			TextOut(hdc, 50, 3 * 30 + 130 + 50 * (tourokuNakama - skipF + 1), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 3 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
 
 		}
 
