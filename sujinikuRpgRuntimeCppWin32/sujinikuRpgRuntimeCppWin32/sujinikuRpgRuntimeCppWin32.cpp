@@ -155,6 +155,8 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 int hikaeNinzu = 2;
 
 int partyNarabijyun[5] = { 1,2,3,4,0 }; // パーティ隊列の並び替えの処理に使う予定
+int hikaeNarabijyun[10] = { 1,2,3,4,0 }; // ギルドの処理に使う予定
+
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
 
@@ -1508,28 +1510,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			for (int temp = 1; temp <= 9; ++temp) {
 				strncpy(row[temp].str, strtok(NULL, ","), 150);
 				henkan[j][temp] = atoi(row[temp].str);
-					
-				map_def_list[1].map_table[j][temp]= henkan[j][temp];
+
+				map_def_list[1].map_table[j][temp] = henkan[j][temp];
 
 			}
 
 		}
 
 	}
-
-	/*
-	for (int y_mapTemp = 0; y_mapTemp <= 6; ++y_mapTemp)
-	{
-		for (int x_mapTemp = 0; x_mapTemp <= 9; ++x_mapTemp)
-		{
-			fprintf(fileMapDatabasePointer, "%d,", map1table[y_mapTemp][x_mapTemp]);
-
-			if (x_mapTemp == 9) {
-				fprintf(fileMapDatabasePointer, "\n");
-			}
-		}
-	}
-	*/
 
 
 	//memcpy(map_def_list[1].map_table, map1table, sizeof(map1table));
@@ -1537,41 +1525,52 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	// 敵の位置の読み込み
-	positionX_enemy[0] = 6;
-	positionY_enemy[0] = 5;
+	for (int temp = 0; temp <= 1; temp++) {
+		
+		if (temp == 0) {
+			positionX_enemy[temp] = 6;
+			positionY_enemy[temp] = 5;
+		}
 
-	positionX_enemy[1] = 1;
-	positionY_enemy[1] = 4;
-
+		if (temp == 1) {
+			positionX_enemy[temp] = 1;
+			positionY_enemy[temp] = 4;
+		}
+	}
 
 	/* 乱数の種 */
 	srand((unsigned int)time(NULL));
 
 
+	// アイテムの情報
+	int tourokuItem = 3;
+	for (int temp = 0; temp <= tourokuItem - 1 ; temp++) {
 
-	//薬草の定義
-	lstrcpy(item_def_list[0].item_name, TEXT("薬草"));
-	item_def_list[0].item_type = 1;
-	item_def_list[0].item_id = 1;
+		item_def_list[temp].item_id = temp + 1;
 
+		if (temp == 0) {
+			//薬草の定義
+			lstrcpy(item_def_list[temp].item_name, TEXT("薬草"));
+			item_def_list[temp].item_type = 1;			
+		}
 
-	lstrcpy(item_def_list[1].item_name, TEXT("毒消し草"));
-	item_def_list[1].item_type = 2;
-	item_def_list[1].item_id = 2;
+		if (temp == 1) {
+			lstrcpy(item_def_list[temp].item_name, TEXT("毒消し草"));
+			item_def_list[temp].item_type = 2;			
+		}
 
+		if (temp == 2) {
+			lstrcpy(item_def_list[temp].item_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
+			item_def_list[temp].item_type = 3;			
+		}
 
-
-	lstrcpy(item_def_list[2].item_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
-	item_def_list[2].item_type = 3;
-	item_def_list[2].item_id = 3;
-
-
+	}
 
 	//武器の定義
 	weapon_def_list[0].weapon_id = 0;
 	lstrcpy(weapon_def_list[0].weapon_name, TEXT("鉄の槍"));
 	weapon_def_list[0].material = mateIron;
-	weapon_def_list[0].weapon_type = spear ;
+	weapon_def_list[0].weapon_type = spear;
 	weapon_def_list[0].weaponPower = 7; // 攻撃力
 
 
@@ -1582,19 +1581,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	weapon_def_list[1].weaponPower = 0; // 攻撃力
 
 
-	//所持アイテムの初期値
+	//所持アイテムの個数などの初期値
+	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
+		
+		item_have_list[temp].have_item_id = temp + 1;
 
-	item_have_list[0].have_item_id = 1;
-	item_have_list[0].have_kosuu = 0;
+		if (temp == 0) {			
+			item_have_list[temp].have_kosuu = 5;
+		}
 
+		if (temp == 1) {			
+			item_have_list[temp].have_kosuu = 4;
+		}
 
-	item_have_list[1].have_item_id = 2;
-	item_have_list[1].have_kosuu = 0;
-
-
-	item_have_list[2].have_item_id = 3;
-	item_have_list[2].have_kosuu = 2;
-
+		if (temp == 2) {			
+			item_have_list[temp].have_kosuu = 2;
+		}
+	}
 
 	//初期装備の武器
 
@@ -1602,99 +1605,113 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	equipWeaponPower = weapon_def_list[equipInitialWeaponId].weaponPower;
 
 
-	// map1 にあるマップ遷移の情報
-	MapTrans_def_list[0].MapTrans_id = 1; // そのマップ中で何番目か？
-	MapTrans_def_list[0].in_Where_Map = 1; // map 何番?
-	MapTrans_def_list[0].to_Where_Map = 2;
-	MapTrans_def_list[0].positionX = 7;
-	MapTrans_def_list[0].positionY = 6;
+	// mapの情報
+	for (int temp = 0; temp <= 1; temp++) {
 
-	MapTrans_def_list[0].chara_positionX = 2;
-	MapTrans_def_list[0].chara_positionY = 1;
+		if (temp == 0) {
+			// map1 にあるマップ遷移の情報
+			MapTrans_def_list[temp].MapTrans_id = 1; // そのマップ中で何番目か？
+			MapTrans_def_list[temp].in_Where_Map = 1; // map 何番?
+			MapTrans_def_list[temp].to_Where_Map = 2;
+			MapTrans_def_list[temp].positionX = 7;
+			MapTrans_def_list[temp].positionY = 6;
+
+			MapTrans_def_list[temp].chara_positionX = 2;
+			MapTrans_def_list[temp].chara_positionY = 1;
+		}
+
+		if (temp == 1) {
+			// map2 にあるマップ遷移の情報
+			MapTrans_def_list[temp].MapTrans_id = 1;
+			MapTrans_def_list[temp].in_Where_Map = 2; // map 何番?
+			MapTrans_def_list[temp].to_Where_Map = 1;
+			MapTrans_def_list[temp].positionX = 2;
+			MapTrans_def_list[temp].positionY = 0;
+
+			MapTrans_def_list[temp].chara_positionX = 7;
+			MapTrans_def_list[temp].chara_positionY = 4;
+		}
+	}
 
 
-	// map2 にあるマップ遷移の情報
-	MapTrans_def_list[1].MapTrans_id = 1;
-	MapTrans_def_list[1].in_Where_Map = 2; // map 何番?
-	MapTrans_def_list[1].to_Where_Map = 1;
-	MapTrans_def_list[1].positionX = 2;
-	MapTrans_def_list[1].positionY = 0;
+	// モンスターの定義	
+	for (int temp = 0; temp <= 1; temp++) {
 
-	MapTrans_def_list[1].chara_positionX = 7;
-	MapTrans_def_list[1].chara_positionY = 4;
+		if (temp == 0) {
+			lstrcpy(monster_def_list[temp].monster_name, TEXT("スライム"));
+			monster_def_list[temp].mon_hp_max = 2;
+			monster_def_list[temp].mon_agility = 13;
+			monster_def_list[temp].monster_id = 1;
+			monster_def_list[temp].mon_gold = 1;
+			monster_def_list[temp].mon_exp = 2;
+			monster_def_list[temp].mon_attackPower = 0;
+		}
 
+		if (temp == 1) {
+			lstrcpy(monster_def_list[temp].monster_name, TEXT("コボルト"));
+			monster_def_list[temp].mon_hp_max = 5;
+			monster_def_list[temp].mon_agility = 76;
+			monster_def_list[temp].monster_id = 2;
+			monster_def_list[temp].mon_gold = 10;
+			monster_def_list[temp].mon_exp = 5;
+			monster_def_list[temp].mon_attackPower = 1;
+		}
 
-
-	// モンスターの定義
-	lstrcpy(monster_def_list[0].monster_name, TEXT("スライム"));
-	monster_def_list[0].mon_hp_max = 2;
-	monster_def_list[0].mon_agility = 13;
-	monster_def_list[0].monster_id = 1;
-	monster_def_list[0].mon_gold = 1;
-	monster_def_list[0].mon_exp = 2;
-	monster_def_list[0].mon_attackPower = 0;
-
-	lstrcpy(monster_def_list[1].monster_name, TEXT("コボルト"));
-	monster_def_list[1].mon_hp_max = 5;
-	monster_def_list[1].mon_agility = 76;
-	monster_def_list[1].monster_id = 2;
-	monster_def_list[1].mon_gold = 10;
-	monster_def_list[1].mon_exp = 5;
-	monster_def_list[1].mon_attackPower = 1;
+	}
 
 
 	// キャラクターの定義
-	lstrcpy(heros_def_list[0].heros_name, TEXT("エロス"));
-	heros_def_list[0].heros_hp = 2; // 20;
-	heros_def_list[0].heros_hp_max = 25;
-	heros_def_list[0].heros_agility = 56;
+	for (int temp = 0; temp <= 3; temp++) {
 
-	heros_def_list[0].heros_exp = 0;
+		if (temp == 0) {
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("エロス"));
+			heros_def_list[temp].heros_hp = 2; // 20;
+			heros_def_list[temp].heros_hp_max = 25;
+			heros_def_list[temp].heros_agility = 56;
 
-	heros_def_list[0].heros_HP0_flag =0;
+			heros_def_list[temp].heros_exp = 0;
 
-	heros_def_list[0].PartyIn = 1;
-	
+			heros_def_list[temp].heros_HP0_flag = 0;
+			heros_def_list[temp].PartyIn = 1;
+		}
 
+		if (temp == 1) {
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("ピエ－ル"));
+			heros_def_list[temp].heros_hp = 8; //  18;
+			heros_def_list[temp].heros_hp_max = 18;
+			heros_def_list[temp].heros_agility = 100;
 
-	lstrcpy(heros_def_list[1].heros_name, TEXT("ピエ－ル"));
-	heros_def_list[1].heros_hp = 8; //  18;
-	heros_def_list[1].heros_hp_max = 18;
-	heros_def_list[1].heros_agility = 100;
+			heros_def_list[temp].heros_exp = 0;
 
-	heros_def_list[1].heros_exp = 0;
+			heros_def_list[temp].heros_HP0_flag = 0;
+			heros_def_list[temp].PartyIn = 1;
+		}
 
-	heros_def_list[1].heros_HP0_flag = 0;
+		if (temp == 2) {
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("ゴンザレス"));
+			heros_def_list[temp].heros_hp = 5; // 55;
+			heros_def_list[temp].heros_hp_max = 55;
+			heros_def_list[temp].heros_agility = 55;
 
-	heros_def_list[1].PartyIn = 1;
+			heros_def_list[temp].heros_exp = 0;
 
+			heros_def_list[temp].heros_HP0_flag = 0;
+			heros_def_list[temp].PartyIn = 0;
+		}
 
+		if (temp == 3) {
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("ペドロ"));
+			heros_def_list[temp].heros_hp = 10;// 12;
+			heros_def_list[temp].heros_hp_max = 34;
+			heros_def_list[temp].heros_agility = 23;
 
-	lstrcpy(heros_def_list[2].heros_name, TEXT("ゴンザレス"));
-	heros_def_list[2].heros_hp = 5; // 55;
-	heros_def_list[2].heros_hp_max = 55;
-	heros_def_list[2].heros_agility = 55;
+			heros_def_list[temp].heros_exp = 0;
 
-	heros_def_list[2].heros_exp = 0;
+			heros_def_list[temp].heros_HP0_flag = 0;
+			heros_def_list[temp].PartyIn = 0;
+		}
 
-	heros_def_list[2].heros_HP0_flag = 0;
-
-	heros_def_list[2].PartyIn = 0;
-
-
-
-	lstrcpy(heros_def_list[3].heros_name, TEXT("ペドロ"));
-	heros_def_list[3].heros_hp = 10;// 12;
-	heros_def_list[3].heros_hp_max = 34;
-	heros_def_list[3].heros_agility = 23;
-
-	heros_def_list[3].heros_exp = 0;
-
-	heros_def_list[3].heros_HP0_flag = 0;
-
-	heros_def_list[3].PartyIn = 0;
-
-
+	}
 
 
 	partyNarabijyun[0] = 0; // 
@@ -1884,9 +1901,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// マップ描画
 		// 初期化用		// この初期化処理を消すとコンパイルエラーになる。消しちゃ駄目
 		// マップチップ画像をファイルから読み込む
-
-
-
 
 
 
@@ -2327,8 +2341,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			MainGraMenu(hdc);
 
-
-
 		}
 
 
@@ -2620,7 +2632,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		//
 
 		if (mode_scene == MODE_SAVE_MENU) {
 			/* セーブの表示欄 */
@@ -2649,10 +2660,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			// int skipF = 2;
 			hikaesai(hdc);
 			parsai(hdc);
-
 
 
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
@@ -2660,28 +2669,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// デバッグ用
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks0 %d"), partyNarabijyun[0] );
-			TextOut(hdc, 50, 1 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 1 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks1 %d"), partyNarabijyun[1]);
-			TextOut(hdc, 50, 2 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 2 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks2 %d"), partyNarabijyun[2]);
-			TextOut(hdc, 50, 3 * 30 + 80 + 50 * (tourokuNakama  ), mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 50, 3 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
 
 		}
 
 
-
-
 		if (mode_scene == MODE_Guild_Remove) {
-			BrushBlue_set(hdc);			
+			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
 
 			hikaesai(hdc);
 			parsai(hdc);
 
 		}
-
 
 
 		if (mode_scene == MODE_Guild_Responce) {
@@ -2695,14 +2701,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			int skipF = 2;
-
-			hikaesai(hdc);			
+			hikaesai(hdc);
 			parsai(hdc);
 
 
 			// ここが上書きされている。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetID + skipF].heros_name);
+			int skipF = 2;
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae + skipF].heros_name);
 			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
 
 
