@@ -57,7 +57,7 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
 
-int partymax = 4;
+const int partymax = 4;
 int whatuse = 0;
 
 int akiHairetu[5];
@@ -762,15 +762,14 @@ void hikaesai(HDC hdc) {
 	for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
 		if (heros_def_list[temp].PartyIn == 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-			TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp ), mojibuf, lstrlen(mojibuf));
 		}
 
 		if (heros_def_list[temp].PartyIn == 1) {
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-			TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp ), mojibuf, lstrlen(mojibuf));
-
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));			
 		}
+
+		TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
+
 	}
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
@@ -810,25 +809,21 @@ void parsai(HDC hdc) {
 
 
 	//int skipF = 2;
-	for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {
+	for (int temp = 0; temp <= partymax - 1 ; temp = temp + 1) {
 
 		if (partyNarabijyun[temp] >= 0) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);			
 		}
 
 		if (partyNarabijyun[temp] < 0) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
-			TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));			
 		}
 
+		TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
 
 	}
 
 	// 以上パーティメンバー側の再描画
-
-
-
 
 }
 
@@ -1054,13 +1049,13 @@ void check_encount_enemy(HWND hWnd) {
 
 
 void Akihaikeisan() {
-
-
-	int skip = 0;
-	int kousinNarabijyun[5];
+	
+	// int kousinNarabijyun[5];
 
 	partyNinzuDone = partyNinzuTemp;
 
+
+	int skip = 0;
 	for (int temp = 0; temp < partymax; temp++)
 	{
 		if (partyNarabijyun[temp] >= 0) {
@@ -1070,12 +1065,7 @@ void Akihaikeisan() {
 		if (partyNarabijyun[temp] < 0) {
 			akiHairetu[skip] = temp;
 			skip = skip + 1;
-		};
-	}
-
-	for (int temp = 0; temp < partymax; temp++)
-	{
-		// partyNarabijyun[temp] = kousinNarabijyun[temp];
+		}
 	}
 
 }
@@ -3667,7 +3657,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				int skip = 0;
-				int kousinNarabijyun[5];
+				int kousinNarabijyun[partymax];
 
 				partyNinzuDone = partyNinzuTemp;
 
@@ -3677,7 +3667,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
 					}
 
-					if (partyNarabijyun[temp] < 0) { skip = skip + 1; };
+					if (partyNarabijyun[temp] < 0) {
+						skip = skip + 1; 
+					}
 				}
 
 				for (int temp = 0; temp < partymax; temp++)
