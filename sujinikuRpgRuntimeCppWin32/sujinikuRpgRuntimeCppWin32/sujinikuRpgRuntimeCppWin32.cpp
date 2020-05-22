@@ -144,7 +144,9 @@ enum resource_embedded_flag { on, off };
 enum resource_embedded_flag resource_embedded_var = off;
 
 
-int tourokuNakama = 3; // 実際の人数より1少ない
+int makeNakamaNinzu = 5; // プログラマーの作った仲間キャラの人数
+int tourokuNakama = 3; // 実際の人数より1少ない // ギルドに登録されてる仲間の人数なので変数
+
 
 int partyNinzuDone = 2, enemyNinzu = 1;
 int partyNinzuTemp = partyNinzuDone;
@@ -154,8 +156,8 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 
 int hikaeNinzu = 2;
 
-int partyNarabijyun[5] = { 1,2,3,4,0 }; // パーティ隊列の並び替えの処理に使う予定
-int hikaeNarabijyun[10] = { 1,2,3,4,0 }; // ギルドの処理に使う予定
+int partyNarabijyun[5] = { 1,2,3,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
+int hikaeNarabijyun[10] = { 1,2,3, -1, -1 }; // ギルドの処理に使う予定
 
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
@@ -809,7 +811,7 @@ void parsai(HDC hdc) {
 
 
 	//int skipF = 2;
-	for (int temp = 0; temp <= partymax - 1 ; temp = temp + 1) {
+	for (int temp = 0; temp <= partymax -1 ; temp = temp + 1) {
 
 		if (partyNarabijyun[temp] >= 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);			
@@ -824,6 +826,16 @@ void parsai(HDC hdc) {
 	}
 
 	// 以上パーティメンバー側の再描画
+
+	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("テスト用")); // 読み込める
+	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), partyNarabijyun[3]);
+	
+	
+	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[4].heros_name); // 4だと読み込めない
+	//TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
+
+
+	// 検索用 aaaaaaaaaaaaa
 
 }
 
@@ -1074,7 +1086,7 @@ void check_encount_guild(HWND hWnd) {
 
 	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y ) {
 		
-		//MessageBox(NULL, TEXT("ギルドのテスト中。\n ゴンザレスが仲間になる予定."), TEXT("キーテスト"), MB_OK);
+		//MessageBox(NULL, TEXT("ギルドのテスト中。\n"), TEXT("キーテスト"), MB_OK);
 
 		key_remain = 0;
 
@@ -1651,7 +1663,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	// キャラクターの定義
-	for (int temp = 0; temp <= 3; temp++) {
+	for (int temp = 0; temp <= makeNakamaNinzu +1; temp++) {
 
 		if (temp == 0) {
 			lstrcpy(heros_def_list[temp].heros_name, TEXT("エロス"));
@@ -1690,7 +1702,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 3) {
-			lstrcpy(heros_def_list[temp].heros_name, TEXT("ペドロ"));
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("ペドロ3"));
+			heros_def_list[temp].heros_hp = 10;// 12;
+			heros_def_list[temp].heros_hp_max = 34;
+			heros_def_list[temp].heros_agility = 23;
+
+			heros_def_list[temp].heros_exp = 0;
+
+			heros_def_list[temp].heros_HP0_flag = 0;
+			heros_def_list[temp].PartyIn = 0;
+		}
+
+
+		if (temp == 4) {
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("テスト用キャラ"));
 			heros_def_list[temp].heros_hp = 10;// 12;
 			heros_def_list[temp].heros_hp_max = 34;
 			heros_def_list[temp].heros_agility = 23;
