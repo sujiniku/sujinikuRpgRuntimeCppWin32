@@ -57,9 +57,11 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
 
-const int partymax = 4;
+const int partymax = 3; // 本当は4だけどテストのため1時的に3
 int whatuse = 0;
 
+
+int akikosuu ;
 int akiHairetu[5];
 int itemHairetu[8];
 
@@ -1075,7 +1077,9 @@ void Akihaikeisan() {
 		}
 
 		if (partyNarabijyun[temp] < 0) {
+			
 			akiHairetu[skip] = temp;
+
 			skip = skip + 1;
 		}
 	}
@@ -1702,7 +1706,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 3) {
-			lstrcpy(heros_def_list[temp].heros_name, TEXT("ペドロ3"));
+			lstrcpy(heros_def_list[temp].heros_name, TEXT("ペドロ"));
 			heros_def_list[temp].heros_hp = 10;// 12;
 			heros_def_list[temp].heros_hp_max = 34;
 			heros_def_list[temp].heros_agility = 23;
@@ -1728,6 +1732,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	}
 
+	akikosuu = partymax - partyNinzuDone;
 
 	partyNarabijyun[0] = 0; // 
 	partyNarabijyun[1] = 1;
@@ -3641,24 +3646,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int shift = 2;
 				int shiftAndTemp =0;
 
-				for (int tempRow = 0; tempRow <= 1; tempRow++) {
-					shiftAndTemp = shift + tempRow;
-					if (whomTargetIDhikae == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
-						
-						heros_def_list[shiftAndTemp].PartyIn = 1;
+				if (akikosuu >= 1) {
+					for (int tempRow = 0; tempRow <= 1; tempRow++) {
+						shiftAndTemp = shift + tempRow;
+						if (whomTargetIDhikae == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
 
-						// 下記の順序を守ること。守らないとバグ。
-						partyNarabijyun[akiHairetu[0]] = shiftAndTemp; // 先に代入
-						partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+							heros_def_list[shiftAndTemp].PartyIn = 1;
 
-						akiHairetu[0] = akiHairetu[1];
-						// akiHairetu[skip]
-						uwagaki = 1;
+							// 下記の順序を守ること。守らないとバグ。
+							partyNarabijyun[akiHairetu[0]] = shiftAndTemp; // 先に代入
+							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
 
-						mode_scene = MODE_Guild_Responce;
+							if (akikosuu >= 1) {
+								akiHairetu[0] = akiHairetu[1];
+							}
+							// akiHairetu[skip]
+							uwagaki = 1;
+
+							akikosuu = akikosuu - 1;
+
+							mode_scene = MODE_Guild_Responce;
+						}
+
 					}
 
+					if (akikosuu <= 0) {
+					
+						mode_scene = MODE_Guild;
+					
+					
+					
+					
+					}
+
+
+
 				}
+
+
+
 
 
 				if (whomTargetIDhikae == 2) {					
@@ -3802,7 +3828,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				partyNarabijyun[whomTargetIDparty] = -1;
 
 
-
+				akikosuu = akikosuu + 1;
 
 				
 
