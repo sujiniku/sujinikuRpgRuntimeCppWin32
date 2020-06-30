@@ -763,7 +763,7 @@ void hikaesai(HDC hdc) {
 	TextOut(hdc, offsetXtemp1, offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 	
-	for (int temp = 2; temp <= tourokuNakama; temp = temp + 1) {
+	for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 		if (heros_def_list[temp].PartyIn == 0) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
 		}
@@ -3825,8 +3825,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 				partyNinzuTemp = partyNinzuTemp - 1;
 
-				partyNarabijyun[whomTargetIDparty] = -1;
-
+				heros_def_list[partyNarabijyun[whomTargetIDparty]].PartyIn = 0; // 先に控えをコピーしてから（次行）
+				partyNarabijyun[whomTargetIDparty] = -1; // パーティ側をカラにする。
+				
 
 				akikosuu = akikosuu + 1;
 
