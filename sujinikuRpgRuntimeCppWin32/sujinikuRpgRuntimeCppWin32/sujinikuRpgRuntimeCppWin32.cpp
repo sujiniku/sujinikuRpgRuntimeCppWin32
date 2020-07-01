@@ -758,9 +758,9 @@ void hikaesai(HDC hdc) {
 
 	BrushPink_set(hdc);
 	Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetIDhikae),
-		150, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
+		150+30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
 
-	int offsetXtemp1 = 50; // カーソル高さと同じなのは偶然。
+	int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 	int yspan1 = carsoruHigh;
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
@@ -773,7 +773,7 @@ void hikaesai(HDC hdc) {
 		}
 
 		if (heros_def_list[temp].PartyIn == 1) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【出動中】"));			
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出動中: %s"), heros_def_list[temp].heros_name);
 		}
 
 		TextOut(hdc, offsetXtemp1, 30-10 + yspan1 * (temp) + 120 , mojibuf, lstrlen(mojibuf));
