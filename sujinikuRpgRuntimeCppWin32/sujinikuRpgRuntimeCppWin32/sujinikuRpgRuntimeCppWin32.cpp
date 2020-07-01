@@ -769,15 +769,15 @@ void hikaesai(HDC hdc) {
 		}
 
 		if (heros_def_list[temp].PartyIn == 1) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));			
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【出動中】"));			
 		}
 
-		TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp) + 120 , mojibuf, lstrlen(mojibuf));
 
 	}
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-	TextOut(hdc, offsetXtemp1, 30 + yspan1 * (tourokuNakama + 1), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1, 30 + yspan1 * (tourokuNakama + 1) +120 , mojibuf, lstrlen(mojibuf));
 
 }
 
@@ -2687,15 +2687,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
-			// デバッグ用
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks0 %d"), partyNarabijyun[0] );
-			TextOut(hdc, 50, 1 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks1 %d"), partyNarabijyun[1]);
-			TextOut(hdc, 50, 2 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ks2 %d"), partyNarabijyun[2]);
-			TextOut(hdc, 50, 3 * 30 + 80 + 50 * (tourokuNakama ), mojibuf, lstrlen(mojibuf));
 
 		}
 
@@ -3642,52 +3633,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				// 
-				int shift = 2;
-				int shiftAndTemp =0;
+				if (akikosuu >= 1) {  // パーティ側の空き個数
 
-				if (akikosuu >= 1) {
-					for (int tempRow = 0; tempRow <= 1; tempRow++) {
-						shiftAndTemp = shift + tempRow;
-						if (whomTargetIDhikae == tempRow && heros_def_list[shiftAndTemp].PartyIn == 0) {
+					if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
-							heros_def_list[shiftAndTemp].PartyIn = 1;
+						heros_def_list[whomCHARA - 1].PartyIn = 1;
 
-							// 下記の順序を守ること。守らないとバグ。
-							partyNarabijyun[akiHairetu[0]] = shiftAndTemp; // 先に代入
-							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+						// 仕様変更により、順番を変えてもバグらない。
+						// 下記の順序を守ること・・・だった。守らないとバグだった。
+						partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
+						partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
 
-							if (akikosuu >= 1) {
-								akiHairetu[0] = akiHairetu[1];
-							}
-							// akiHairetu[skip]
-							uwagaki = 1;
 
-							akikosuu = akikosuu - 1;
+						akiHairetu[0] = akiHairetu[1];
 
-							mode_scene = MODE_Guild_Responce;
-						}
+						uwagaki = 1;
 
+						akikosuu = akikosuu - 1;
+
+						mode_scene = MODE_Guild_Responce;
 					}
+
+
 
 					if (akikosuu <= 0) {
-					
+
 						mode_scene = MODE_Guild;
-					
-					
-					
-					
+
+
 					}
 
 
-
+	
 				}
 
 
 
 
 
-				if (whomTargetIDhikae == 2) {					
+				if (whomTargetIDhikae == tourokuNakama+1 ) {			
 					// partyNinzuDone = partyNinzuDone -1;
 
 					uwagaki = 1;
@@ -3741,8 +3725,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > hikaeNinzu + 1) {
-					whomCHARA = hikaeNinzu + 1;
+				if (whomCHARA > tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -3760,10 +3744,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= hikaeNinzu + 1) {
-					whomCHARA = hikaeNinzu + 1;
+				if (whomCHARA >= tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
 				}
-				else if (whomCHARA < 1) {
+				else if (whomCHARA < 1 ) {
 					whomCHARA = 1;
 				}
 				whomTargetIDhikae = whomCHARA - 1;
