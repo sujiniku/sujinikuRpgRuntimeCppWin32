@@ -53,7 +53,7 @@ using namespace Gdiplus;
 
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
-#define MODE_Guild 10000 // ギルド処理
+#define MODE_Guild_Main 10000 // ギルド処理
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
 
@@ -147,7 +147,7 @@ enum resource_embedded_flag resource_embedded_var = off;
 
 
 int makeNakamaNinzu = 5; // プログラマーの作った仲間キャラの人数
-int tourokuNakama = 3; // 実際の人数より1少ない // ギルドに登録されてる仲間の人数なので変数
+int tourokuNakama = 4-1; // 実際の人数より1少ない // ギルドに登録されてる仲間の人数なので変数
 
 
 int partyNinzuDone = 2, enemyNinzu = 1;
@@ -163,6 +163,9 @@ int hikaeNarabijyun[10] = { 1,2,3, -1, -1 }; // ギルドの処理に使う予�
 
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
+
+
+int guildResFlag = 0;
 
 struct item_def
 {
@@ -751,16 +754,17 @@ void hikaesai(HDC hdc) {
 	Rectangle(hdc, 10, offsetYtemp1,
 		offsetYtemp1 + 100, 400);
 
+	int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
 
 	BrushPink_set(hdc);
-	Rectangle(hdc, 20, offsetYtemp1 + 10 + 60 * (whomTargetIDhikae),
-		150, offsetYtemp1 + 60 + 60 * (whomTargetIDhikae));
+	Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetIDhikae),
+		150, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
 
-	int offsetXtemp1 = 50;
-	int yspan1 = 50;
+	int offsetXtemp1 = 50; // カーソル高さと同じなのは偶然。
+	int yspan1 = carsoruHigh;
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
-	TextOut(hdc, offsetXtemp1, offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 	
 	for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
@@ -772,12 +776,13 @@ void hikaesai(HDC hdc) {
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【出動中】"));			
 		}
 
-		TextOut(hdc, offsetXtemp1, 30 + yspan1 * (temp) + 120 , mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, offsetXtemp1, 30-10 + yspan1 * (temp) + 120 , mojibuf, lstrlen(mojibuf));
 
 	}
 
+	// temp == tourokuNakama + 1    に相当
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-	TextOut(hdc, offsetXtemp1, 30 + yspan1 * (tourokuNakama + 1) +120 , mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1, 30-10 + yspan1 * (tourokuNakama + 1) +120 , mojibuf, lstrlen(mojibuf));
 
 }
 
@@ -809,10 +814,10 @@ void parsai(HDC hdc) {
 	int yspan1 = 50;
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("パーティメンバー"));
-	TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp2 + 30, -10 + offsetYtemp2 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 
-	//int skipF = 2;
+
 	for (int temp = 0; temp <= partymax -1 ; temp = temp + 1) {
 
 		if (partyNarabijyun[temp] >= 0) {
@@ -826,16 +831,6 @@ void parsai(HDC hdc) {
 		TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
 
 	}
-
-	// 以上パーティメンバー側の再描画
-
-	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("テスト用")); // 読み込める
-	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), partyNarabijyun[3]);
-	
-	
-	//_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[4].heros_name); // 4だと読み込めない
-	//TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
-
 
 	// 検索用 aaaaaaaaaaaaa
 
@@ -1103,7 +1098,7 @@ void check_encount_guild(HWND hWnd) {
 
 
 
-		mode_scene = MODE_Guild;
+		mode_scene = MODE_Guild_Main;
 
 
 
@@ -2666,7 +2661,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		
-		if (mode_scene == MODE_Guild) {
+		if (mode_scene == MODE_Guild_Main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -2717,12 +2712,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			// ここが上書きされている。
-			int skipF = 2;
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae + skipF].heros_name);
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
 			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
 
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
-			mode_scene = MODE_Guild;
+			mode_scene = MODE_Guild_Main;
 		}
 
 
@@ -3626,14 +3622,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		
-		if (mode_scene == MODE_Guild && key_remain > 0) {
+		if (mode_scene == MODE_Guild_Main && key_remain > 0) {
 			switch (wParam)
 			{
 			case 'Z':
 			{
 				key_remain = 0;
 
-				if (akikosuu >= 1) {  // パーティ側の空き個数
+				if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama ) {  // パーティ側の空き個数
 
 					if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
@@ -3651,16 +3647,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						akikosuu = akikosuu - 1;
 
-						mode_scene = MODE_Guild_Responce;
+						mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+
+						// InvalidateRect(hWnd, NULL, FALSE);
+						// UpdateWindow(hWnd);
 					}
 
 
 
 					if (akikosuu <= 0) {
 
-						mode_scene = MODE_Guild;
+						mode_scene = MODE_Guild_Main;
 
-
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
 					}
 
 
@@ -3731,7 +3731,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
 				}
-				whomTargetIDhikae = whomCHARA - 1;
+				whomTargetIDhikae = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3758,6 +3758,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 
+
+			case VK_RIGHT:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = tourokuNakama + 2;
+
+				if (whomCHARA >= tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetIDhikae = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
+
+			case VK_LEFT:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = 1;
+
+				if (whomCHARA >= tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetIDhikae = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
 			} // switch (wParam) の終わり
 		} // ギルドの終わり
 
@@ -3780,15 +3822,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				Akihaikeisan();
 
-
-
-
-				mode_scene = MODE_Guild;
-
-
-
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
+
+
+				mode_scene = MODE_Guild_Main;
+
+
+
+				// InvalidateRect(hWnd, NULL, FALSE);
+				// UpdateWindow(hWnd);
 
 			}
 			break;
@@ -3825,7 +3868,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-				mode_scene = MODE_Guild;
+				mode_scene = MODE_Guild_Main;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3838,7 +3881,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				mode_scene = MODE_Guild;
+				mode_scene = MODE_Guild_Main;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -3885,6 +3928,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				UpdateWindow(hWnd);
 			}
 			break;
+
+
 
 			}
 		}
