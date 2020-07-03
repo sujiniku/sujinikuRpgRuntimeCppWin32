@@ -159,6 +159,8 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 
 
 int hikaeNinzu = 2;
+int hikaeNinzuTemp = 2;
+
 
 int partyNarabijyun[5] = { 1,2,3,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
 int hikaeNarabijyun[10] = { 1,2,3, -1, -1 }; // ギルドの処理に使う予定
@@ -793,8 +795,7 @@ void hikaesai(HDC hdc) {
 	if (uwadumeFlag == 1) {
 
 		int skip = 0;
-		for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-
+		for (int temp = 0; temp <= hikaeNinzuTemp; temp = temp + 1) { // 2項目が hikaeNinzuTemp;
 
 			if (hikaeNarabijyun[temp] > 0) {
 
@@ -1141,15 +1142,9 @@ void check_encount_guild(HWND hWnd) {
 		Akihaikeisan();
 		
 
-
-		// 控えメンバーの配列処理の準備テスト
+		// 控えメンバーの配列処理の準備
 		{
-
-
 			if (uwadumeFlag == 1) {
-
-
-				// if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
 				int skip = 0;
 				for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
@@ -1166,11 +1161,7 @@ void check_encount_guild(HWND hWnd) {
 				}
 
 					hikaeNarabijyun[skip] = -1;
-
-
 			}
-
-
 		}
 
 
@@ -3706,68 +3697,116 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 
 				if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
+	
 
-	// こっちはパーティ側の上書き用
-					if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
-
-						heros_def_list[whomCHARA - 1].PartyIn = 1;
-
-						// 仕様変更により、順番を変えてもバグらない。
-						// 下記の順序を守ること・・・だった。守らないとバグだった。
-						partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
-						partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+					if (uwadumeFlag == 0) {
 
 
-						akiHairetu[0] = akiHairetu[1];
+						// こっちはパーティ側の上書き用
+						if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
-						uwagaki = 1;
+							heros_def_list[whomCHARA - 1].PartyIn = 1;
 
-						akikosuu = akikosuu - 1;
+							// 仕様変更により、順番を変えてもバグらない。
+							// 下記の順序を守ること・・・だった。守らないとバグだった。
+							partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
+							// 人数の更新
+							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+							hikaeNinzuTemp = hikaeNinzuTemp - 1;
 
-						mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+							akiHairetu[0] = akiHairetu[1];
 
-						// InvalidateRect(hWnd, NULL, FALSE);
-						// UpdateWindow(hWnd);
-					}
+							uwagaki = 1;
+
+							akikosuu = akikosuu - 1;
+
+							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
 
 
-					// こっちは控えメンバー用
-					if (uwadumeFlag == 1) {
+						if (akikosuu <= 0) {
 
-						// if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
+							mode_scene = MODE_Guild_Main;
 
-						int skip = 0;
-						for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-
-							if (heros_def_list[temp].PartyIn == 0) {
-								hikaeNarabijyun[skip] = temp ;
-								skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
-							}
-
-							if (heros_def_list[temp].PartyIn == 1) {
-								// 何もしない
-							}
-
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
 						}
 
 
 
+					}
+
+
+
+					if (uwadumeFlag == 1) {
+
+
+						// こっちはパーティ側の上書き用
+						if (heros_def_list[hikaeNarabijyun[whomCHARA - 1] ].PartyIn == 0) {
+
+							heros_def_list[hikaeNarabijyun[whomCHARA - 1] ].PartyIn = 1;
+
+							// 仕様変更により、順番を変えてもバグらない。
+							// 下記の順序を守ること・・・だった。守らないとバグだった。
+							partyNarabijyun[akiHairetu[0]] = hikaeNarabijyun[whomCHARA - 1] ; // 先に代入
+							// 人数の更新
+							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+							hikaeNinzuTemp = hikaeNinzuTemp - 1;
+
+
+							akiHairetu[0] = akiHairetu[1];
+
+							uwagaki = 1;
+
+							akikosuu = akikosuu - 1;
+
+							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+
+
+						if (akikosuu <= 0) {
+
+							mode_scene = MODE_Guild_Main;
+
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+
+
+						// ギルド突入時にも処理しているが、突入処理はここでは不要なので、こっちでも別途、実装。
+						// 控えメンバー側のリスト描画
+						{
+
+								int skip = 0;
+								for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+
+									if (heros_def_list[temp].PartyIn == 0) {
+										hikaeNarabijyun[skip] = temp;
+										skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
+									}
+
+									if (heros_def_list[temp].PartyIn == 1) {
+										// 何もしない
+									}
+
+								}
+
+								hikaeNarabijyun[skip] = -1;
+							
+						}
 
 
 
 					}
-					// 以上、デバッグ用
 
 
 
-					if (akikosuu <= 0) {
-
-						mode_scene = MODE_Guild_Main;
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-					}
-	
 				}
 
 
@@ -3822,38 +3861,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			case VK_UP:
 			{
-				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
-				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > tourokuNakama + 2) {
-					whomCHARA = tourokuNakama + 2;
-				}
-				else if (whomCHARA < 1) {
-					whomCHARA = 1;
-				}
-				whomTargetIDhikae = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+				
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+					// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+					whomCHARA = whomCHARA - 1;
+
+					if (whomCHARA > tourokuNakama + 2) {
+						whomCHARA = tourokuNakama + 2;
+					}
+					else if (whomCHARA < 1) {
+						whomCHARA = 1;
+					}
+					whomTargetIDhikae = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				
+
+
 			}
 
 			break;
 
 			case VK_DOWN:
 			{
-				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
-				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= tourokuNakama + 2) {
-					whomCHARA = tourokuNakama + 2;
-				}
-				else if (whomCHARA < 1 ) {
-					whomCHARA = 1;
-				}
-				whomTargetIDhikae = whomCHARA - 1;
+					// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+					whomCHARA = whomCHARA + 1;
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+					if (whomCHARA >= tourokuNakama + 2) {
+						whomCHARA = tourokuNakama + 2;
+					}
+					else if (whomCHARA < 1) {
+						whomCHARA = 1;
+					}
+					whomTargetIDhikae = whomCHARA - 1;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+
+
+
+
 			}
 			break;
 
