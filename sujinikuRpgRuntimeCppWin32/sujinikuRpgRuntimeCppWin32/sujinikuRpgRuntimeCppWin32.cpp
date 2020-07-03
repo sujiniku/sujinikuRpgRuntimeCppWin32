@@ -159,7 +159,6 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 
 
 int hikaeNinzu = 2;
-int hikaeNinzuTemp = 2;
 
 
 int partyNarabijyun[5] = { 1,2,3,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
@@ -795,9 +794,9 @@ void hikaesai(HDC hdc) {
 	if (uwadumeFlag == 1) {
 
 		int skip = 0;
-		for (int temp = 0; temp <= hikaeNinzuTemp; temp = temp + 1) { // 2項目が hikaeNinzuTemp;
+		for (int temp = 0; temp <= hikaeNinzu; temp = temp + 1) { // 2項目が hikaeNinzu;
 
-			if (hikaeNarabijyun[temp] > 0) {
+			if (hikaeNarabijyun[temp] > -1) { // 右辺が0だと主人公が非表示になってしまう
 
 				if (heros_def_list[hikaeNarabijyun[temp]].PartyIn == 0) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
@@ -827,7 +826,14 @@ void hikaesai(HDC hdc) {
 	TextOut(hdc, offsetXtemp1+100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120-50, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[1]: %d"), hikaeNarabijyun[1]);
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+30, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+30*1, mojibuf, lstrlen(mojibuf));
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控え人数: %d"), hikaeNinzu);
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 30*2, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whomCH: %d"), whomCHARA );
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 30*3, mojibuf, lstrlen(mojibuf));
 
 
 
@@ -1127,6 +1133,36 @@ void Akihaikeisan() {
 	}
 
 }
+
+
+void hikaeKeisan() {
+	// これが加わる
+	int skip = 0; // remove 命令でもskipを流用する。
+	{
+		for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+
+			if (heros_def_list[temp].PartyIn == 0) {
+				hikaeNarabijyun[skip] = temp;
+				skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
+			}
+
+			if (heros_def_list[temp].PartyIn == 1) {
+				// 何もしない
+			}
+
+		}
+
+		// hikaeNinzu = tourokuNakama - skip;
+		hikaeNarabijyun[skip] = -1;
+
+	}
+
+}
+
+
+
+
+
 
 void check_encount_guild(HWND hWnd) {
 
@@ -3696,36 +3732,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
+
 	
 
 					if (uwadumeFlag == 0) {
 
-
+						if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
 						// こっちはパーティ側の上書き用
-						if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
+							if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
-							heros_def_list[whomCHARA - 1].PartyIn = 1;
+								heros_def_list[whomCHARA - 1].PartyIn = 1;
 
-							// 仕様変更により、順番を変えてもバグらない。
-							// 下記の順序を守ること・・・だった。守らないとバグだった。
-							partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
-							// 人数の更新
-							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
-							hikaeNinzuTemp = hikaeNinzuTemp - 1;
+								// 仕様変更により、順番を変えてもバグらない。
+								// 下記の順序を守ること・・・だった。守らないとバグだった。
+								partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
+								// 人数の更新
+								partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+								hikaeNinzu = hikaeNinzu - 1;
 
-							akiHairetu[0] = akiHairetu[1];
+								akiHairetu[0] = akiHairetu[1];
 
-							uwagaki = 1;
+								uwagaki = 1;
 
-							akikosuu = akikosuu - 1;
+								akikosuu = akikosuu - 1;
 
-							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+								mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
 
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
+								InvalidateRect(hWnd, NULL, FALSE);
+								UpdateWindow(hWnd);
+							}
+
 						}
-
 
 						if (akikosuu <= 0) {
 
@@ -3736,6 +3773,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 
 
+						if (whomTargetIDhikae == tourokuNakama + 1) {
+							// partyNinzuDone = partyNinzuDone -1;
+
+							uwagaki = 1;
+
+							mode_scene = MODE_Guild_Remove;
+						}
 
 					}
 
@@ -3743,30 +3787,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					if (uwadumeFlag == 1) {
 
-
-						// こっちはパーティ側の上書き用
-						if (heros_def_list[hikaeNarabijyun[whomCHARA - 1] ].PartyIn == 0) {
-
-							heros_def_list[hikaeNarabijyun[whomCHARA - 1] ].PartyIn = 1;
-
-							// 仕様変更により、順番を変えてもバグらない。
-							// 下記の順序を守ること・・・だった。守らないとバグだった。
-							partyNarabijyun[akiHairetu[0]] = hikaeNarabijyun[whomCHARA - 1] ; // 先に代入
-							// 人数の更新
-							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
-							hikaeNinzuTemp = hikaeNinzuTemp - 1;
-
-
-							akiHairetu[0] = akiHairetu[1];
+						// パーティ加入すると控え人数が変わるので、移動先モード判定は先に行う必要あり。
+						if (whomCHARA == hikaeNinzu+1 ) {
 
 							uwagaki = 1;
 
-							akikosuu = akikosuu - 1;
+							mode_scene = MODE_Guild_Remove;
 
-							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
 
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
+							break; // 下記の加入モードをbreakで省略しないと行けないので、ここにbreak
+						}
+
+
+						// 以下、メインモード。
+
+						if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
+						// こっちはパーティ側の上書き用
+							if (heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn == 0) {
+
+								heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn = 1;
+
+								// 仕様変更により、順番を変えてもバグらない。
+								// 下記の順序を守ること・・・だった。守らないとバグだった。
+								partyNarabijyun[akiHairetu[0]] = hikaeNarabijyun[whomCHARA - 1]; // 先に代入
+								// 人数の更新
+								partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+
+
+								hikaeNinzu = hikaeNinzu - 1;
+								
+
+
+								akiHairetu[0] = akiHairetu[1];
+
+								uwagaki = 1;
+
+								akikosuu = akikosuu - 1;
+
+								mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+
+								InvalidateRect(hWnd, NULL, FALSE);
+								UpdateWindow(hWnd);
+							}
 						}
 
 
@@ -3781,34 +3843,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						// ギルド突入時にも処理しているが、突入処理はここでは不要なので、こっちでも別途、実装。
 						// 控えメンバー側のリスト描画
-						{
+						hikaeKeisan();
 
-								int skip = 0;
-								for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-
-									if (heros_def_list[temp].PartyIn == 0) {
-										hikaeNarabijyun[skip] = temp;
-										skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
-									}
-
-									if (heros_def_list[temp].PartyIn == 1) {
-										// 何もしない
-									}
-
-								}
-
-								hikaeNarabijyun[skip] = -1;
-							
-						}
 
 
 
 					}
+				
 
-
-
-				}
-
+									/*
+				
 
 				if (whomTargetIDhikae == tourokuNakama+1 ) {			
 					// partyNinzuDone = partyNinzuDone -1;
@@ -3817,10 +3861,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 					mode_scene = MODE_Guild_Remove;
 				}
-
+								*/
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
+
 
 			}
 			break;
@@ -3998,31 +4043,73 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'Z':
 			{
-				key_remain = 0;
-
-				
-				partyNinzuTemp = partyNinzuTemp - 1;
-
-				heros_def_list[partyNarabijyun[whomTargetIDparty]].PartyIn = 0; // 先に控えをコピーしてから（次行）
-				partyNarabijyun[whomTargetIDparty] = -1; // パーティ側をカラにする。
-				
-
-				akikosuu = akikosuu + 1;
-
-				
+				if (uwadumeFlag == 0){
+					key_remain = 0;
 
 
-				Akihaikeisan();
+					partyNinzuTemp = partyNinzuTemp - 1;
 
-	
+					heros_def_list[partyNarabijyun[whomTargetIDparty]].PartyIn = 0; // 先に控えをコピーしてから（次行）
+					partyNarabijyun[whomTargetIDparty] = -1; // パーティ側をカラにする。
+
+
+					akikosuu = akikosuu + 1;
+
+
+					Akihaikeisan();
+
+
+					hikaeNinzu = hikaeNinzu + 1;
+
+					mode_scene = MODE_Guild_Main;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+		
+				}
 
 
 
 
-				mode_scene = MODE_Guild_Main;
+				if (uwadumeFlag == 1) {
+					key_remain = 0;
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+
+					partyNinzuTemp = partyNinzuTemp - 1;
+
+					heros_def_list[partyNarabijyun[whomTargetIDparty]].PartyIn = 0; // 先に控えをコピーしてから（次行）
+					partyNarabijyun[whomTargetIDparty] = -1; // パーティ側をカラにする。
+
+
+					akikosuu = akikosuu + 1;
+
+
+					Akihaikeisan();
+
+
+					hikaeNinzu = hikaeNinzu + 1;
+					// これが加わる
+					hikaeKeisan();
+
+
+					mode_scene = MODE_Guild_Main;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+				}
+
+
+
+
+
+
+
+
+
+
+
+
 
 			}
 			break;
