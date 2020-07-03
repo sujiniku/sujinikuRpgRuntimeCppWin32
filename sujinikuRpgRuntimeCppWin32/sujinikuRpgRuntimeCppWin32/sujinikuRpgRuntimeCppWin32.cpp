@@ -61,6 +61,8 @@ const int partymax = 3; // 本当は4だけどテストのため1時的に3
 int whatuse = 0;
 
 
+int uwadumeFlag = 1; // 1なら上詰めする。0ならオフ。デバッグモード用 // バグッたら0に戻すこと
+
 int akikosuu ;
 int akiHairetu[5];
 int itemHairetu[8];
@@ -766,23 +768,67 @@ void hikaesai(HDC hdc) {
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
 	TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
-	
-	for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-		if (heros_def_list[temp].PartyIn == 0) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+	if (uwadumeFlag == 0) {
+		for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+			if (heros_def_list[temp].PartyIn == 0) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+			}
+
+			if (heros_def_list[temp].PartyIn == 1) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出動中: %s"), heros_def_list[temp].heros_name);
+			}
+
+			TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (temp)+120, mojibuf, lstrlen(mojibuf));
+
 		}
 
-		if (heros_def_list[temp].PartyIn == 1) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出動中: %s"), heros_def_list[temp].heros_name);
-		}
 
-		TextOut(hdc, offsetXtemp1, 30-10 + yspan1 * (temp) + 120 , mojibuf, lstrlen(mojibuf));
+		// temp == tourokuNakama + 1    に相当
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
 
 	}
 
-	// temp == tourokuNakama + 1    に相当
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-	TextOut(hdc, offsetXtemp1, 30-10 + yspan1 * (tourokuNakama + 1) +120 , mojibuf, lstrlen(mojibuf));
+
+	if (uwadumeFlag == 1) {
+
+		int skip = 0;
+		for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+
+
+			if (hikaeNarabijyun[temp] > 0) {
+
+				if (heros_def_list[hikaeNarabijyun[temp]].PartyIn == 0) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
+					skip = skip + 1;
+				}
+
+				if (heros_def_list[hikaeNarabijyun[temp]].PartyIn == 1) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("編成中: %s"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
+				} // デバッグ用にメッセージを「編成」に変えてる。
+
+				TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (temp)+120, mojibuf, lstrlen(mojibuf));
+
+			}
+
+		}
+
+
+		// temp == tourokuNakama + 1    に相当
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip ) + 120, mojibuf, lstrlen(mojibuf));
+
+
+	}
+
+	// デバッグ文
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[0]: %d"), hikaeNarabijyun[0]);
+	TextOut(hdc, offsetXtemp1+100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120-50, mojibuf, lstrlen(mojibuf));
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[1]: %d"), hikaeNarabijyun[1]);
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+30, mojibuf, lstrlen(mojibuf));
+
+
 
 }
 
@@ -1096,6 +1142,36 @@ void check_encount_guild(HWND hWnd) {
 		
 
 
+		// 控えメンバーの配列処理の準備テスト
+		{
+
+
+			if (uwadumeFlag == 1) {
+
+
+				// if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
+
+				int skip = 0;
+				for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+
+					if (heros_def_list[temp].PartyIn == 0) {
+						hikaeNarabijyun[skip] = temp ;
+						skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
+					}
+
+					if (heros_def_list[temp].PartyIn == 1) {
+						// 何もしない
+					}
+
+				}
+
+					hikaeNarabijyun[skip] = -1;
+
+
+			}
+
+
+		}
 
 
 		mode_scene = MODE_Guild_Main;
@@ -3629,8 +3705,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama ) {  // パーティ側の空き個数
+				if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
 
+	// こっちはパーティ側の上書き用
 					if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
 						heros_def_list[whomCHARA - 1].PartyIn = 1;
@@ -3654,6 +3731,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 
 
+					// こっちは控えメンバー用
+					if (uwadumeFlag == 1) {
+
+						// if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
+
+						int skip = 0;
+						for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+
+							if (heros_def_list[temp].PartyIn == 0) {
+								hikaeNarabijyun[skip] = temp ;
+								skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
+							}
+
+							if (heros_def_list[temp].PartyIn == 1) {
+								// 何もしない
+							}
+
+						}
+
+
+
+
+
+
+					}
+					// 以上、デバッグ用
+
+
 
 					if (akikosuu <= 0) {
 
@@ -3662,13 +3767,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}
-
-
 	
 				}
-
-
-
 
 
 				if (whomTargetIDhikae == tourokuNakama+1 ) {			
