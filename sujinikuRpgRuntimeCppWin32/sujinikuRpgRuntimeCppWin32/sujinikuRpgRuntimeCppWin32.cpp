@@ -57,6 +57,12 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
 
+
+HBITMAP mae_haikei;
+HDC mae_dc;
+
+
+
 const int partymax = 3; // 本当は4だけどテストのため1時的に3
 int whatuse = 0;
 
@@ -646,6 +652,32 @@ void Draw_map(HDC hdc) {
 	// 裏画面から本画面に転送
 	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
 
+	// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+
+
+	/*
+
+	mae_haikei = hbmp_what;//  (HBITMAP)hbackDC;
+
+	mae_dc = CreateCompatibleDC(hdc); // hbackDC
+
+	SelectObject(hbackDC, mae_haikei);
+	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+	//BitBlt(mae_dc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+
+	// テスト用
+	BitBlt(hdc, 700, 0, 0, 500, mae_dc, 0, 0, SRCCOPY);
+
+
+		*/
+
+
+
+
+
 	hbmp = NULL; // これで初期化しないとバグり、何故かhbmp_MapTransにhbmp_enemyまたは主人公の向きが入ってる。
 
 
@@ -752,6 +784,26 @@ static struct heros_def heros_def_list[8];
 
 void hikaesai(HDC hdc) {
 
+	Draw_map(hdc); // 応急処置。できれば、hbitmapuをグローバル変数にしたいが、方法が分からない。
+	// もし処理速度に問題が生じるようなら、背景色を（マップ背景描画をやめて）黒に変更。
+
+
+	/*
+
+	mae_dc = CreateCompatibleDC(hdc);
+	
+	HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル
+	SelectObject(hbackDC, mae_haikei);
+	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+	// SelectObject(mae_dc , mae_haikei  ); // これを消すと、ドットが表示されない。
+	// // BitBlt(hbackDC, 320 + (MapTrans_position_x - start_x) * 32, 270 + (MapTrans_position_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+
+	BitBlt(hdc, 0, 0, 700, 500, mae_dc, 0, 0, SRCCOPY);
+		*/
+
+
+
 	int offsetYtemp1 = 100;
 	SelectObject(hdc, blue_thin_1);
 	Rectangle(hdc, 10, offsetYtemp1,
@@ -826,15 +878,17 @@ void hikaesai(HDC hdc) {
 	TextOut(hdc, offsetXtemp1+100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120-50, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[1]: %d"), hikaeNarabijyun[1]);
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+30*1, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+20*1, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控え人数: %d"), hikaeNinzu);
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 30*2, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20*2, mojibuf, lstrlen(mojibuf));
 
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whomCH: %d"), whomCHARA );
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 30*3, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20*3, mojibuf, lstrlen(mojibuf));
 
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("P人数: %d"), partyNinzuTemp );
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20 * 4, mojibuf, lstrlen(mojibuf));
 
 
 }
@@ -2774,12 +2828,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BrushPink_set(hdc);
 			//	Rectangle(hdc, 10, 100,	300, 200);
 
-			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
-			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
-
 
 			hikaesai(hdc);
 			parsai(hdc);
+
+
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
@@ -4135,8 +4190,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > hikaeNinzu + 1) {
-					whomCHARA = hikaeNinzu + 1;
+				if (whomCHARA > partymax) {
+					whomCHARA = partymax;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -4154,8 +4209,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= hikaeNinzu + 1) {
-					whomCHARA = hikaeNinzu + 1;
+				if (whomCHARA > partymax) {
+					whomCHARA = partymax;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
