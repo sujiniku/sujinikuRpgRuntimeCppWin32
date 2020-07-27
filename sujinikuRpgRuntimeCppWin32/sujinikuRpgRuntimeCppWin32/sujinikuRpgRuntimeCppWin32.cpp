@@ -72,6 +72,8 @@ HDC mae_dc;
 const int partymax = 3; // 本当は4だけどテストのため1時的に3
 int whatuse = 0;
 
+int beforeselect=1; // なんらかの選択肢で直前に選んだ選択肢の番号。画面更新用に使う。
+
 
 int whatedit = 0; // 装備コマンドなど、編集をするいろいろな作業用
 
@@ -2968,60 +2970,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 15, soubiYbase + soubiYper * 0, mojibuf,
                     lstrlen(mojibuf));
 
-			for (int temp = 1; temp <= 3; temp = temp + 1) {
-                        
-						if (temp == 1) {
-                                lstrcpy(mojibuf1, TEXT("右手"));
+			
+			for (int temp = 1; temp <= 7; temp = temp + 1) {
+
+                            if (temp == 1) {
+                                lstrcpy(mojibuf1, TEXT("武器"));
                                 lstrcpy(mojibuf2,
                                         weapon_def_list[0].weapon_name);
                             }
 
-						if (temp == 2) {
-                                lstrcpy(mojibuf1, TEXT("左手"));
+                            if (temp == 2) {
+                                lstrcpy(mojibuf1, TEXT("盾"));
                                 lstrcpy(mojibuf2, TEXT("木の盾"));
+                            }
 
-						}
-
-						
-						if (temp == 3) {
+                            if (temp == 3) {
                                 lstrcpy(mojibuf1, TEXT("頭"));
                                 lstrcpy(mojibuf2, TEXT("--------"));
+                            }
 
-						}
-
-			
-
+                            if (temp == 4) {
+                                lstrcpy(mojibuf1, TEXT("身体"));
+                                lstrcpy(mojibuf2, TEXT("--------"));
+                            }
 						
-					TextOut(hdc, 15, soubiYbase + soubiYper * temp,
+							if (temp == 5) {
+                                lstrcpy(mojibuf1, TEXT("腕"));
+                                lstrcpy(mojibuf2, TEXT("--------"));
+                            }
+														
+							if (temp == 6) {
+                                lstrcpy(mojibuf1, TEXT("装飾品1"));
+                                lstrcpy(mojibuf2, TEXT("--------"));
+                            }
+
+
+							if (temp == 7) {
+                                lstrcpy(mojibuf1, TEXT("装飾品2"));
+                                lstrcpy(mojibuf2, TEXT("--------"));
+                            }
+
+
+                            TextOut(hdc, 15, soubiYbase + soubiYper * temp,
                                     mojibuf1, lstrlen(mojibuf1));
 
                             TextOut(hdc, 90, soubiYbase + soubiYper * temp,
                                     mojibuf2, lstrlen(mojibuf2));
-
-
+                    
 			}
-
-
-
-
-
-
-
-			lstrcpy(mojibuf, TEXT("胴"));
-                        TextOut(hdc, 15, soubiYbase + soubiYper * 4, mojibuf,
-                                lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("腕"));
-                        TextOut(hdc, 15, soubiYbase + soubiYper * 5, mojibuf,
-                                lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("装飾品1"));
-            TextOut(hdc, 15, soubiYbase + soubiYper * 6, mojibuf,
-                                lstrlen(mojibuf));
-			            			
-			lstrcpy(mojibuf, TEXT("装飾品2"));
-            TextOut(hdc, 15, soubiYbase + soubiYper * 7, mojibuf,
-                                lstrlen(mojibuf));
 
 
 			// 背景の青
@@ -4084,6 +4080,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         whomTargetID = whomCHARA - 1;
 
 						mode_scene = MODE_EQUIP_EDIT;
+                        beforeselect = 0;
 												
 						InvalidateRect(hWnd, NULL,   FALSE);                        
 						UpdateWindow(hWnd);
@@ -4181,9 +4178,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             whatedit = 0;
                         }
                         
+						if (whatedit != beforeselect) {
+                            InvalidateRect(hWnd, NULL, FALSE);
+                            UpdateWindow(hWnd);
+                        }
+						
+						beforeselect = whatedit;
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        UpdateWindow(hWnd);
+
                     }
 
                     break;
@@ -4200,9 +4202,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             whatedit = 0;
                         }
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        UpdateWindow(hWnd);
-                    } break;
+						if (whatedit != beforeselect) {
+                            InvalidateRect(hWnd, NULL, FALSE);
+                            UpdateWindow(hWnd);
+                        }
+
+                        beforeselect = whatedit;
+
+
+
+                    } 
+								break;
                     }
 
                 } // MODE_EQUIP_EDIT の終わり
