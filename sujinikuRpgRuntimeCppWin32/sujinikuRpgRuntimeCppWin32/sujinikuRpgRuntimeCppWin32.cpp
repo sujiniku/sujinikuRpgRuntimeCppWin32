@@ -42,6 +42,9 @@ using namespace Gdiplus;
 #define MODE_ITEM_WHOM_BACK 420 // アイテム対象者の選択
 #define MODE_ITEM_WHOM_FRONT 425
 
+#define MODE_EQUIP_MAIN 430
+
+
 #define MODE_SAVE_MENU 440 // セーブメニューのモード
 #define MODE_saving_Now 445 // セーブ中
 
@@ -2805,6 +2808,113 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+		
+
+		if (mode_scene == MODE_EQUIP_MAIN) {
+                    // 装備の表示欄
+                    // メインモードは装備キャラの選択モードである
+
+                    MainGraFrontMenu(hdc);
+
+                    BrushBlue_set(hdc);
+
+                    BrushPink_set(hdc);
+
+                    // Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+                    //	100 + (selecting_mainmenu - 1) * 100, 70);
+
+                    int StatsHPbaseX = 130;
+                    int StatsHPbaseY = 130;
+                    int offsetY = 120;
+
+									
+					// 背景の青
+                    SelectObject(hdc, blue_thin_1);					
+					Rectangle(hdc, 10, 350, 500, 400);
+
+					SetBkMode(hdc, TRANSPARENT);
+                    lstrcpy(mojibuf,
+                            TEXT("装備を変更するキャラを選んでください。"));
+                    TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
+
+
+
+                    for (int j = 0; j <= partyNinzuDone - 1; ++j) {
+                        // 背景の青
+                        SelectObject(hdc, blue_thin_1);
+                        Rectangle(hdc, 10, 100 + offsetY * j, 300,
+                                  200 + offsetY * j);
+
+                        // カーソル
+                        if (whomTargetID == j) {
+                            BrushPink_set(hdc);
+
+                            Rectangle(hdc, 10 + 10,
+                                      100 + 10 + 120 * (whomTargetID), 300 - 10,
+                                      100 + 70 + 120 * (whomTargetID));
+                        }
+
+                        SetBkMode(hdc, TRANSPARENT);
+
+                        _stprintf_s(
+                            mojibuf, MAX_LENGTH, TEXT("%s"),
+                            heros_def_list[partyNarabijyun[j]].heros_name);
+                        TextOut(hdc, StatsHPbaseX,
+                                StatsHPbaseY - 25 + offsetY * j, mojibuf,
+                                lstrlen(mojibuf));
+
+                        lstrcpy(mojibuf, TEXT("HP"));
+                        TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j,
+                                mojibuf, lstrlen(mojibuf));
+
+                        _stprintf_s(
+                            mojibuf, MAX_LENGTH, TEXT("%d"),
+                            heros_def_list[partyNarabijyun[j]].heros_hp);
+                        TextOut(hdc, StatsHPbaseX + 30,
+                                StatsHPbaseY + offsetY * j, mojibuf,
+                                lstrlen(mojibuf));
+
+                        _stprintf_s(
+                            mojibuf, MAX_LENGTH, TEXT("/ %d"),
+                            heros_def_list[partyNarabijyun[j]].heros_hp_max);
+                        TextOut(hdc, StatsHPbaseX + 30 * 2,
+                                StatsHPbaseY + offsetY * j, mojibuf,
+                                lstrlen(mojibuf));
+
+                        _stprintf_s(
+                            mojibuf, MAX_LENGTH, TEXT("%d"),
+                            heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
+                        TextOut(hdc, StatsHPbaseX,
+                                StatsHPbaseY + 40 + offsetY * j, mojibuf,
+                                lstrlen(mojibuf));
+
+                        if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag ==
+                            1) {
+                            _stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
+                            TextOut(hdc, StatsHPbaseX,
+                                    StatsHPbaseY + 40 + offsetY * j, mojibuf,
+                                    lstrlen(mojibuf));
+                        }
+
+        
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene); 	
+						TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+                    }
+
+                    // そのキャラの装備項目の選択がサブモード
+
+
+
+
+
+        }
+
+
+
+
+		
+
+
 		if (mode_scene == MODE_SAVE_MENU) {
 			/* セーブの表示欄 */
 
@@ -3400,9 +3510,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				if (selecting_mainmenu == 2) {
-					MessageBox(NULL, TEXT("装備をするためのコマンド（※未実装）。"), TEXT("テスト"), MB_OK);
+					// MessageBox(NULL, TEXT("装備をするためのコマンド（※未実装）。"), TEXT("テスト"), MB_OK);
 
-					//mode_scene = MODE_ITEM_MENU;
+					mode_scene = MODE_EQUIP_MAIN;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -3413,7 +3523,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 3) {
 					MessageBox(NULL, TEXT("特技を使うためのコマンド（※未実装）。"), TEXT("テスト"), MB_OK);
 
-					//mode_scene = MODE_ITEM_MENU;
+					// mode_scene = MODE_SKILL_MAIN;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -3776,6 +3886,87 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		} // アイテム対象者フロントの終わり
+
+
+		// mode_scene = MODE_EQUIP_MAIN;
+
+				if (mode_scene == MODE_EQUIP_MAIN &&key_remain > 0) {
+
+                    int tempVal;
+
+                    switch (wParam) {
+
+                    case 'Z': {
+                        key_remain = 0;
+                        whomTargetID = whomCHARA - 1;
+
+                     if (whomTargetID == 0) {
+
+
+
+						}
+
+
+						 if (whomTargetID == 1) {
+                                                
+						 }   
+
+
+
+
+                    } // caseZ　の終わり
+
+                    break;
+
+                    case 'X':
+                        //アイテム選択画面に戻る
+                        {
+                            filterFlag = 0;
+                            mode_scene = MODE_MENU;
+
+                            InvalidateRect(hWnd, NULL, FALSE);
+                            UpdateWindow(hWnd);
+                        }
+                        break;
+
+                    case VK_UP: {
+                        // MessageBox(NULL, TEXT("上が押されました。"),
+                        // TEXT("キーテスト"), MB_OK);
+                        whomCHARA = whomCHARA - 1;
+
+                        if (whomCHARA > partyNinzuDone) {
+                            whomCHARA = partyNinzuDone;
+                        } else if (whomCHARA < 1) {
+                            whomCHARA = 1;
+                        }
+                        whomTargetID = whomCHARA - 1;
+
+                        InvalidateRect(hWnd, NULL, FALSE);
+                        UpdateWindow(hWnd);
+                    }
+
+                    break;
+
+                    case VK_DOWN: {
+                        // MessageBox(NULL, TEXT("↓が押されました。"),
+                        // TEXT("キーテスト"), MB_OK);
+                        whomCHARA = whomCHARA + 1;
+
+                        if (whomCHARA >= partyNinzuDone) {
+                            whomCHARA = partyNinzuDone;
+                        } else if (whomCHARA < 1) {
+                            whomCHARA = 1;
+                        }
+                        whomTargetID = whomCHARA - 1;
+
+                        InvalidateRect(hWnd, NULL, FALSE);
+                        UpdateWindow(hWnd);
+                    } break;
+                    }
+
+                } // アイテム対象者フロントの終わり
+
+
 
 
 
