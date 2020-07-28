@@ -768,8 +768,10 @@ void item_select(HWND hWnd) {
 	// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しないための処理
 	selecting_itemAfter = selecting_item;
 
+
 	// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しない
 	// 画面のチラツキ防止のため
+
 	if (selecting_itemBefore != selecting_itemAfter) {
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
@@ -4034,8 +4036,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				whomTargetID = whomCHARA - 1;
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+
+				if (whomCHARA != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whomCHARA;
 			}
 
 			break;
@@ -4053,8 +4060,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				whomTargetID = whomCHARA - 1;
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+
+				if (whomCHARA != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whomCHARA;
 			}
 			break;
 
@@ -4112,8 +4124,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         }
                         whomTargetID = whomCHARA - 1;
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        UpdateWindow(hWnd);
+
+						if (whomCHARA != beforeselect) {
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+
+						beforeselect = whomCHARA;
+
                     }
 
                     break;
@@ -4130,8 +4148,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         }
                         whomTargetID = whomCHARA - 1;
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        UpdateWindow(hWnd);
+
+						if (whomCHARA != beforeselect) {
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+
+						beforeselect = whomCHARA;
+
                     } break;
                     }
 
