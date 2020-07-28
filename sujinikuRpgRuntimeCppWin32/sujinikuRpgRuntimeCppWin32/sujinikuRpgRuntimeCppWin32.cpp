@@ -261,6 +261,19 @@ struct heros_def
 
 	int PartyIn;
 
+
+	int heros_weapon1;
+	int heros_weapon2;
+	int heros_shield;
+	int heros_helm;
+	int heros_yoroi;
+	int heros_kote;
+	int heros_sousyoku1;
+	int heros_sousyoku2;
+	int heros_sousyoku3;
+
+
+
 };
 
 
@@ -1852,6 +1865,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			heros_def_list[temp].heros_HP0_flag = 0;
 			heros_def_list[temp].PartyIn = 1;
+
+
+			heros_def_list[temp].heros_weapon1 = 0;
+
+
+
 		}
 
 		if (temp == 1) {
@@ -1864,6 +1883,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			heros_def_list[temp].heros_HP0_flag = 0;
 			heros_def_list[temp].PartyIn = 1;
+
+
+			heros_def_list[temp].heros_weapon1 = 1;
 		}
 
 		if (temp == 2) {
@@ -2972,53 +2994,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 15, soubiYbase + soubiYper * 0, mojibuf,
                     lstrlen(mojibuf));
 
-			
+
 			for (int temp = 1; temp <= 7; temp = temp + 1) {
 
-                            if (temp == 1) {
-                                lstrcpy(mojibuf1, TEXT("武器"));
-                                lstrcpy(mojibuf2,
-                                        weapon_def_list[0].weapon_name);
-                            }
+				if (temp == 1) {
+					lstrcpy(mojibuf1, TEXT("武器"));
+					lstrcpy(mojibuf2, weapon_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1	].weapon_name ) ;
+				}
 
-                            if (temp == 2) {
-                                lstrcpy(mojibuf1, TEXT("盾"));
-                                lstrcpy(mojibuf2, TEXT("木の盾"));
-                            }
+				if (temp == 2) {
+					lstrcpy(mojibuf1, TEXT("盾"));
+					lstrcpy(mojibuf2, TEXT("木の盾"));
+				}
 
-                            if (temp == 3) {
-                                lstrcpy(mojibuf1, TEXT("頭"));
-                                lstrcpy(mojibuf2, TEXT("--------"));
-                            }
+				if (temp == 3) {
+					lstrcpy(mojibuf1, TEXT("頭"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
 
-                            if (temp == 4) {
-                                lstrcpy(mojibuf1, TEXT("身体"));
-                                lstrcpy(mojibuf2, TEXT("--------"));
-                            }
-						
-							if (temp == 5) {
-                                lstrcpy(mojibuf1, TEXT("腕"));
-                                lstrcpy(mojibuf2, TEXT("--------"));
-                            }
-														
-							if (temp == 6) {
-                                lstrcpy(mojibuf1, TEXT("装飾品1"));
-                                lstrcpy(mojibuf2, TEXT("--------"));
-                            }
+				if (temp == 4) {
+					lstrcpy(mojibuf1, TEXT("身体"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
 
+				if (temp == 5) {
+					lstrcpy(mojibuf1, TEXT("腕"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
 
-							if (temp == 7) {
-                                lstrcpy(mojibuf1, TEXT("装飾品2"));
-                                lstrcpy(mojibuf2, TEXT("--------"));
-                            }
+				if (temp == 6) {
+					lstrcpy(mojibuf1, TEXT("装飾品1"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
 
 
-                            TextOut(hdc, 15, soubiYbase + soubiYper * temp,
-                                    mojibuf1, lstrlen(mojibuf1));
+				if (temp == 7) {
+					lstrcpy(mojibuf1, TEXT("装飾品2"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
 
-                            TextOut(hdc, 90, soubiYbase + soubiYper * temp,
-                                    mojibuf2, lstrlen(mojibuf2));
-                    
+
+				TextOut(hdc, 15, soubiYbase + soubiYper * temp,
+					mojibuf1, lstrlen(mojibuf1));
+
+				TextOut(hdc, 90, soubiYbase + soubiYper * temp,
+					mojibuf2, lstrlen(mojibuf2));
+
 			}
 
 
@@ -3029,64 +3051,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             lstrcpy(mojibuf, TEXT("変更したい装備を選んでください。"));
             TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
 
+                
+			SetBkMode(hdc, TRANSPARENT);
 
-
-
-
-           // for (int j = 0; j <= partyNinzuDone - 1; ++j) {
-
-
-                // カーソル
-                if (whomTargetID == 1) {
-                    BrushPink_set(hdc);
-
-                    Rectangle(hdc, 10 + 10, 100 + 10 + 120 * (whomTargetID),
-                              300 - 10, 100 + 70 + 120 * (whomTargetID));
-                }
-
-                SetBkMode(hdc, TRANSPARENT);
-
-
-				/*
-				
-				
-
-                _stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"),
-                            heros_def_list[partyNarabijyun[j]].heros_name);
-                TextOut(hdc, StatsHPbaseX, StatsHPbaseY - 25 + offsetY * j,
-                        mojibuf, lstrlen(mojibuf));
-
-                lstrcpy(mojibuf, TEXT("HP"));
-                TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j, mojibuf,
-                        lstrlen(mojibuf));
-
-                _stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"),
-                            heros_def_list[partyNarabijyun[j]].heros_hp);
-                TextOut(hdc, StatsHPbaseX + 30, StatsHPbaseY + offsetY * j,
-                        mojibuf, lstrlen(mojibuf));
-
-                _stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"),
-                            heros_def_list[partyNarabijyun[j]].heros_hp_max);
-                TextOut(hdc, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j,
-                        mojibuf, lstrlen(mojibuf));
-
-                _stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"),
-                            heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
-                TextOut(hdc, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j,
-                        mojibuf, lstrlen(mojibuf));
-
-                if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1) {
-                    _stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
-                    TextOut(hdc, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j,
-                            mojibuf, lstrlen(mojibuf));
-                }
-
-                _stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
-                TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-
-
-                                                */
-          //  }
 
             // そのキャラの装備項目の選択がサブモード
         }
