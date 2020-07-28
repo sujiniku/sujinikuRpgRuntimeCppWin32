@@ -800,7 +800,7 @@ static struct item_have item_have_list[8];
 
 
 // ウェポン処理の構造体変数の作成
-static struct weapon_def weapon_def_list[5]; // 武器処理の構造体配列の宣言
+static struct weapon_def weapon_def_list[15]; // 武器処理の構造体配列の宣言
 
 
 
@@ -1718,7 +1718,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// 敵の位置の読み込み
 	for (int temp = 0; temp <= 1; temp++) {
-		
+
 		if (temp == 0) {
 			positionX_enemy[temp] = 6;
 			positionY_enemy[temp] = 5;
@@ -1736,41 +1736,62 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// アイテムの情報
 	int tourokuItem = 3;
-	for (int temp = 0; temp <= tourokuItem - 1 ; temp++) {
+	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
 
 		item_def_list[temp].item_id = temp + 1;
 
 		if (temp == 0) {
 			//薬草の定義
 			lstrcpy(item_def_list[temp].item_name, TEXT("薬草"));
-			item_def_list[temp].item_type = 1;			
+			item_def_list[temp].item_type = 1;
 		}
 
 		if (temp == 1) {
 			lstrcpy(item_def_list[temp].item_name, TEXT("毒消し草"));
-			item_def_list[temp].item_type = 2;			
+			item_def_list[temp].item_type = 2;
 		}
 
 		if (temp == 2) {
 			lstrcpy(item_def_list[temp].item_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
-			item_def_list[temp].item_type = 3;			
+			item_def_list[temp].item_type = 3;
 		}
 
 	}
 
 	//武器の定義
-	weapon_def_list[0].weapon_id = 0;
-	lstrcpy(weapon_def_list[0].weapon_name, TEXT("鉄の槍"));
-	weapon_def_list[0].material = mateIron;
-	weapon_def_list[0].weapon_type = spear;
-	weapon_def_list[0].weaponPower = 7; // 攻撃力
+	// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
+	// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
+	for (int temp = 0; temp <= 10; temp = temp + 1) {
+
+		if (temp == 0) {
+			// weapon_def_list[temp].weapon_id = 1;
+			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("なし"));
+			weapon_def_list[temp].material = mateNothing;
+			weapon_def_list[temp].weapon_type = typeNothing;
+			weapon_def_list[temp].weaponPower = 0; // 攻撃力
+			continue; // 計算時間の節約のため
+		}
+
+		if (temp == 1) {
+			// weapon_def_list[temp].weapon_id = 0;		
+			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("鉄の槍"));
+			weapon_def_list[temp].material = mateIron;
+			weapon_def_list[temp].weapon_type = spear;
+			weapon_def_list[temp].weaponPower = 7; // 攻撃力	
+			continue;
+		}
+
+		if (temp == 2) {	
+			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("鉄のメイス"));
+			weapon_def_list[temp].material = mateIron;
+			// weapon_def_list[temp].weapon_type = spear;
+			weapon_def_list[temp].weaponPower = 4; // 攻撃力
+			continue;
+		}
 
 
-	weapon_def_list[1].weapon_id = 1;
-	lstrcpy(weapon_def_list[1].weapon_name, TEXT("なし"));
-	weapon_def_list[1].material = mateNothing;
-	weapon_def_list[1].weapon_type = typeNothing;
-	weapon_def_list[1].weaponPower = 0; // 攻撃力
+	}
+
 
 
 	//所持アイテムの個数などの初期値
@@ -1867,7 +1888,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			heros_def_list[temp].PartyIn = 1;
 
 
-			heros_def_list[temp].heros_weapon1 = 0;
+			heros_def_list[temp].heros_weapon1 = 1;
 
 
 
@@ -1885,7 +1906,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			heros_def_list[temp].PartyIn = 1;
 
 
-			heros_def_list[temp].heros_weapon1 = 1;
+			heros_def_list[temp].heros_weapon1 = 2;
 		}
 
 		if (temp == 2) {
