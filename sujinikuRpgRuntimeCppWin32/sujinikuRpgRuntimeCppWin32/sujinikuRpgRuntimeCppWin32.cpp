@@ -72,6 +72,7 @@ using namespace Gdiplus;
 HBITMAP mae_haikei;
 HDC mae_dc;
 
+int afterShop = 0;
 
 int popFlagTown = 0;
 TCHAR popMsg[MAX_LENGTH] = TEXT("aaaa") ;
@@ -1304,6 +1305,10 @@ void check_encount_town(HWND hWnd) {
 
 	if ( where_map ==1 &&  chara_x == town_X && chara_y == town_Y ) {
 		
+
+		popFlagTown = 1;
+		lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
+
 		mode_scene = MODE_TOWN;
 		// pre_guild(hWnd);
 
@@ -3164,10 +3169,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+			if (whomTargetID == 0) {
+				lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
+			}
+
+			if (whomTargetID == 1 && afterShop == 0 ) {
+				lstrcpy(popMsg, TEXT("HPを全回復します。"));
+			}
+
+			if (whomTargetID == 2 && afterShop == 0) {
+				lstrcpy(popMsg, TEXT("装備品や道具の売買を出来ます。"));
+			}
+
+			if (whomTargetID == 3 && afterShop == 0) {
+				lstrcpy(popMsg, TEXT("街の外に出ます。"));
+			}
+
 
 			if (popFlagTown == 1) {
-				lstrcpy(mojibuf, popMsg );
+
+				lstrcpy(mojibuf, TEXT("                                      "));
 				TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, popMsg);
+				TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+
 			}
 
 				// temp == tourokuNakama + 1    に相当
@@ -4323,6 +4350,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_TOWN && key_remain > 0) {
 
+
+
+
 			key_remain = 0;
 
 			switch (wParam)
@@ -4346,6 +4376,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 1) {
 
 					popFlagTown = 1;
+					afterShop = 1;
 					lstrcpy(popMsg, TEXT("全回復した。"));
 
 					int tempYado;
@@ -4428,7 +4459,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_UP:
 			{
 
-
+				afterShop = 0;
 
 				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA - 1;
@@ -4452,6 +4483,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case VK_DOWN:
 			{
+
+				afterShop = 0;
 
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
