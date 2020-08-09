@@ -32,6 +32,10 @@ using namespace Gdiplus;
 #define MODE_INITIAL 200 // ゲーム開始イベントのモード番号
 #define MODE_MAP 300 // マップ画面のモード番号
 
+#define MODE_TOWN 310 // マップ画面のモード番号
+
+
+
 #define MODE_MENU 400 // メニュー画面のモード番号
 #define MODE_ITEM_MENU_BACK 410 // アイテムメニューのモード
 #define MODE_ITEM_MENU_FRONT 415
@@ -58,6 +62,10 @@ using namespace Gdiplus;
 #define MODE_BATTLE_WIN 580 // 戦闘勝利のモード番号
 
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
+
+
+// #define MODE_Town_Main 10000 // 街の処理
+
 
 #define MODE_Guild_Main 10000 // ギルド処理
 #define MODE_Guild_Responce 20100
@@ -426,8 +434,8 @@ int MapTrans_position_x_map1to_map2 = 7;
 int MapTrans_position_y_map1to_map2 = 6;
 
 
-int guild_X = 3;
-int guild_Y = 5;
+int town_X = 3;
+int town_Y = 5;
 
 
 static int MapTrans_position_x = MapTrans_position_x_map1to_map2;
@@ -654,7 +662,7 @@ void Draw_map(HDC hdc) {
 				hbmp = hbmp_what; // ギルドのチップ。
 
 				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-				BitBlt(hbackDC, 320 + (guild_X - start_x) * 32, 270 + (guild_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+				BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 
 	}
 	
@@ -1249,57 +1257,68 @@ void hikaeKeisan() {
 
 
 
+void pre_guild(HWND hWnd) {
+
+	//MessageBox(NULL, TEXT("ギルドのテスト中。\n"), TEXT("キーテスト"), MB_OK);
+
+	key_remain = 0;
+
+	whomTargetID = 0; whomCHARA = 1;
+	whomTargetIDparty = 0; whomTargetIDhikae = 0;
+
+	Akihaikeisan();
 
 
+	// 控えメンバーの配列処理の準備
+	{
+		if (uwadumeFlag == 1) {
 
-void check_encount_guild(HWND hWnd) {
+			int skip = 0;
+			for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 
-	if ( where_map ==1 &&  chara_x == guild_X && chara_y == guild_Y ) {
-		
-		//MessageBox(NULL, TEXT("ギルドのテスト中。\n"), TEXT("キーテスト"), MB_OK);
-
-		key_remain = 0;
-
-		whomTargetID = 0; whomCHARA = 1;
-		whomTargetIDparty = 0; whomTargetIDhikae = 0;
-
-		Akihaikeisan();
-		
-
-		// 控えメンバーの配列処理の準備
-		{
-			if (uwadumeFlag == 1) {
-
-				int skip = 0;
-				for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-
-					if (heros_def_list[temp].PartyIn == 0) {
-						hikaeNarabijyun[skip] = temp ;
-						skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
-					}
-
-					if (heros_def_list[temp].PartyIn == 1) {
-						// 何もしない
-					}
-
+				if (heros_def_list[temp].PartyIn == 0) {
+					hikaeNarabijyun[skip] = temp;
+					skip = skip + 1; // 代入し終わってから、skipを増やす。次のメンバー用なので。
 				}
 
-					hikaeNarabijyun[skip] = -1;
+				if (heros_def_list[temp].PartyIn == 1) {
+					// 何もしない
+				}
+
 			}
+
+			hikaeNarabijyun[skip] = -1;
 		}
-
-
-		mode_scene = MODE_Guild_Main;
-
-
-
-		InvalidateRect(hWnd, NULL, FALSE);
-		UpdateWindow(hWnd);
-
 	}
 
 
+	mode_scene = MODE_Guild_Main;
+
+	InvalidateRect(hWnd, NULL, FALSE);
+	UpdateWindow(hWnd);
+
 }
+
+
+void check_encount_town(HWND hWnd) {
+
+	if ( where_map ==1 &&  chara_x == town_X && chara_y == town_Y ) {
+		
+		mode_scene = MODE_TOWN;
+		// pre_guild(hWnd);
+
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
+	}
+}
+
+
+
+
+
+
+
+
 
 
 void check_MapTransition(HWND hWnd) {
@@ -3097,6 +3116,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		
+
+		if (mode_scene == MODE_TOWN) {
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+			BrushPink_set(hdc);
+			//	Rectangle(hdc, 10, 100,	300, 200);
+
+
+			lstrcpy(mojibuf, TEXT("街に入りました。どこへ行きますか?"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, offsetYtemp1,
+				offsetYtemp1 + 100, 400);
+
+			int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID),
+				150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID));
+
+			int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
+			int yspan1 = carsoruHigh;
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("行き先"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ギルド"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
+
+
+
+				// temp == tourokuNakama + 1    に相当
+			//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+			//	TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
+
+			
+
+
+		}
+
 		if (mode_scene == MODE_Guild_Main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
@@ -3569,7 +3639,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'Z':
 			{
-				check_encount_guild(hWnd);
+				check_encount_town(hWnd);
 
 				break;
 			}
@@ -3595,7 +3665,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
-				check_encount_guild(hWnd);
+				check_encount_town(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -3612,7 +3682,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
-				check_encount_guild(hWnd);
+				check_encount_town(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -3629,7 +3699,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
-				check_encount_guild(hWnd);
+				check_encount_town(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -3646,7 +3716,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//	移動可否の判定と、移動先座標の更新
 				check_movable(hWnd);
 
-				check_encount_guild(hWnd);
+				check_encount_town(hWnd);
 
 				check_encount_enemy(hWnd);
 				check_MapTransition(hWnd);
@@ -4069,168 +4139,280 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// mode_scene = MODE_EQUIP_MAIN;
 
-				if (mode_scene == MODE_EQUIP_MAIN &&key_remain > 0) {
+		if (mode_scene == MODE_EQUIP_MAIN && key_remain > 0) {
 
-                    int tempVal;
+			int tempVal;
 
-                    switch (wParam) {
+			switch (wParam) {
 
-                    case 'Z': {
-                        key_remain = 0;
-                        whomTargetID = whomCHARA - 1;
+			case 'Z': {
+				key_remain = 0;
+				whomTargetID = whomCHARA - 1;
 
-						mode_scene = MODE_EQUIP_EDIT;
-                        beforeselect = 0;
-												
-						InvalidateRect(hWnd, NULL,   FALSE);                        
-						UpdateWindow(hWnd);
+				mode_scene = MODE_EQUIP_EDIT;
+				beforeselect = 0;
 
-                    } // caseZ　の終わり
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
 
-                    break;
+			} // caseZ　の終わり
 
-                    case 'X':
-                        // メイン画面に戻る
-                        {
-                            filterFlag = 0;
-                            mode_scene = MODE_MENU;
+					break;
 
-                            InvalidateRect(hWnd, NULL, FALSE);
-                            UpdateWindow(hWnd);
-                        }
-                        break;
+			case 'X':
+				// メイン画面に戻る
+			{
+				filterFlag = 0;
+				mode_scene = MODE_MENU;
 
-                    case VK_UP: {
-                        // MessageBox(NULL, TEXT("上が押されました。"),
-                        // TEXT("キーテスト"), MB_OK);
-                        whomCHARA = whomCHARA - 1;
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
 
-                        if (whomCHARA > partyNinzuDone) {
-                            whomCHARA = partyNinzuDone;
-                        } else if (whomCHARA < 1) {
-                            whomCHARA = 1;
-                        }
-                        whomTargetID = whomCHARA - 1;
+			case VK_UP: {
+				// MessageBox(NULL, TEXT("上が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
 
-
-						if (whomCHARA != beforeselect) {
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
-						}
-
-						beforeselect = whomCHARA;
-
-                    }
-
-                    break;
-
-                    case VK_DOWN: {
-                        // MessageBox(NULL, TEXT("↓が押されました。"),
-                        // TEXT("キーテスト"), MB_OK);
-                        whomCHARA = whomCHARA + 1;
-
-                        if (whomCHARA >= partyNinzuDone) {
-                            whomCHARA = partyNinzuDone;
-                        } else if (whomCHARA < 1) {
-                            whomCHARA = 1;
-                        }
-                        whomTargetID = whomCHARA - 1;
+				if (whomCHARA > partyNinzuDone) {
+					whomCHARA = partyNinzuDone;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
 
 
-						if (whomCHARA != beforeselect) {
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
-						}
+				if (whomCHARA != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
 
-						beforeselect = whomCHARA;
+				beforeselect = whomCHARA;
 
-                    } break;
-                    }
+			}
 
-                } // MODE_EQUIP_MAIN の終わり
+					  break;
 
+			case VK_DOWN: {
+				// MessageBox(NULL, TEXT("↓が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
 
-
-				if (mode_scene == MODE_EQUIP_EDIT && key_remain > 0) {
-
-                    int tempVal;
-
-                    switch (wParam) {
-
-                    case 'Z': {
-                        key_remain = 0;
-                        whomTargetID = whomCHARA - 1;
-
-                        mode_scene = MODE_EQUIP_ITEM;
-
-                    } // caseZ　の終わり
-
-                    break;
-
-                    case 'X':
-                        // メイン画面に戻る
-                        {
-                            filterFlag = 0;
-                            mode_scene = MODE_EQUIP_MAIN;
-
-                            InvalidateRect(hWnd, NULL, FALSE);
-                            UpdateWindow(hWnd);
-                        }
-                        break;
-
-                    case VK_UP: {
-                        // MessageBox(NULL, TEXT("上が押されました。"),
-                        // TEXT("キーテスト"), MB_OK);
-
-                        whatedit = whatedit - 1;
-
-                        if (whatedit >= 6) {
-                            whatedit = 6;
-                        } else if (whatedit < 0) {
-                            whatedit = 0;
-                        }
-                        
-						if (whatedit != beforeselect) {
-                            InvalidateRect(hWnd, NULL, FALSE);
-                            UpdateWindow(hWnd);
-                        }
-						
-						beforeselect = whatedit;
+				if (whomCHARA >= partyNinzuDone) {
+					whomCHARA = partyNinzuDone;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
 
 
-                    }
+				if (whomCHARA != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
 
-                    break;
+				beforeselect = whomCHARA;
 
-                    case VK_DOWN: {
-                        // MessageBox(NULL, TEXT("↓が押されました。"),
-                        // TEXT("キーテスト"), MB_OK);
+			} break;
+			}
 
-                        whatedit = whatedit + 1;
-
-                        if (whatedit >= 6) {
-                            whatedit = 6;
-                        } else if (whatedit < 0) {
-                            whatedit = 0;
-                        }
-
-						if (whatedit != beforeselect) {
-                            InvalidateRect(hWnd, NULL, FALSE);
-                            UpdateWindow(hWnd);
-                        }
-
-                        beforeselect = whatedit;
+		} // MODE_EQUIP_MAIN の終わり
 
 
 
-                    } 
-								break;
-                    }
+		if (mode_scene == MODE_EQUIP_EDIT && key_remain > 0) {
 
-                } // MODE_EQUIP_EDIT の終わり
+			int tempVal;
+
+			switch (wParam) {
+
+			case 'Z': {
+				key_remain = 0;
+				whomTargetID = whomCHARA - 1;
+
+				mode_scene = MODE_EQUIP_ITEM;
+
+			} // caseZ　の終わり
+
+					break;
+
+			case 'X':
+				// メイン画面に戻る
+			{
+				filterFlag = 0;
+				mode_scene = MODE_EQUIP_MAIN;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_UP: {
+				// MessageBox(NULL, TEXT("上が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+
+				whatedit = whatedit - 1;
+
+				if (whatedit >= 6) {
+					whatedit = 6;
+				}
+				else if (whatedit < 0) {
+					whatedit = 0;
+				}
+
+				if (whatedit != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whatedit;
+
+
+			}
+
+					  break;
+
+			case VK_DOWN: {
+				// MessageBox(NULL, TEXT("↓が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+
+				whatedit = whatedit + 1;
+
+				if (whatedit >= 6) {
+					whatedit = 6;
+				}
+				else if (whatedit < 0) {
+					whatedit = 0;
+				}
+
+				if (whatedit != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whatedit;
+
+
+
+			}
+						break;
+			}
+
+		} // MODE_EQUIP_EDIT の終わり
+
+
+
+		if (mode_scene == MODE_TOWN && key_remain > 0) {
+
+			key_remain = 0;
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				if (whomTargetID == 0) {
+
+					pre_guild(hWnd);
+					mode_scene = MODE_Guild_Main;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+				}
+
+				if (whomTargetID == 1) {
+
+					mode_scene = MODE_MAP;
+
+					//mode_scene = MODE_Guild_Main;
+
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+			case 'X':
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_MAP;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+			case VK_UP:
+			{
+
+
+
+				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
+
+				if (whomCHARA > 2) {
+					whomCHARA = 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+
+
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
+
+				if (whomCHARA >= 2) {
+					whomCHARA = 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+			} // switch (wParam) の終わり
+		} // if タウンの終わり
+
+
+
 
 		
 		if (mode_scene == MODE_Guild_Main && key_remain > 0) {
+
+			key_remain = 0;
+
+
 			switch (wParam)
 			{
 			case 'Z':
@@ -4401,7 +4583,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					partyNarabijyun[temp] = kousinNarabijyun[temp];
 				}
 
-				mode_scene = MODE_MAP;
+				mode_scene = MODE_TOWN;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
