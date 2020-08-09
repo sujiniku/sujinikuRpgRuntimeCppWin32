@@ -32,7 +32,7 @@ using namespace Gdiplus;
 #define MODE_INITIAL 200 // ゲーム開始イベントのモード番号
 #define MODE_MAP 300 // マップ画面のモード番号
 
-#define MODE_TOWN 310 // マップ画面のモード番号
+#define MODE_TOWN 310 // タウン画面のモード番号
 
 
 
@@ -64,9 +64,6 @@ using namespace Gdiplus;
 #define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
 
 
-// #define MODE_Town_Main 10000 // 街の処理
-
-
 #define MODE_Guild_Main 10000 // ギルド処理
 #define MODE_Guild_Responce 20100
 #define MODE_Guild_Remove 20200
@@ -75,6 +72,9 @@ using namespace Gdiplus;
 HBITMAP mae_haikei;
 HDC mae_dc;
 
+
+int popFlagTown = 0;
+TCHAR popMsg[MAX_LENGTH] = TEXT("aaaa") ;
 
 
 const int partymax = 3; // 本当は4だけどテストのため1時的に3
@@ -3153,10 +3153,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ギルド"));
 			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("宿屋"));
 			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
 
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("商店"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
 
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (4), mojibuf, lstrlen(mojibuf));
+
+
+
+
+			if (popFlagTown == 1) {
+				lstrcpy(mojibuf, popMsg );
+				TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+			}
 
 				// temp == tourokuNakama + 1    に相当
 			//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
@@ -3227,6 +3239,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			mode_scene = MODE_Guild_Main;
 		}
+
+
+
+
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND) {
@@ -4325,7 +4341,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 
+
+				// 宿
 				if (whomTargetID == 1) {
+
+					popFlagTown = 1;
+					lstrcpy(popMsg, TEXT("全回復した。"));
+
+					int tempYado;
+					// partyNinzuDone
+					
+					
+					int aaaa = 0;
+							
+					for (aaaa = 0; aaaa <= partyNinzuDone ; aaaa = aaaa + 1) {
+
+						tempYado = partyNarabijyun[aaaa];
+						heros_def_list[tempYado].heros_hp = heros_def_list[tempYado].heros_hp_max;
+						// heros_def_list[tempYado].heros_mp = heros_def_list[tempYado].heros_mp_max;
+
+
+
+
+					}
+					
+				
+		
+
+
+
+					// mode_scene = MODE_MAP;
+
+					// mode_scene = MODE_Guild_Main;
+
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+				// 商店
+				if (whomTargetID == 2) {
+
+					MessageBox(NULL, TEXT("未実装。"), TEXT("キーテスト"), MB_OK);
+
+
+					//mode_scene = MODE_MAP;
+
+					//mode_scene = MODE_Guild_Main;
+
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				if (whomTargetID == 3) {
 
 					mode_scene = MODE_MAP;
 
@@ -4363,8 +4433,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA - 1;
 
-				if (whomCHARA > 2) {
-					whomCHARA = 2;
+				if (whomCHARA > 4) {
+					whomCHARA = 4;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -4386,8 +4456,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomCHARA = whomCHARA + 1;
 
-				if (whomCHARA >= 2) {
-					whomCHARA = 2;
+				if (whomCHARA >= 4) {
+					whomCHARA = 4;
 				}
 				else if (whomCHARA < 1) {
 					whomCHARA = 1;
@@ -4858,7 +4928,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 		}
-
 
 
 		if (mode_scene == MODE_BATTLE_COMMAND && key_remain > 0) {
