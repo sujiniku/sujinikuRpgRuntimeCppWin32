@@ -3266,22 +3266,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			if (whomTargetID == 0) {
-				lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
-			}
-
-			if (whomTargetID == 1 && afterShop == 0) {
-				lstrcpy(popMsg, TEXT("HPを全回復します。"));
-			}
-
-			if (whomTargetID == 2 && afterShop == 0) {
-				lstrcpy(popMsg, TEXT("装備品や道具の売買を出来ます。"));
-			}
-
-			if (whomTargetID == 3 && afterShop == 0) {
-				lstrcpy(popMsg, TEXT("街の外に出ます。"));
-			}
-
 
 			if (popFlagTown == 1) {
 
@@ -3294,20 +3278,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
-			// temp == tourokuNakama + 1    に相当
-		//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-		//	TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
-
-
-
-
 		}
-
-
-
-
-
-
 
 
 
@@ -4516,6 +4487,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// mode_scene = MODE_MAP;
 					// mode_scene = MODE_Guild_Main;
 
+					whomTargetID = 0;
+					whomCHARA = whomTargetID + 1;
 					mode_scene = MODE_Shop_Main;
 
 
@@ -4675,9 +4648,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					// MessageBox(NULL, TEXT(" 「出る」にいる。"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene = MODE_TOWN;
-
 					whomTargetID = 0;
+					whomCHARA = whomTargetID  + 1;
+
+
+					mode_scene = MODE_TOWN;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4696,6 +4671,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'X':
 			{
 				key_remain = 0;
+
+				whomTargetID = 0;
+				whomCHARA = whomTargetID + 1;
 
 				mode_scene = MODE_TOWN;
 
