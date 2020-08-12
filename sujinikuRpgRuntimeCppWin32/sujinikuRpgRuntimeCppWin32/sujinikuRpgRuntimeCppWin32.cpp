@@ -34,6 +34,9 @@ using namespace Gdiplus;
 
 #define MODE_TOWN 310 // タウン画面のモード番号
 
+#define MODE_Shop_Main 320
+
+
 
 
 #define MODE_MENU 400 // メニュー画面のモード番号
@@ -3206,6 +3209,109 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 
+
+		// if (mode_scene == MODE_Shop_Main && key_remain > 0) {
+
+
+
+		if (mode_scene == MODE_Shop_Main) {
+
+			BrushBlue_set(hdc);
+			// Rectangle(hdc, 10, 10, 610, 80);
+
+			BrushPink_set(hdc);
+			//	Rectangle(hdc, 10, 100,	300, 200);
+
+
+			lstrcpy(mojibuf, TEXT("商店に入りました。どこへ行きますか?"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, offsetYtemp1,
+				offsetYtemp1 + 100, 400);
+
+			int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID),
+				150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID));
+
+			int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
+			int yspan1 = carsoruHigh;
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("行き先"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("武器"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("防具"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("装飾品"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("道具"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (4), mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+			TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (5), mojibuf, lstrlen(mojibuf));
+
+
+
+
+
+			if (whomTargetID == 0) {
+				lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
+			}
+
+			if (whomTargetID == 1 && afterShop == 0) {
+				lstrcpy(popMsg, TEXT("HPを全回復します。"));
+			}
+
+			if (whomTargetID == 2 && afterShop == 0) {
+				lstrcpy(popMsg, TEXT("装備品や道具の売買を出来ます。"));
+			}
+
+			if (whomTargetID == 3 && afterShop == 0) {
+				lstrcpy(popMsg, TEXT("街の外に出ます。"));
+			}
+
+
+			if (popFlagTown == 1) {
+
+				lstrcpy(mojibuf, TEXT("                                      "));
+				TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, popMsg);
+				//TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+
+			}
+
+			// temp == tourokuNakama + 1    に相当
+		//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+		//	TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
+
+
+
+
+		}
+
+
+
+
+
+
+
+
+
+
 		if (mode_scene == MODE_Guild_Main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
@@ -4391,20 +4497,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						heros_def_list[tempYado].heros_hp = heros_def_list[tempYado].heros_hp_max;
 						// heros_def_list[tempYado].heros_mp = heros_def_list[tempYado].heros_mp_max;
 
-
-
-
 					}
-					
 				
-		
-
-
-
 					// mode_scene = MODE_MAP;
 
 					// mode_scene = MODE_Guild_Main;
-
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4414,12 +4511,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 商店
 				if (whomTargetID == 2) {
 
-					MessageBox(NULL, TEXT("未実装。"), TEXT("キーテスト"), MB_OK);
+					// MessageBox(NULL, TEXT("未実装。"), TEXT("キーテスト"), MB_OK);
 
+					// mode_scene = MODE_MAP;
+					// mode_scene = MODE_Guild_Main;
 
-					//mode_scene = MODE_MAP;
+					mode_scene = MODE_Shop_Main;
 
-					//mode_scene = MODE_Guild_Main;
 
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -4508,9 +4606,160 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // if タウンの終わり
 
 
-
-
 		
+		if (mode_scene == MODE_Shop_Main && key_remain > 0) {
+
+
+			key_remain = 0;
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				if (whomTargetID == 0) {
+
+					pre_guild(hWnd);
+					mode_scene = MODE_Guild_Main;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+				}
+
+
+				// 武器屋
+				if (whomTargetID == 0) {
+
+					mode_scene = MODE_TOWN; // 未実装なので、
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+				// 防具や
+				if (whomTargetID == 1) {
+
+					mode_scene = MODE_TOWN; // 未実装なので、
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				// 装飾品
+				if (whomTargetID == 2) {
+
+					mode_scene = MODE_TOWN; // 未実装なので、
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+
+
+				// 道具
+				if (whomTargetID == 3) {
+					MessageBox(NULL, TEXT(" 道具屋にいる。"), TEXT("キーテスト"), MB_OK);
+					mode_scene = MODE_TOWN; // 未実装なので、
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+				// 出る
+				if (whomTargetID == 4) {
+
+					// MessageBox(NULL, TEXT(" 「出る」にいる。"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene = MODE_TOWN;
+
+					whomTargetID = 0;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+
+
+			case 'X':
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_TOWN;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+			case VK_UP:
+			{
+
+				afterShop = 0;
+
+				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
+
+				if (whomCHARA > 5) {
+					whomCHARA = 5;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+
+
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+
+				afterShop = 0;
+
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
+
+				if (whomCHARA >= 5) {
+					whomCHARA = 5;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetID = whomCHARA - 1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+
+			} // switch (wParam) の終わり
+		} // if ショップの終わり
+
+
+
+
+
 		if (mode_scene == MODE_Guild_Main && key_remain > 0) {
 
 			key_remain = 0;
