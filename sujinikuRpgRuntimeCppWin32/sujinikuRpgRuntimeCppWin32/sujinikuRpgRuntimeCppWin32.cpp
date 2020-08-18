@@ -72,6 +72,14 @@ using namespace Gdiplus;
 #define MODE_Guild_Remove 20200
 
 
+
+#define MODE_Shop_weapon 30000
+#define MODE_Shop_armor 30100
+#define MODE_Shop_akusesari 30200
+#define MODE_Shop_item 30300
+
+
+
 HBITMAP mae_haikei;
 HDC mae_dc;
 
@@ -3348,6 +3356,166 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+		if (mode_scene == MODE_Shop_weapon) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("武器屋テスト。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 100,
+				450, 150);
+
+
+			int BuySellX = 280;
+			int BuySellY = 120;
+
+			lstrcpy(mojibuf, TEXT("買う"));
+			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("売る"));
+			TextOut(hdc, BuySellX + 50, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("出る"));
+			TextOut(hdc, BuySellX + 50 * 2, BuySellY, mojibuf, lstrlen(mojibuf));
+
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 450+30, 100,
+				600, 150);
+
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, BuySellX+200 , BuySellY -20 , mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("1000G(仮)"));
+			TextOut(hdc, BuySellX + 200, BuySellY , mojibuf, lstrlen(mojibuf));
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 170,
+				450, 400);
+
+
+			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
+			TextOut(hdc, 280,200, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("鉄の剣"));
+			TextOut(hdc, 280, 200+30, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("50G"));
+			TextOut(hdc, 280 + 150, 200 + 30, mojibuf, lstrlen(mojibuf));
+
+
+
+		}
+
+
+
+
+
+
+		if (mode_scene == MODE_Shop_armor) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+			hikaesai(hdc);
+			parsai(hdc);
+
+
+			// ここが上書きされている。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
+			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+			mode_scene = MODE_Guild_Main;
+		}
+
+
+
+
+		if (mode_scene == MODE_Shop_akusesari ) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+			hikaesai(hdc);
+			parsai(hdc);
+
+
+			// ここが上書きされている。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
+			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+			mode_scene = MODE_Guild_Main;
+		}
+
+
+
+		if (mode_scene == MODE_Shop_item) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+			hikaesai(hdc);
+			parsai(hdc);
+
+
+			// ここが上書きされている。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
+			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+			mode_scene = MODE_Guild_Main;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 		if (mode_scene == MODE_BATTLE_COMMAND) {
 			draw_battle_common_before(hdc);
@@ -4591,21 +4759,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				if (whomTargetID == 0) {
-
-					pre_guild(hWnd);
-					mode_scene = MODE_Guild_Main;
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-				}
-
-
 				// 武器屋
 				if (whomTargetID == 0) {
 
-					mode_scene = MODE_TOWN; // 未実装なので、
+					mode_scene = MODE_Shop_weapon ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4615,7 +4772,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 防具や
 				if (whomTargetID == 1) {
 
-					mode_scene = MODE_TOWN; // 未実装なので、
+					mode_scene = MODE_Shop_armor ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4624,7 +4781,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 装飾品
 				if (whomTargetID == 2) {
 
-					mode_scene = MODE_TOWN; // 未実装なので、
+					mode_scene = MODE_Shop_akusesari ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4636,7 +4793,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 道具
 				if (whomTargetID == 3) {
 					MessageBox(NULL, TEXT(" 道具屋にいる。"), TEXT("キーテスト"), MB_OK);
-					mode_scene = MODE_TOWN; // 未実装なので、
+					mode_scene = MODE_Shop_item ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
