@@ -3389,48 +3389,58 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("売る"));
-			TextOut(hdc, BuySellX + spanX, BuySellY, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BuySellX + spanX * 1, BuySellY, mojibuf, lstrlen(mojibuf));
 
-			lstrcpy(mojibuf, TEXT("出る"));
+			lstrcpy(mojibuf, TEXT("中古"));
 			TextOut(hdc, BuySellX + spanX * 2, BuySellY, mojibuf, lstrlen(mojibuf));
 
+			lstrcpy(mojibuf, TEXT("出る"));
+			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
 
 
+			int GoldRanX = 480; int GoldRanY = 50;
 			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 450+30, 100,
-				600, 150);
+			Rectangle(hdc, GoldRanX, GoldRanY,
+				GoldRanX +120, 110);
 
 			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, BuySellX+200 , BuySellY -20 , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldRanX , GoldRanY + 10 , mojibuf, lstrlen(mojibuf));
 
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
-			TextOut(hdc, BuySellX + 200, BuySellY , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldRanX, GoldRanY +10 +20, mojibuf, lstrlen(mojibuf));
 
 
 			SelectObject(hdc, blue_thin_1);
 			Rectangle(hdc, 250, 170,
 				450, 400);
 
-
 			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
-			TextOut(hdc, 280,200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280,170, mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, weapon_def_list[1].weapon_name); // 鉄の槍
-			TextOut(hdc, 280, 200+30, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("商品名"));
+			TextOut(hdc, 280, 200 , mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("価格"));
+			TextOut(hdc, 280 + 120, 200 , mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("在庫"));
+			TextOut(hdc, 280 + 170, 200 , mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, TEXT("50G"));
-			TextOut(hdc, 280 + 150, 200 + 30, mojibuf, lstrlen(mojibuf));
+			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
+				lstrcpy(mojibuf, weapon_def_list[temp].weapon_name); 
+				TextOut(hdc, 280, 200 + 30*temp, mojibuf, lstrlen(mojibuf));
 
+				lstrcpy(mojibuf, TEXT("50G"));
+				TextOut(hdc, 280 + 120, 200 + 30*temp, mojibuf, lstrlen(mojibuf));
+
+			}
 
 		}
-
-
-
-
 
 
 		if (mode_scene == MODE_Shop_armor) {
@@ -4911,19 +4921,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
+				if (whomTargetID == 0) {
+					// mode_scene = MODE_Shop_Main;
+					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);				
+				}
+
+
+				if (whomTargetID == 1) {
+					// mode_scene = MODE_Shop_Main;
+					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);
+				}
+
+
+				if (whomTargetID == 2) {
+					// mode_scene = MODE_Shop_Main;
+					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);
+				}
+
+				if (whomTargetID == 3) {
+					mode_scene = MODE_Shop_Main;
+				}
+
 			}
 			break;
 
+			case 'X':
+			{
 
+				mode_scene = MODE_Shop_Main;
+				key_remain = 0;
 
+			}
+			break;
 
 			case VK_RIGHT:
 			{
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID + 1;
 
-				if (whomTargetID >= 2) {
-					whomTargetID =  2;
+				if (whomTargetID >= 3) {
+					whomTargetID =  3;
 				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
@@ -4941,8 +4978,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID - 1;
 
-				if (whomTargetID >= 2) {
-					whomTargetID = 2;
+				if (whomTargetID >= 3) {
+					whomTargetID = 3;
 				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
