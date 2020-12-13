@@ -3313,6 +3313,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
 
+			_stprintf_s(
+				mojibuf, MAX_LENGTH, TEXT("%d"),
+				partyNinzuDone);
+			TextOut(hdc, 280, 310, mojibuf, lstrlen(mojibuf));
 
 		}
 
@@ -4648,7 +4652,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 					int aaaa = 0;
 							
-					for (aaaa = 0; aaaa <= partyNinzuDone ; aaaa = aaaa + 1) {
+					for (aaaa = 0; aaaa <= partyNinzuDone - 1 ; aaaa = aaaa + 1) {
 
 						tempYado = partyNarabijyun[aaaa];
 						heros_def_list[tempYado].heros_hp = heros_def_list[tempYado].heros_hp_max;
@@ -5157,6 +5161,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int kousinNarabijyun[partymax];
 
 				partyNinzuDone = partyNinzuTemp;
+				// MessageBox(NULL, TEXT("xxxxxxxが押されました。"), TEXT("キーテスト"), MB_OK);
+
+
+
 
 				for (int temp = 0; temp < partymax; temp++)
 				{
