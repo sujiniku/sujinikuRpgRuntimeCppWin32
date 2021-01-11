@@ -3870,7 +3870,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					// MessageBox(NULL, TEXT("ゲームをロード。"), TEXT("キーテスト"), MB_OK);
 
-
+					// ロードするよ
 					FILE* fp1;
 					{
 						fp1 = fopen("savedata1.txt", "r");
@@ -3909,7 +3909,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 1) { where_map = henkan; }
 								if (j == 2) { chara_x = henkan; }
 								if (j == 3) { chara_y = henkan; }
-								if (j == 4) { heros_def_list[0].heros_hp = henkan; 
+								if (j == 4) { 
+									
+									partyNarabijyun[0] = henkan;
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+
+									partyNarabijyun[1] = henkan;
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+									
+									
+									heros_def_list[0].heros_hp = henkan; 
 
 								fgets(buffer1, 150, fp1);
 								strncpy(str1, strtok(buffer1, ":"), 150);
@@ -3919,7 +3939,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								heros_def_list[1].heros_hp = henkan;
 								}
 								if (j == 5) { heros_def_list[0].heros_hp_max = henkan;
-
+								// heros_def_list[partyNarabijyun[j]].heros_name
 
 								fgets(buffer1, 150, fp1);
 								strncpy(str1, strtok(buffer1, ":"), 150);
@@ -4258,7 +4278,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					fclose(fp1);
 
 
-
+					// セーブするよ
 					// ゲーム内データのセーブ
 					FILE* fp2;
 					{
@@ -4272,11 +4292,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							fprintf(fp2, "キャラ位置x座標: %d \n", chara_x);
 							fprintf(fp2, "キャラ位置y座標: %d \n", chara_y);
 
-							fprintf(fp2, "キャラ0の現HP: %d \n", heros_def_list[0].heros_hp);
-							fprintf(fp2, "キャラ1の現HP: %d \n", heros_def_list[1].heros_hp);
 
-							fprintf(fp2, "キャラ0の最大HP: %d \n", heros_def_list[0].heros_hp_max);
-							fprintf(fp2, "キャラ1の最大HP: %d \n", heros_def_list[1].heros_hp_max);
+							// heros_def_list[partyNarabijyun[j]].heros_name
+
+							fprintf(fp2, "パーティ1人目のID: %d \n", partyNarabijyun[0]);
+							fprintf(fp2, "パーティ2人目のID: %d \n", partyNarabijyun[1]);
+
+							fprintf(fp2, "パーティ内キャラ0の現HP: %d \n", heros_def_list[partyNarabijyun[0]].heros_hp);
+							fprintf(fp2, "パーティ内キャラ1の現HP: %d \n", heros_def_list[partyNarabijyun[1]].heros_hp);
+
+							fprintf(fp2, "パーティ内キャラ0の最大HP: %d \n", heros_def_list[partyNarabijyun[0]].heros_hp_max);
+							fprintf(fp2, "パーティ内キャラ1の最大HP: %d \n", heros_def_list[partyNarabijyun[1]].heros_hp_max);
 
 
 
