@@ -89,6 +89,10 @@ HDC mae_dc;
 
 int afterShop = 0;
 
+int shoptar = 0;
+
+int sinamonoList = 0;
+
 int popFlagTown = 0;
 TCHAR popMsg[MAX_LENGTH] = TEXT("aaaa") ;
 
@@ -230,6 +234,7 @@ struct item_have
 struct weapon_have
 {
 	int have_weapon_id;
+	int have_kosuu;
 };
 
 
@@ -825,7 +830,7 @@ static struct item_have item_have_list[8];
 
 // ウェポン処理の構造体変数の作成
 static struct weapon_def weapon_def_list[15]; // 武器処理の構造体配列の宣言
-
+static struct weapon_have weapon_have_list[15];
 
 
 
@@ -1797,6 +1802,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	}
 
+
+
+
+
 	//武器の定義
 	// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
 	// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
@@ -1850,6 +1859,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			item_have_list[temp].have_kosuu = 2;
 		}
 	}
+
+
+	//所持の装備品の個数などの初期値
+	for (int temp = 0; temp <= 15 - 1; temp++) {
+
+		weapon_have_list[temp].have_weapon_id = temp + 1;
+
+		if (temp == 0) {
+			weapon_have_list[temp].have_kosuu = 0;
+		}
+
+		if (temp == 1) {
+			weapon_have_list[temp].have_kosuu = 0;
+		}
+
+		if (temp == 2) {
+			weapon_have_list[temp].have_kosuu = 0;
+		}
+	}
+
 
 	//初期装備の武器
 
@@ -3438,6 +3467,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 280 + 170, 200 , mojibuf, lstrlen(mojibuf));
 
 
+
+
 			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
 				lstrcpy(mojibuf, weapon_def_list[temp].weapon_name); 
@@ -3477,9 +3508,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int carsoruHigh = 30;
 			int spanX = 50;
 
+
+
 			BrushPink_set(hdc);
-			Rectangle(hdc, 280 + spanX * (whomTargetID), offsetYtemp1 + 10,
-				320 + spanX * (whomTargetID), offsetYtemp1 + 60);
+			Rectangle(hdc, 280 + spanX * (shoptar), offsetYtemp1 + 10,
+				320 + spanX * (shoptar), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -3526,10 +3559,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lstrcpy(mojibuf, TEXT("在庫"));
 			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
 
+			lstrcpy(mojibuf, TEXT("所持数"));
+			TextOut(hdc, 280 + 170 +50 , 200, mojibuf, lstrlen(mojibuf));
+
+
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, 280, 200 + 30 + 30 * (whomTargetID),
-				320 + 40, offsetYtemp1 + 60 + 30 + 30 * (whomTargetID));
+			Rectangle(hdc, 280, 200 + 60 + 30 * (whomTargetID),
+				320 + 40, offsetYtemp1 + 60 + 60 + 30 * (whomTargetID));
 
 			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
@@ -3539,6 +3576,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				lstrcpy(mojibuf, TEXT("50G"));
 				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[temp].have_kosuu);
+				TextOut(hdc, 280 + 100 * 2+50, 200  + 30 * temp, mojibuf, lstrlen(mojibuf));
 
 			}
 
@@ -4010,14 +4051,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (game_event1_end == 1 && game_event2_end == 0 && key_remain > 0) {
 
 
-					lstrcpy(drawTalkString1, TEXT("あなたは金100を手に入れた。"));
+					lstrcpy(drawTalkString1, TEXT("あなたは金1000を手に入れた。"));
 					lstrcpy(drawTalkString2, TEXT("（決定ボタンを押してください）"));
 					lstrcpy(drawTalkString3, TEXT(""));
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 
-					your_money = your_money + 100;
+					your_money = your_money + 1000;
 					game_event2_end = 1;
 
 					key_remain = 0;
@@ -4886,7 +4927,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 武器屋
 				if (whomTargetID == 0) {
-
+					shoptar = 0;
 					mode_scene = MODE_Shop_weapon_main; 
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -4896,7 +4937,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 防具や
 				if (whomTargetID == 1) {
-
+					shoptar = 1;
 					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -5034,6 +5075,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					mode_scene = MODE_Shop_weapon_buy;
 					whomTargetID = 0;
 
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
 				}
 
 
@@ -5122,33 +5166,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 0) {
 
 
-					MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
+					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
 
 					// mode_scene = MODE_Shop_Main;
-					 MessageBox(NULL, TEXT("1買う"), TEXT("キーテスト"), MB_OK);
+					 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
 
-
-					// mode_scene == MODE_Shop_weapon_buy;
-
+					 sinamonoList = 1;
+					// mode_scene = MODE_Shop_weapon_buy;
+					 weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu  +1;
 
                     // 1番目の武器を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
 
 				}
 
 
 				if (whomTargetID == 1) {
 					// mode_scene = MODE_Shop_Main;
-					MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene == MODE_Shop_weapon_sell;
+					sinamonoList = 2;
+					weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+
+					// 2番目の武器を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
 				}
 
 
 				if (whomTargetID == 2) {
 					// mode_scene = MODE_Shop_Main;
-					//MessageBox(NULL, TEXT("中古の未実装"), TEXT("キーテスト"), MB_OK);
+					//MessageBox(NULL, TEXT("3買う未実装"), TEXT("キーテスト"), MB_OK);
 
 					//mode_scene == MODE_Shop_weapon_buyOld;
+
 				}
 
 				if (whomTargetID == 3) {
