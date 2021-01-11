@@ -73,10 +73,14 @@ using namespace Gdiplus;
 
 
 
-#define MODE_Shop_weapon 30000
-#define MODE_Shop_armor 30100
-#define MODE_Shop_akusesari 30200
-#define MODE_Shop_item 30300
+#define MODE_Shop_weapon_main 30000
+#define MODE_Shop_weapon_buy 30010
+#define MODE_Shop_weapon_sell 30020
+#define MODE_Shop_weapon_buyOld 30030
+
+#define MODE_Shop_armor_main 30100
+#define MODE_Shop_akusesari_main 30200
+#define MODE_Shop_item_main 30300
 
 
 
@@ -3360,7 +3364,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Shop_weapon) {
+		if (mode_scene == MODE_Shop_weapon_main ) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -3447,7 +3451,106 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_Shop_armor) {
+
+
+		if (mode_scene == MODE_Shop_weapon_buy) {
+
+			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("武器屋テスト買う。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 100,
+				450, 150);
+
+
+			int BuySellX = 280;
+			int BuySellY = 120;
+
+			int carsoruHigh = 30;
+			int spanX = 50;
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 280 + spanX * (whomTargetID), offsetYtemp1 + 10,
+				320 + spanX * (whomTargetID), offsetYtemp1 + 60);
+
+
+			lstrcpy(mojibuf, TEXT("買う"));
+			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("売る"));
+			TextOut(hdc, BuySellX + spanX * 1, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("中古"));
+			TextOut(hdc, BuySellX + spanX * 2, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("出る"));
+			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
+
+
+			int GoldRanX = 480; int GoldRanY = 50;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, GoldRanX, GoldRanY,
+				GoldRanX + 120, 110);
+
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, GoldRanX, GoldRanY + 10, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
+			TextOut(hdc, GoldRanX, GoldRanY + 10 + 20, mojibuf, lstrlen(mojibuf));
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 170,
+				450, 400);
+
+			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
+			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
+
+
+
+			lstrcpy(mojibuf, TEXT("商品名"));
+			TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("価格"));
+			TextOut(hdc, 280 + 120, 200, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("在庫"));
+			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
+
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 280, 200 + 30 + 30 * (whomTargetID),
+				320 + 40, offsetYtemp1 + 60 + 30 + 30 * (whomTargetID));
+
+			for (int temp = 1; temp <= 2; temp = temp + 1) {
+
+				lstrcpy(mojibuf, weapon_def_list[temp].weapon_name);
+				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+				
+
+				lstrcpy(mojibuf, TEXT("50G"));
+				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+			}
+
+		}
+
+
+
+
+
+
+
+		if (mode_scene == MODE_Shop_armor_main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -3475,7 +3578,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Shop_akusesari ) {
+		if (mode_scene == MODE_Shop_akusesari_main ) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -3502,7 +3605,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Shop_item) {
+		if (mode_scene == MODE_Shop_item_main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -4784,7 +4887,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 武器屋
 				if (whomTargetID == 0) {
 
-					mode_scene = MODE_Shop_weapon ; // 未実装なので、
+					mode_scene = MODE_Shop_weapon_main; 
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4794,7 +4897,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 防具や
 				if (whomTargetID == 1) {
 
-					mode_scene = MODE_Shop_armor ; // 未実装なので、
+					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4803,7 +4906,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 装飾品
 				if (whomTargetID == 2) {
 
-					mode_scene = MODE_Shop_akusesari ; // 未実装なので、
+					mode_scene = MODE_Shop_akusesari_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4815,7 +4918,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 道具
 				if (whomTargetID == 3) {
 					MessageBox(NULL, TEXT(" 道具屋にいる。"), TEXT("キーテスト"), MB_OK);
-					mode_scene = MODE_Shop_item ; // 未実装なので、
+					mode_scene = MODE_Shop_item_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4915,7 +5018,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Shop_weapon && key_remain > 0) {
+		if (mode_scene == MODE_Shop_weapon_main && key_remain > 0) {
 			key_remain = 0;
 
 
@@ -4926,20 +5029,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 
 				if (whomTargetID == 0) {
-					// mode_scene = MODE_Shop_Main;
-					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);				
+					// MessageBox(NULL, TEXT("買う"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene = MODE_Shop_weapon_buy;
+					whomTargetID = 0;
+
 				}
 
 
 				if (whomTargetID == 1) {
-					// mode_scene = MODE_Shop_Main;
-					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);
+					MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene = MODE_Shop_weapon_sell;
+
 				}
 
 
 				if (whomTargetID == 2) {
-					// mode_scene = MODE_Shop_Main;
-					MessageBox(NULL, TEXT("未実装"), TEXT("キーテスト"), MB_OK);
+					MessageBox(NULL, TEXT("中古の未実装"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene = MODE_Shop_weapon_buyOld;
 				}
 
 				if (whomTargetID == 3) {
@@ -4995,12 +5104,115 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 
+			} // switch 終わり
+		} // if shop weapon の終わり
 
 
+		if (mode_scene == MODE_Shop_weapon_buy && key_remain > 0) {
+			key_remain = 0;
+
+			// MessageBox(NULL, TEXT("いま買うルーチン"), TEXT("キーテスト"), MB_OK);
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				if (whomTargetID == 0) {
+
+
+					MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
+
+					// mode_scene = MODE_Shop_Main;
+					 MessageBox(NULL, TEXT("1買う"), TEXT("キーテスト"), MB_OK);
+
+
+					// mode_scene == MODE_Shop_weapon_buy;
+
+
+                    // 1番目の武器を買う処理
+
+				}
+
+
+				if (whomTargetID == 1) {
+					// mode_scene = MODE_Shop_Main;
+					MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene == MODE_Shop_weapon_sell;
+				}
+
+
+				if (whomTargetID == 2) {
+					// mode_scene = MODE_Shop_Main;
+					//MessageBox(NULL, TEXT("中古の未実装"), TEXT("キーテスト"), MB_OK);
+
+					//mode_scene == MODE_Shop_weapon_buyOld;
+				}
+
+				if (whomTargetID == 3) {
+					//mode_scene = MODE_Shop_Main;
+				}
+
+			}
+			break;
+
+			case 'X':
+			{
+
+				mode_scene = MODE_Shop_weapon_main;
+				key_remain = 0;
+				whomTargetID = 0;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+			case VK_DOWN:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID + 1;
+
+				if (whomTargetID >= 3) {
+					whomTargetID = 3;
+				}
+				else if (whomTargetID < 0) {
+					whomTargetID = 0;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID - 1;
+
+				if (whomTargetID >= 3) {
+					whomTargetID = 3;
+				}
+				else if (whomTargetID < 0) {
+					whomTargetID = 0;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
 
 
 			} // switch 終わり
-		} // if shop weapon の終わり
+		} // if MODE_Shop_weapon_buy の終わり
+
+
+
 
 
 		if (mode_scene == MODE_Guild_Main && key_remain > 0) {
@@ -5154,7 +5366,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'X':
 			{
-				key_remain = 0;
+				key_remain = 0; 
 
 
 				int skip = 0;
