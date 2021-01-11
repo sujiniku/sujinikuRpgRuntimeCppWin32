@@ -3909,8 +3909,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 1) { where_map = henkan; }
 								if (j == 2) { chara_x = henkan; }
 								if (j == 3) { chara_y = henkan; }
-								if (j == 4) { heros_def_list[0].heros_hp = henkan; }
-								if (j == 5) { heros_def_list[0].heros_hp_max = henkan; }
+								if (j == 4) { heros_def_list[0].heros_hp = henkan; 
+
+								fgets(buffer1, 150, fp1);
+								strncpy(str1, strtok(buffer1, ":"), 150);
+								strncpy(str2, strtok(NULL, ":"), 150);
+								henkan = atoi(str2);
+
+								heros_def_list[1].heros_hp = henkan;
+								}
+								if (j == 5) { heros_def_list[0].heros_hp_max = henkan;
+
+
+								fgets(buffer1, 150, fp1);
+								strncpy(str1, strtok(buffer1, ":"), 150);
+								strncpy(str2, strtok(NULL, ":"), 150);
+								henkan = atoi(str2);
+
+								heros_def_list[1].heros_hp_max = henkan;
+								}
 								if (j == 6) { your_money = henkan; }
 								if (j == 7) { item_have_list[0].have_kosuu = henkan; }
 								if (j == 7) { break; }
@@ -4255,8 +4272,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							fprintf(fp2, "キャラ位置x座標: %d \n", chara_x);
 							fprintf(fp2, "キャラ位置y座標: %d \n", chara_y);
 
-							fprintf(fp2, "キャラの現HP: %d \n", heros_def_list[0].heros_hp);
-							fprintf(fp2, "キャラの最大HP: %d \n", heros_def_list[0].heros_hp_max);
+							fprintf(fp2, "キャラ0の現HP: %d \n", heros_def_list[0].heros_hp);
+							fprintf(fp2, "キャラ1の現HP: %d \n", heros_def_list[1].heros_hp);
+
+							fprintf(fp2, "キャラ0の最大HP: %d \n", heros_def_list[0].heros_hp_max);
+							fprintf(fp2, "キャラ1の最大HP: %d \n", heros_def_list[1].heros_hp_max);
+
+
 
 							fprintf(fp2, "所持金: %d G\n", your_money);
 
