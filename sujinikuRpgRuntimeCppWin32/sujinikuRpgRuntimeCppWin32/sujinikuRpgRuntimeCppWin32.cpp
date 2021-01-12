@@ -3913,7 +3913,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 2) { chara_x = henkan; }
 								if (j == 3) { chara_y = henkan; }
 								if (j == 4) { 
+									partyNinzuDone = henkan;
 									
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 										partyNarabijyun[temp] = henkan;
@@ -3927,6 +3932,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									}
 
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+									hikaeNinzu = henkan;
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
 
 									
 									for (int temp = 0; temp <= hikaeNinzu - 1; temp = temp + 1) {
@@ -4316,19 +4333,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 							// heros_def_list[partyNarabijyun[j]].heros_name
+							fprintf(fp2, "パーティ人数: %d \n", partyNinzuDone );
+							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
+								fprintf(fp2, "パーティ %d 人目のID: %d \n", temp + 1, partyNarabijyun[temp]);
+							}
 
-							fprintf(fp2, "パーティ1人目のID: %d \n", partyNarabijyun[0]);
-							fprintf(fp2, "パーティ2人目のID: %d \n", partyNarabijyun[1]);
+							fprintf(fp2, "控え人数: %d \n", hikaeNinzu);
+							for (int temp = 0; temp <= hikaeNinzu - 1; ++temp) {
+								fprintf(fp2, "控え %d 人目のID: %d \n", temp + 1, hikaeNarabijyun[temp]);
+							}
 
-							fprintf(fp2, "控え1人目のID: %d \n", hikaeNarabijyun[0]);
-							fprintf(fp2, "控え2人目のID: %d \n", hikaeNarabijyun[1]);
+							for (int temp = 0; temp <= partyNinzuDone-1; ++temp) {
+								fprintf(fp2, "パーティ内キャラ %d 番目の現HP: %d \n", temp+1 , heros_def_list[partyNarabijyun[temp]].heros_hp);
+							}
 
-							fprintf(fp2, "パーティ内キャラ0の現HP: %d \n", heros_def_list[partyNarabijyun[0]].heros_hp);
-							fprintf(fp2, "パーティ内キャラ1の現HP: %d \n", heros_def_list[partyNarabijyun[1]].heros_hp);
-
-							fprintf(fp2, "パーティ内キャラ0の最大HP: %d \n", heros_def_list[partyNarabijyun[0]].heros_hp_max);
-							fprintf(fp2, "パーティ内キャラ1の最大HP: %d \n", heros_def_list[partyNarabijyun[1]].heros_hp_max);
-
+							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
+								fprintf(fp2, "パーティ内キャラ %d 番目の最大HP: %d \n", temp + 1, heros_def_list[partyNarabijyun[temp]].heros_hp_max);
+							}
 
 
 							fprintf(fp2, "所持金: %d G\n", your_money);
