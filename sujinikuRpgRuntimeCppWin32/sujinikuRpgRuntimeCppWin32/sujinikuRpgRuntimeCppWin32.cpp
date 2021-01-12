@@ -206,8 +206,8 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 int hikaeNinzu = 2;
 
 
-int partyNarabijyun[5] = { 1,2,3,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
-int hikaeNarabijyun[10] = { 1,2,3, -1, -1 }; // ギルドの処理に使う予定
+int partyNarabijyun[5] = { 0,1,-1,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
+int hikaeNarabijyun[10] = { 2,3,-1, -1, -1 }; // ギルドの処理に使う予定
 
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
 
@@ -909,12 +909,15 @@ void hikaesai(HDC hdc) {
 	if (uwadumeFlag == 1) {
 
 		int skip = 0;
-		for (int temp = 0; temp <= hikaeNinzu; temp = temp + 1) { // 2項目が hikaeNinzu;
+
+		// 控え終わり記号の -1 まで読み込んでるので、読み込み回数は控え人数よりも1回多い
+		for (int temp = 0; temp <= hikaeNinzu; temp = temp + 1) { // tempは0から数えてるので、2項目が hikaeNinzu;
+		// for (int temp = 0; temp <= 1; temp = temp + 1) { // 2項目が hikaeNinzu;
 
 			if (hikaeNarabijyun[temp] > -1) { // 右辺が0だと主人公が非表示になってしまう
 
 				if (heros_def_list[hikaeNarabijyun[temp]].PartyIn == 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s bbb"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
 					skip = skip + 1;
 				}
 
@@ -930,7 +933,7 @@ void hikaesai(HDC hdc) {
 
 
 		// temp == tourokuNakama + 1    に相当
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す555】"));
 		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip ) + 120, mojibuf, lstrlen(mojibuf));
 
 
@@ -3911,42 +3914,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 3) { chara_y = henkan; }
 								if (j == 4) { 
 									
-									partyNarabijyun[0] = henkan;
+
+									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+										partyNarabijyun[temp] = henkan;
+
+										if (temp == partyNinzuDone -1 ) { break; }
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
 
 
-									fgets(buffer1, 150, fp1);
-									strncpy(str1, strtok(buffer1, ":"), 150);
-									strncpy(str2, strtok(NULL, ":"), 150);
-									henkan = atoi(str2);
-
-
-									partyNarabijyun[1] = henkan;
-
-
-									fgets(buffer1, 150, fp1);
-									strncpy(str1, strtok(buffer1, ":"), 150);
-									strncpy(str2, strtok(NULL, ":"), 150);
-									henkan = atoi(str2);
 									
+									for (int temp = 0; temp <= hikaeNinzu - 1; temp = temp + 1) {
+										hikaeNarabijyun[temp] = henkan;
+
+										if (temp == hikaeNinzu - 1) { break; }
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
 									
-									heros_def_list[0].heros_hp = henkan; 
+									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+										heros_def_list[temp].heros_hp = henkan;
 
-								fgets(buffer1, 150, fp1);
-								strncpy(str1, strtok(buffer1, ":"), 150);
-								strncpy(str2, strtok(NULL, ":"), 150);
-								henkan = atoi(str2);
+										if (temp == partyNinzuDone - 1) { break; }
 
-								heros_def_list[1].heros_hp = henkan;
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
 								}
-								if (j == 5) { heros_def_list[0].heros_hp_max = henkan;
-								// heros_def_list[partyNarabijyun[j]].heros_name
+								if (j == 5) {
+									
+									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+										heros_def_list[temp].heros_hp_max = henkan;
 
-								fgets(buffer1, 150, fp1);
-								strncpy(str1, strtok(buffer1, ":"), 150);
-								strncpy(str2, strtok(NULL, ":"), 150);
-								henkan = atoi(str2);
+										if (temp == partyNinzuDone - 1) { break; }
 
-								heros_def_list[1].heros_hp_max = henkan;
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
 								}
 								if (j == 6) { your_money = henkan; }
 								if (j == 7) { item_have_list[0].have_kosuu = henkan; }
@@ -4297,6 +4319,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							fprintf(fp2, "パーティ1人目のID: %d \n", partyNarabijyun[0]);
 							fprintf(fp2, "パーティ2人目のID: %d \n", partyNarabijyun[1]);
+
+							fprintf(fp2, "控え1人目のID: %d \n", hikaeNarabijyun[0]);
+							fprintf(fp2, "控え2人目のID: %d \n", hikaeNarabijyun[1]);
 
 							fprintf(fp2, "パーティ内キャラ0の現HP: %d \n", heros_def_list[partyNarabijyun[0]].heros_hp);
 							fprintf(fp2, "パーティ内キャラ1の現HP: %d \n", heros_def_list[partyNarabijyun[1]].heros_hp);
