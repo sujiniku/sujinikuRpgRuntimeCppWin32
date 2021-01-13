@@ -917,7 +917,7 @@ void hikaesai(HDC hdc) {
 			if (hikaeNarabijyun[temp] > -1) { // 右辺が0だと主人公が非表示になってしまう
 
 				if (heros_def_list[hikaeNarabijyun[temp]].PartyIn == 0) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s bbb"), heros_def_list[hikaeNarabijyun[temp]].heros_name);
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s "), heros_def_list[hikaeNarabijyun[temp]].heros_name);
 					skip = skip + 1;
 				}
 
@@ -3920,8 +3920,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									strncpy(str2, strtok(NULL, ":"), 150);
 									henkan = atoi(str2);
 
+									for (int temp = 0; temp <= 5; temp = temp + 1) {
+										
+										// パーティ加入キャラ以外はフラグをゼロにセットさせるため
+										heros_def_list[temp].PartyIn = 0;
+									}
+
+
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 										partyNarabijyun[temp] = henkan;
+
+
+										heros_def_list[partyNarabijyun[temp]].PartyIn = 1;
+
+
+
 
 										if (temp == partyNinzuDone -1 ) { break; }
 
