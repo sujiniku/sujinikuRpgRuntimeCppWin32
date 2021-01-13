@@ -40,6 +40,7 @@ using namespace Gdiplus;
 
 
 #define MODE_MENU 400 // メニュー画面のモード番号
+#define MODE_ITEM_TYPE 405 // アイテムの「使用品」、「装備品」、「大事なもの」の区別
 #define MODE_ITEM_MENU_BACK 410 // アイテムメニューのモード
 #define MODE_ITEM_MENU_FRONT 415
 
@@ -1058,11 +1059,22 @@ static void MainGraMenu(HDC hdc) {
 	BrushBlue_set(hbackDC);
 	Rectangle(hbackDC, 10, 10, 610, 80);
 
-
+	// これカーソル
 	BrushPink_set(hbackDC);
-	Rectangle(hbackDC, 20 + (selecting_mainmenu - 1) * 100, 20,
-		100 + (selecting_mainmenu - 1) * 100, 70);
 
+
+	if (mode_scene != MODE_ITEM_TYPE) {
+		Rectangle(hbackDC, 20 + (selecting_mainmenu - 1) * 100, 20,
+			100 + (selecting_mainmenu - 1) * 100, 70);
+	}
+
+	if (mode_scene == MODE_ITEM_TYPE) {
+		Rectangle(hbackDC, 20 + (selecting_mainmenu - 1) * (100+10), 20+20,
+			100 + (selecting_mainmenu - 1) * (100+10), 70);
+	
+	}
+
+	// 道具～セーブ のメニュー欄
 	int	menuComBaseX = 20; int menuComOffsetPerX = 100;
 	int menuComBaseY = 20;
 
@@ -1082,6 +1094,28 @@ static void MainGraMenu(HDC hdc) {
 		TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 	}
+
+	// 間借り
+
+	if (mode_scene == MODE_ITEM_TYPE) {
+
+		SetBkMode(hbackDC, TRANSPARENT);
+		for (int j = 0; j <= 2; ++j) {
+
+			// 非共通;
+			if (j == 0) { lstrcpy(mojibuf, TEXT("消耗品")); }
+			if (j == 1) { lstrcpy(mojibuf, TEXT("装備品")); }
+			if (j == 2) { lstrcpy(mojibuf, TEXT("大事なもの")); }
+
+			// ここに共通する後段階の作業を記述;
+			TextOut(hbackDC, menuComBaseX + (menuComOffsetPerX + 10) * j, menuComBaseY + 20, mojibuf, lstrlen(mojibuf));
+		}
+
+	}
+
+
+
+
 
 
 	/* 所持金の表示欄 */
@@ -2651,6 +2685,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
+		// mode_scene == MODE_ITEM_TYPE
+
+		if (mode_scene == MODE_ITEM_TYPE) {
+
+			MainGraMenu(hdc);
+
+		}
+
+
+
 		if (mode_scene == MODE_ITEM_MENU_BACK) {
 
 			MainGraMenu(hdc);
@@ -2684,8 +2728,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
 				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
 
-
-			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
+			
+			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
 			//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
 			int itemskip = 0;
@@ -2811,7 +2855,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// ここに共通する前段階の作業を記述;
 
 				// 非共通;
-				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
+				if (j == 0) { lstrcpy(mojibuf, TEXT("道具777")); }
 				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
 				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
 				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
@@ -2820,6 +2864,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TextOut(hdc, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
 
 			}
+
 
 
 			/* 所持金の表示欄 */
@@ -4282,7 +4327,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 1) {
 					//	MessageBox(NULL, TEXT("道具を選択しました。"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene = MODE_ITEM_MENU_BACK;
+					mode_scene = MODE_ITEM_TYPE; // MODE_ITEM_MENU_BACK;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -4384,7 +4429,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 				}
-			}
+			} // casezの終わり
 
 			break;
 
@@ -4442,6 +4487,108 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		} // メニューの終わり
+
+
+		if (mode_scene == MODE_ITEM_TYPE && key_remain > 0) {
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				if (selecting_mainmenu == 1) {
+					//MessageBox(NULL, TEXT("消耗品とか。"), TEXT("キーテスト"), MB_OK);
+
+					mode_scene = MODE_ITEM_MENU_BACK; // MODE_ITEM_MENU_BACK;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				//mode_scene = MODE_MAP; 
+
+
+				if (selecting_mainmenu == 2) {
+					MessageBox(NULL, TEXT("装備品の確認。未実装。装備コマンドとは別"), TEXT("テスト"), MB_OK);
+
+					// mode_scene = MODE_EQUIP_MAIN;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+
+				if (selecting_mainmenu == 3) {
+					MessageBox(NULL, TEXT("大事なもの（※未実装）。"), TEXT("テスト"), MB_OK);
+
+					// mode_scene = MODE_SKILL_MAIN;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+			} // casezの終わり
+
+			break;
+
+			case 'X':
+				// マップ画面に戻る
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_MENU;
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_RIGHT:
+			{
+				//MessageBox(NULL, TEXT("rightが押されました。"), TEXT("キーテスト"), MB_OK);
+
+				selecting_mainmenu = selecting_mainmenu + 1;
+
+
+				if (selecting_mainmenu > 3) {
+					selecting_mainmenu = 3;
+				}
+
+				if (selecting_mainmenu < 1) {
+					selecting_mainmenu = 1;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+
+			case VK_LEFT:
+
+			{
+				selecting_mainmenu = selecting_mainmenu - 1;
+
+				if (selecting_mainmenu > 3) {
+					selecting_OP = 3;
+				}
+
+				if (selecting_mainmenu < 1) {
+					selecting_mainmenu = 1;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+			}
+
+		}
+
+		
 
 
 		if (mode_scene == MODE_ITEM_MENU_FRONT && key_remain > 0) {
