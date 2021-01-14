@@ -44,7 +44,8 @@ using namespace Gdiplus;
 #define MODE_ITEM_MENU_BACK 410 // アイテムメニューのモード
 #define MODE_ITEM_MENU_FRONT 415
 
-
+#define MODE_ITEMweapon_MENU_BACK 416
+#define MODE_ITEMweapon_MENU_FRONT 417
 
 
 #define MODE_ITEM_WHOM_BACK 420 // アイテム対象者の選択
@@ -2715,6 +2716,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
+		// MODE_ITEMweapon_MENU_BACK
+
+		if (mode_scene == MODE_ITEMweapon_MENU_BACK) {
+
+			MainGraMenu(hdc);
+
+			// ここまで、背景フィルターで隠される。
+
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hdc);
+
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+			Image image2(L"filter.png");
+
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+
+			mode_scene = MODE_ITEMweapon_MENU_FRONT;
+		}
+
+
+
+
 		if (mode_scene == MODE_ITEM_MENU_FRONT) {
 			
 
@@ -2831,6 +2856,122 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 
+
+		if (mode_scene == MODE_ITEMweapon_MENU_FRONT) {
+
+
+			MainGraFrontMenu(hdc);
+
+			BrushBlue_set(hdc);
+			Rectangle(hdc, 10, 100,
+				600, 400);
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
+				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
+
+
+			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
+			//	TextOut(hdc, 130, 105, p, lstrlen(p));
+
+			int itemskip = 0;
+			goukeiItem = 0;
+
+			int itemIDcount = 0;
+			int column = 2;
+
+			int xcommon;
+			int ycommon;
+
+			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+			{
+
+				if (item_have_list[idTemp].have_kosuu != 0) {
+
+					xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
+					ycommon = 130 + 30 * floor((idTemp - itemskip) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, weapon_def_list[idTemp].weapon_name);
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					itemHairetu[itemIDcount] = idTemp;
+					itemIDcount = itemIDcount + 1;
+
+				}
+
+				if (weapon_have_list[idTemp].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				}
+			}
+
+			// デバッグ用モニター
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[0] %d"), itemHairetu[0]);
+			TextOut(hdc, 230, 200, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[1] %d"), itemHairetu[1]);
+			TextOut(hdc, 230, 230, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[2] %d"), itemHairetu[2]);
+			TextOut(hdc, 230, 260, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatuse %d"), whatuse);
+			TextOut(hdc, 230, 290, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			// デバッグ用
+			lstrcpy(mojibuf, TEXT("sele_item :"));
+			//TextOut(hdc, 430, 200, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("SI: %d"), selecting_item);
+			TextOut(hdc, 530, 200, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("item_x :"));
+			TextOut(hdc, 430, 230, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), selecting_item_x);
+			TextOut(hdc, 490, 230, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("item_y :"));
+			TextOut(hdc, 430, 280, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), selecting_item_y);
+			TextOut(hdc, 490, 280, mojibuf, lstrlen(mojibuf));
+
+
+
+
+			// アイテム効果の確認用
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
+			TextOut(hdc, 400, 300, mojibuf, lstrlen(mojibuf));
+
+
+			lstrcpy(mojibuf, TEXT("HP"));
+			TextOut(hdc, 400, 300 + 30, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
+			TextOut(hdc, 400 + 30, 300 + 30, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
+			TextOut(hdc, 400 + 60, 300 + 30, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+
+		}
 
 
 		if (mode_scene == MODE_ITEM_WHOM_BACK) {
@@ -4016,8 +4157,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									}
 
-									
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+
 										heros_def_list[temp].heros_hp = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
@@ -4510,9 +4658,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				if (selecting_mainmenu == 2) {
-					MessageBox(NULL, TEXT("装備品の確認。未実装。装備コマンドとは別"), TEXT("テスト"), MB_OK);
+					// MessageBox(NULL, TEXT("装備品の確認。未実装。装備コマンドとは別"), TEXT("テスト"), MB_OK);
 
-					// mode_scene = MODE_EQUIP_MAIN;
+					mode_scene = MODE_ITEMweapon_MENU_BACK;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
