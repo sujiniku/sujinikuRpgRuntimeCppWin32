@@ -2886,7 +2886,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
-				if (item_have_list[idTemp].have_kosuu != 0) {
+				if (weapon_have_list[idTemp].have_kosuu != 0) {
 
 					xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
 					ycommon = 130 + 30 * floor((idTemp - itemskip) / column);
