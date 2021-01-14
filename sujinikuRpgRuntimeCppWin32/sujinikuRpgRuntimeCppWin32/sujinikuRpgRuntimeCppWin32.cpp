@@ -4827,6 +4827,97 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // アイテム メニューフロントの終わり
 
 
+
+
+
+
+
+
+
+
+
+
+		if (mode_scene == MODE_ITEMweapon_MENU_FRONT && key_remain > 0) {
+
+			// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しないための処理
+			selecting_itemBefore = selecting_item;
+
+			switch (wParam)
+			{
+
+			case 'Z':
+			{
+
+				whatuse = itemHairetu[selecting_item - 1] + 1; // これをあとで訂正する。
+
+
+
+				key_remain = 0;
+
+
+
+				// mode_scene = MODE_ITEM_WHOM_BACK;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			} //caseZ　の終わり
+
+			break;
+
+			case 'X':
+				// ITEM_TYPE画面に戻る
+			{
+				mode_scene = MODE_ITEM_TYPE;
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_UP:
+			{
+				selecting_item = selecting_item - 2;
+
+				item_select(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+				selecting_item = selecting_item + 2;
+
+				item_select(hWnd);
+
+			}
+			break;
+
+			case VK_RIGHT:
+			{
+				selecting_item = selecting_item + 1;
+
+				item_select(hWnd);
+			}
+
+			break;
+
+			case VK_LEFT:
+			{
+				selecting_item = selecting_item - 1;
+
+				item_select(hWnd);
+			}
+			break;
+
+			}
+		} // アイテム メニューフロントの終わり
+
+
+
+
+
+
+
 		if (mode_scene == MODE_ITEM_WHOM_FRONT && key_remain > 0) {
 
 			int tempVal ;
