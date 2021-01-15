@@ -4728,9 +4728,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							fprintf(fp2, "所持金: %d G\n", your_money);
 
 							char aaa[100];
-							WideCharToMultiByte(CP_ACP, 0, item_def_list[0].item_name, -1, aaa, sizeof(aaa), NULL, NULL);
 
-							fprintf(fp2, "%s の個数: %d \n", aaa, item_have_list[0].have_kosuu);
+							for (int temp = 0; temp <= 3 - 1; ++temp) {
+								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].item_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								fprintf(fp2, "%s の個数: %d \n", aaa, item_have_list[temp].have_kosuu);
+							}
+
+							for (int temp = 0; temp <= 3 - 1; ++temp) {
+								WideCharToMultiByte(CP_ACP, 0, weapon_def_list[temp].weapon_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								fprintf(fp2, "%s の個数: %d \n", aaa, weapon_have_list[temp].have_kosuu);
+							}
 
 							fclose(fp2);
 						}
