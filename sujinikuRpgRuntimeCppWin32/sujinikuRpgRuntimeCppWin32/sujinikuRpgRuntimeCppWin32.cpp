@@ -4382,7 +4382,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 
-
 									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
 										weapon_have_list[temp].have_kosuu = henkan;
 
@@ -4394,33 +4393,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										henkan = atoi(str2);
 									}
 								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
+
 								}
 								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
+
 								if (j == 7) { break; }
 
 							}
@@ -5398,6 +5374,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				whomTargetID = whomCHARA - 1;
 
 				// mode_scene = MODE_EQUIP_ITEM;
+
+				// 装備したものは個数が1減る。
+				weapon_have_list[whatedit2 + 1].have_kosuu = weapon_have_list[whatedit2 + 1].have_kosuu - 1;
+
+				// 外した装備の個数が1増える。
+				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 ].have_kosuu = weapon_have_list[whatedit2 + 1].have_kosuu + 1;
+
+				// 装備内容の更新。
+				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = whatedit2 + 1;
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
