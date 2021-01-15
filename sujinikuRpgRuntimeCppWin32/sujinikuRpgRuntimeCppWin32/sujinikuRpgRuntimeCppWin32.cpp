@@ -3461,8 +3461,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, souWInXsta + 20 , (110 + 20) + 20 * (whatedit2), souWInXend - 30 ,
 				(110 + 20) + 20 * (1 + whatedit2));
 
-			// そのキャラの装備項目の選択がサブモード
-		} // endo of MODE_EQUIP_EDIT
+
+
+
+
+			// 移植中
+			int itemskip = 0;
+			goukeiItem = 0;
+
+			int itemIDcount = 0;
+			int column = 1; // 装備コマンドの武器防具リストは1行なので
+
+			int xcommon;
+			int ycommon;
+
+			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+			{
+
+				if (weapon_have_list[idTemp].have_kosuu != 0) {
+
+					xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
+					ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, weapon_def_list[idTemp].weapon_name);
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					itemHairetu[itemIDcount] = idTemp;
+					itemIDcount = itemIDcount + 1;
+
+				}
+
+				if (weapon_have_list[idTemp].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				}
+			}
+
+
+		} // end of MODE_EQUIP_ITEM
 
 
 
