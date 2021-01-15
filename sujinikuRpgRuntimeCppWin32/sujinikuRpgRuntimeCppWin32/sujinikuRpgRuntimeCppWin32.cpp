@@ -4361,7 +4361,66 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 								}
 								if (j == 6) { your_money = henkan; }
-								if (j == 7) { item_have_list[0].have_kosuu = henkan; }
+								if (j == 7) { 
+									
+									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
+										item_have_list[temp].have_kosuu = henkan;
+
+										if (temp == 3 - 1) { break; }
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+
+
+									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
+										weapon_have_list[temp].have_kosuu = henkan;
+
+										if (temp == 3 - 1) { break; }
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+									}
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								}
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
 								if (j == 7) { break; }
 
 							}
