@@ -106,6 +106,8 @@ int beforeselect=1; // なんらかの選択肢で直前に選んだ選択肢の
 
 
 int whatedit = 0; // 装備コマンドなど、編集をするいろいろな作業用
+int whatedit2 = 0; // ひとつの画面内に、前画面用カーソルを残す場合の処理変数
+
 
 
 int uwadumeFlag = 1; // 1なら上詰めする。0ならオフ。デバッグモード用 // バグッたら0に戻すこと
@@ -125,6 +127,8 @@ int goukeiItem = 0;
 
 int whomCHARA = 1;
 int whomTargetID = 0;
+int whomTargetID2 = 0;
+
 
 int whomTargetIDparty = 0;
 int whomTargetIDhikae = 0;
@@ -3334,10 +3338,131 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
             // そのキャラの装備項目の選択がサブモード
-        }
+        }// endo of MODE_EQUIP_EDIT
 
 
 
+
+		if (mode_scene == MODE_EQUIP_ITEM) {
+			// 装備の表示欄
+			// メインモードは装備キャラの選択モードである
+
+			MainGraFrontMenu(hdc);
+
+			BrushBlue_set(hdc);
+
+			BrushPink_set(hdc);
+
+			// Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+			//	100 + (selecting_mainmenu - 1) * 100, 70);
+
+			int StatsHPbaseX = 130;
+			int StatsHPbaseY = 130;
+			int offsetY = 120;
+
+
+
+
+			// 背景の青
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 100, 350, 300);
+
+
+			// カーソル
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 90, (110 + 20) + 20 * (whatedit), 300 - 10,
+				(110 + 20) + 20 * (1 + whatedit));
+
+
+			// 文字
+			SetBkMode(hdc, TRANSPARENT);
+
+			int soubiYbase = 110; int soubiYper = 20;
+
+			lstrcpy(mojibuf, heros_def_list[partyNarabijyun[whomTargetID]].heros_name);
+			TextOut(hdc, 15, soubiYbase + soubiYper * 0, mojibuf,
+				lstrlen(mojibuf));
+
+
+			for (int temp = 1; temp <= 7; temp = temp + 1) {
+
+				if (temp == 1) {
+					lstrcpy(mojibuf1, TEXT("武器テスト"));
+					lstrcpy(mojibuf2, weapon_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].weapon_name);
+				}
+
+				if (temp == 2) {
+					lstrcpy(mojibuf1, TEXT("盾"));
+					lstrcpy(mojibuf2, TEXT("木の盾"));
+				}
+
+				if (temp == 3) {
+					lstrcpy(mojibuf1, TEXT("頭"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
+
+				if (temp == 4) {
+					lstrcpy(mojibuf1, TEXT("身体"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
+
+				if (temp == 5) {
+					lstrcpy(mojibuf1, TEXT("腕"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
+
+				if (temp == 6) {
+					lstrcpy(mojibuf1, TEXT("装飾品1"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
+
+
+				if (temp == 7) {
+					lstrcpy(mojibuf1, TEXT("装飾品2"));
+					lstrcpy(mojibuf2, TEXT("--------"));
+				}
+
+
+				TextOut(hdc, 15, soubiYbase + soubiYper * temp,
+					mojibuf1, lstrlen(mojibuf1));
+
+				TextOut(hdc, 90, soubiYbase + soubiYper * temp,
+					mojibuf2, lstrlen(mojibuf2));
+
+			}
+
+
+			// 背景の青
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 350, 500, 400);
+
+			lstrcpy(mojibuf, TEXT("変更したい装備を選んでください。"));
+			TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
+
+
+			SetBkMode(hdc, TRANSPARENT);
+
+
+
+
+			int souWInXsta = 400;
+			int souWInXend = 580;
+
+			// 装備用アイテムのリスト表示
+			// 背景の青
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, souWInXsta, 100, souWInXend, 300);
+
+
+			// カーソル
+			BrushPink_set(hdc);
+			Rectangle(hdc, souWInXsta + 20 , (110 + 20) + 20 * (whatedit2), souWInXend - 30 ,
+				(110 + 20) + 20 * (1 + whatedit2));
+
+			// そのキャラの装備項目の選択がサブモード
+		} // endo of MODE_EQUIP_EDIT
 
 
 
@@ -5080,6 +5205,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				mode_scene = MODE_EQUIP_ITEM;
 
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
 			} // caseZ　の終わり
 
 					break;
@@ -5147,6 +5275,91 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		} // MODE_EQUIP_EDIT の終わり
+
+
+
+
+		if (mode_scene == MODE_EQUIP_ITEM && key_remain > 0) {
+
+			int tempVal;
+
+			switch (wParam) {
+
+			case 'Z': {
+				key_remain = 0;
+				whomTargetID = whomCHARA - 1;
+
+				// mode_scene = MODE_EQUIP_ITEM;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			} // caseZ　の終わり
+
+					break;
+
+			case 'X':
+				// メイン画面に戻る
+			{
+				filterFlag = 0;
+				mode_scene = MODE_EQUIP_EDIT;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_UP: {
+				// MessageBox(NULL, TEXT("上が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+
+				whatedit2 = whatedit2 - 1;
+
+				if (whatedit2 >= 6) {
+					whatedit2 = 6;
+				}
+				else if (whatedit2 < 0) {
+					whatedit2 = 0;
+				}
+
+				if (whatedit2 != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whatedit2;
+
+
+			}
+
+					  break;
+
+			case VK_DOWN: {
+				// MessageBox(NULL, TEXT("↓が押されました。"),
+				// TEXT("キーテスト"), MB_OK);
+
+				whatedit2 = whatedit2 + 1;
+
+				if (whatedit2 >= 6) {
+					whatedit2 = 6;
+				}
+				else if (whatedit2 < 0) {
+					whatedit2 = 0;
+				}
+
+				if (whatedit2 != beforeselect) {
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+				beforeselect = whatedit2;
+
+			}
+						break;
+			}
+
+		} // MODE_EQUIP_ITEM の終わり
+
 
 
 
