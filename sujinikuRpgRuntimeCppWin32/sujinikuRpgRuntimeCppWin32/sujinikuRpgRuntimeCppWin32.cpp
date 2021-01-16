@@ -3442,6 +3442,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
 
 
+			// デバッグ文。装備個数ズレのバグ調査。
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatedit2: %d"), whatedit2 );
+			TextOut(hdc, 15, 350 + 10+20, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("iHw2: %d"), itemHairetu[whatedit2]);
+			TextOut(hdc, 15 + 130, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("wHL: %d"), weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_weapon_id);
+			TextOut(hdc, 15 + 130 + 100, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
+
+			// itemHairetu[whatedit2]         weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu + 1;
+
+
+
+
 			SetBkMode(hdc, TRANSPARENT);
 
 
@@ -5375,19 +5391,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// mode_scene = MODE_EQUIP_ITEM;
 
+				// 数値ズレのバグ発生中。直せ。
+				int tempID;
+				tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_weapon_id   ;
+				
+				//have_weapon_ID;
+
+				// 外した装備の個数が1増える。
+				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID -1].have_kosuu + 1;
+
+
 				// 装備したものは個数が1減る。
 				weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
 
-				// 外した装備の個数が1増える。
-				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 ].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu + 1;
 
 				// 装備内容の更新。
 				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = itemHairetu[whatedit2];
 
 
-
 				// itemHairetu[whatedit2];
-
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
