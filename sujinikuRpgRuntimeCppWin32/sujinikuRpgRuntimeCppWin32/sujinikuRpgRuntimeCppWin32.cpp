@@ -5376,13 +5376,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// mode_scene = MODE_EQUIP_ITEM;
 
 				// 装備したものは個数が1減る。
-				weapon_have_list[whatedit2 + 1].have_kosuu = weapon_have_list[whatedit2 + 1].have_kosuu - 1;
+				weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
 
 				// 外した装備の個数が1増える。
-				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 ].have_kosuu = weapon_have_list[whatedit2 + 1].have_kosuu + 1;
+				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 ].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu + 1;
 
 				// 装備内容の更新。
-				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = whatedit2 + 1;
+				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = itemHairetu[whatedit2];
+
+
+
+				// itemHairetu[whatedit2];
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
