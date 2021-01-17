@@ -296,7 +296,7 @@ struct armor_have
 };
 
 
-int equipequipPower;
+int equipWeaponPower;
 
 
 
@@ -1505,7 +1505,7 @@ void heroside_attack(HWND hWnd) {
 
 
 			/* サイコロ */
-			damage_HeroAttack = rand() % 6 + 2 + equipequipPower;
+			damage_HeroAttack = rand() % 6 + 2 + equipWeaponPower;
 
 			// 敵にダメージ
 			monster_hp = monster_hp - damage_HeroAttack;
@@ -2044,7 +2044,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//初期装備の武器
 
 	int equipInitialWeaponId = 1;
-	equipequipPower = weapon_def_list[equipInitialWeaponId].equipPower;
+	equipWeaponPower = weapon_def_list[equipInitialWeaponId].equipPower;
 
 
 	// mapの情報
