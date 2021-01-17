@@ -171,7 +171,7 @@ enum item_material
 };
 
 
-enum weapon_type
+enum equip_type
 {
 	sword,
 	spear,
@@ -239,7 +239,7 @@ struct item_have
 
 struct weapon_have
 {
-	int have_weapon_id;
+	int have_def_id;
 	int have_kosuu;
 };
 
@@ -249,18 +249,54 @@ struct weapon_have
 
 struct weapon_def
 {
-	int weapon_id;
-	TCHAR weapon_name[MAX_LENGTH];
+	int def_id;
+	TCHAR def_name[MAX_LENGTH];
 	int material;
-	int weapon_type;
-	int weaponPower;// 攻撃力
+	int equip_type;
+	int equipPower;// 攻撃力
+
+
+};
+
+struct helm_def
+{
+	int def_id;
+	TCHAR def_name[MAX_LENGTH];
+	int material;
+	int equip_type;
+	int equipPower;// 攻撃力
 
 
 };
 
 
 
-int equipWeaponPower;
+struct helm_have
+{
+	int have_def_id;
+	int have_kosuu;
+};
+
+
+struct armor_def
+{
+	int def_id;
+	TCHAR def_name[MAX_LENGTH];
+	int material;
+	int equip_type;
+	int equipPower;// 攻撃力
+
+
+};
+
+struct armor_have
+{
+	int have_def_id;
+	int have_kosuu;
+};
+
+
+int equipequipPower;
 
 
 
@@ -839,7 +875,12 @@ static struct weapon_def weapon_def_list[15]; // 武器処理の構造体配列�
 static struct weapon_have weapon_have_list[15];
 
 
+static struct helm_def helm_def_list[15]; // 武器処理の構造体配列の宣言
+static struct helm_have helm_have_list[15];
 
+
+static struct armor_def armor_def_list[15]; // 武器処理の構造体配列の宣言
+static struct armor_have armor_have_list[15];
 
 
 
@@ -1464,7 +1505,7 @@ void heroside_attack(HWND hWnd) {
 
 
 			/* サイコロ */
-			damage_HeroAttack = rand() % 6 + 2 + equipWeaponPower;
+			damage_HeroAttack = rand() % 6 + 2 + equipequipPower;
 
 			// 敵にダメージ
 			monster_hp = monster_hp - damage_HeroAttack;
@@ -1854,33 +1895,111 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 		if (temp == 0) {
-			// weapon_def_list[temp].weapon_id = 1;
-			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("なし"));
+			// weapon_def_list[temp].def_id = 1;
+			lstrcpy(weapon_def_list[temp].def_name, TEXT("なし"));
 			weapon_def_list[temp].material = mateNothing;
-			weapon_def_list[temp].weapon_type = typeNothing;
-			weapon_def_list[temp].weaponPower = 0; // 攻撃力
+			weapon_def_list[temp].equip_type = typeNothing;
+			weapon_def_list[temp].equipPower = 0; // 攻撃力
 			continue; // 計算時間の節約のため
 		}
 
 		if (temp == 1) {
-			// weapon_def_list[temp].weapon_id = 0;		
-			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("鉄の槍"));
+			// weapon_def_list[temp].def_id = 0;		
+			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄の槍"));
 			weapon_def_list[temp].material = mateIron;
-			weapon_def_list[temp].weapon_type = spear;
-			weapon_def_list[temp].weaponPower = 7; // 攻撃力	
+			weapon_def_list[temp].equip_type = spear;
+			weapon_def_list[temp].equipPower = 7; // 攻撃力	
 			continue;
 		}
 
 		if (temp == 2) {	
-			lstrcpy(weapon_def_list[temp].weapon_name, TEXT("鉄のメイス"));
+			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄のメイス"));
 			weapon_def_list[temp].material = mateIron;
-			// weapon_def_list[temp].weapon_type = spear;
-			weapon_def_list[temp].weaponPower = 4; // 攻撃力
+			// weapon_def_list[temp].equip_type = spear;
+			weapon_def_list[temp].equipPower = 4; // 攻撃力
 			continue;
 		}
 
 
 	}
+
+
+	//防具の定義
+// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
+// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
+	for (int temp = 0; temp <= 10; temp = temp + 1) {
+
+		if (temp == 0) {
+			// weapon_def_list[temp].def_id = 1;
+			lstrcpy(helm_def_list[temp].def_name, TEXT("なし"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 0; // 攻撃力
+			continue; // 計算時間の節約のため
+		}
+
+		if (temp == 1) {
+			// weapon_def_list[temp].def_id = 0;		
+			lstrcpy(helm_def_list[temp].def_name, TEXT("木の帽子"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 5; // 攻撃力	
+			continue;
+		}
+
+		if (temp == 2) {
+			lstrcpy(helm_def_list[temp].def_name, TEXT("鉄のカブト"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 10; // 攻撃力
+			continue;
+		}
+	}
+
+
+	//防具の定義
+// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
+// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
+	for (int temp = 0; temp <= 10; temp = temp + 1) {
+
+		if (temp == 0) {
+			// weapon_def_list[temp].def_id = 1;
+			lstrcpy(armor_def_list[temp].def_name, TEXT("なし"));
+			armor_def_list[temp].material = mateNothing;
+			armor_def_list[temp].equip_type = typeNothing;
+			armor_def_list[temp].equipPower = 0; // 攻撃力
+			continue; // 計算時間の節約のため
+		}
+
+		if (temp == 1) {
+			// weapon_def_list[temp].def_id = 0;		
+			lstrcpy(armor_def_list[temp].def_name, TEXT("皮の服"));
+			armor_def_list[temp].material = mateNothing;
+			armor_def_list[temp].equip_type = typeNothing;
+			armor_def_list[temp].equipPower = 2; // 攻撃力
+			continue;
+		}
+
+		if (temp == 2) {
+			lstrcpy(armor_def_list[temp].def_name, TEXT("木のヨロイ"));
+			armor_def_list[temp].material = mateNothing;
+			armor_def_list[temp].equip_type = typeNothing;
+			armor_def_list[temp].equipPower = 5; // 攻撃力
+			continue;
+		}
+
+
+		if (temp == 3) {
+			lstrcpy(armor_def_list[temp].def_name, TEXT("鎖かたびら"));
+			armor_def_list[temp].material = mateNothing;
+			armor_def_list[temp].equip_type = typeNothing;
+			armor_def_list[temp].equipPower = 10; // 攻撃力
+			continue;
+		}
+
+
+	}
+
 
 
 
@@ -1906,7 +2025,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//所持の装備品の個数などの初期値
 	for (int temp = 0; temp <= 15 - 1; temp++) {
 
-		weapon_have_list[temp].have_weapon_id = temp + 1;
+		weapon_have_list[temp].have_def_id = temp + 1;
 
 		if (temp == 0) {
 			weapon_have_list[temp].have_kosuu = 0;
@@ -1925,7 +2044,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//初期装備の武器
 
 	int equipInitialWeaponId = 1;
-	equipWeaponPower = weapon_def_list[equipInitialWeaponId].weaponPower;
+	equipequipPower = weapon_def_list[equipInitialWeaponId].equipPower;
 
 
 	// mapの情報
@@ -2896,7 +3015,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ycommon = 130 + 30 * floor((idTemp - itemskip) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, weapon_def_list[idTemp].weapon_name);
+					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
 					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
@@ -3282,7 +3401,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (temp == 1) {
 					lstrcpy(mojibuf1, TEXT("武器"));
 					lstrcpy(mojibuf2, weapon_def_list[
-						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1	].weapon_name ) ;
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1	].def_name ) ;
 				}
 
 				if (temp == 2) {
@@ -3390,7 +3509,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (temp == 1) {
 					lstrcpy(mojibuf1, TEXT("武器テスト"));
 					lstrcpy(mojibuf2, weapon_def_list[
-						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].weapon_name);
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].def_name);
 				}
 
 				if (temp == 2) {
@@ -3450,7 +3569,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 15 + 130, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
 
 
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("wHL: %d"), weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_weapon_id);
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("wHL: %d"), weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_def_id);
 			TextOut(hdc, 15 + 130 + 100, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
 
 			// itemHairetu[whatedit2]         weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu + 1;
@@ -3500,7 +3619,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, weapon_def_list[idTemp].weapon_name);
+					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
 					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
@@ -3843,7 +3962,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
-				lstrcpy(mojibuf, weapon_def_list[temp].weapon_name); 
+				lstrcpy(mojibuf, weapon_def_list[temp].def_name); 
 				TextOut(hdc, 280, 200 + 30*temp, mojibuf, lstrlen(mojibuf));
 
 				lstrcpy(mojibuf, TEXT("50G"));
@@ -3942,7 +4061,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
-				lstrcpy(mojibuf, weapon_def_list[temp].weapon_name);
+				lstrcpy(mojibuf, weapon_def_list[temp].def_name);
 				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 				
 
@@ -4786,7 +4905,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							}
 
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
-								WideCharToMultiByte(CP_ACP, 0, weapon_def_list[temp].weapon_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								WideCharToMultiByte(CP_ACP, 0, weapon_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, weapon_have_list[temp].have_kosuu);
 							}
 
@@ -5397,9 +5516,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatedit == 0) {
 					// 数値ズレのバグ発生中。直せ。
 					int tempID;
-					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_weapon_id;
+					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
 
-					//have_weapon_ID;
+					//have_def_id;
 
 					// 外した装備の個数が1増える。
 					weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
