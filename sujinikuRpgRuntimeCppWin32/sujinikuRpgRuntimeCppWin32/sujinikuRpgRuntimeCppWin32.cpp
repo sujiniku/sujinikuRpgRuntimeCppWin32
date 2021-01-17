@@ -18,71 +18,71 @@
 using namespace Gdiplus;
 
 
-
-
 // #include "resource.h"
 
 // 差分テスト // テスト終わったら、この行を消す
+// これは文字数バッファなど。（モード番号ではない。）
 #define MAX_LOADSTRING 100
 #define MAX_LENGTH 300 // 要素数に注意 
 
-#define MODE_OP 100 // タイトル画面のモード番号
-#define MODE_LOAD 120 
+// モード番号
+#define MODE_OP 10000 // タイトル画面のモード番号
+#define MODE_LOAD 12000 
 
-#define MODE_INITIAL 200 // ゲーム開始イベントのモード番号
-#define MODE_MAP 300 // マップ画面のモード番号
+#define MODE_INITIAL 20000 // ゲーム開始イベントのモード番号
+#define MODE_MAP 30000 // マップ画面のモード番号
 
-#define MODE_TOWN 310 // タウン画面のモード番号
+#define MODE_TOWN 31000 // タウン画面のモード番号
 
-#define MODE_Shop_Main 320
-
-
-
-
-#define MODE_MENU 400 // メニュー画面のモード番号
-#define MODE_ITEM_TYPE 405 // アイテムの「使用品」、「装備品」、「大事なもの」の区別
-#define MODE_ITEM_MENU_BACK 410 // アイテムメニューのモード
-#define MODE_ITEM_MENU_FRONT 415
-
-#define MODE_ITEMweapon_MENU_BACK 416
-#define MODE_ITEMweapon_MENU_FRONT 417
-
-
-#define MODE_ITEM_WHOM_BACK 420 // アイテム対象者の選択
-#define MODE_ITEM_WHOM_FRONT 425
-
-#define MODE_EQUIP_MAIN 430
-#define MODE_EQUIP_EDIT 431
-#define MODE_EQUIP_HAND1 432
+#define MODE_Shop_Main 32000
 
 
 
-#define MODE_SAVE_MENU 440 // セーブメニューのモード
-#define MODE_saving_Now 445 // セーブ中
+
+#define MODE_MENU 40000 // メニュー画面のモード番号
+#define MODE_ITEM_TYPE 40500 // アイテムの「使用品」、「装備品」、「大事なもの」の区別
+#define MODE_ITEM_MENU_BACK 41000 // アイテムメニューのモード
+#define MODE_ITEM_MENU_FRONT 41500
+
+#define MODE_ITEMweapon_MENU_BACK 41600
+#define MODE_ITEMweapon_MENU_FRONT 41700
 
 
-#define MODE_BATTLE_COMMAND 500 // 戦闘画面のモード番号
-#define MODE_BATTLE_NOW 520 // 戦闘画面の戦闘中のモード番号（コマンド受付け不可能）
+#define MODE_ITEM_WHOM_BACK 42000 // アイテム対象者の選択
+#define MODE_ITEM_WHOM_FRONT 42500
 
-#define MODE_BATTLE_WIN 580 // 戦闘勝利のモード番号
-
-#define BATTLE_Agility_proc 20 // 戦闘時の素早さ行動順の処理のため
-
-
-#define MODE_Guild_Main 10000 // ギルド処理
-#define MODE_Guild_Responce 20100
-#define MODE_Guild_Remove 20200
+#define MODE_EQUIP_MAIN 43000
+#define MODE_EQUIP_EDIT 43100
+#define MODE_EQUIP_HAND1 43200
 
 
 
-#define MODE_Shop_weapon_main 30000
-#define MODE_Shop_weapon_buy 30010
-#define MODE_Shop_weapon_sell 30020
-#define MODE_Shop_weapon_buyOld 30030
+#define MODE_SAVE_MENU 44000 // セーブメニューのモード
+#define MODE_saving_Now 44500 // セーブ中
 
-#define MODE_Shop_armor_main 30100
-#define MODE_Shop_akusesari_main 30200
-#define MODE_Shop_item_main 30300
+
+#define MODE_BATTLE_COMMAND 50000 // 戦闘画面のモード番号
+#define MODE_BATTLE_NOW 52000 // 戦闘画面の戦闘中のモード番号（コマンド受付け不可能）
+
+#define MODE_BATTLE_WIN 58000 // 戦闘勝利のモード番号
+
+#define MODE_BATTLE_Agility_proc 2000 // 戦闘時の素早さ行動順の処理のため
+
+
+#define MODE_Guild_Main 1000000 // ギルド処理
+#define MODE_Guild_Responce 2010000
+#define MODE_Guild_Remove 2020000
+
+
+
+#define MODE_Shop_weapon_main 3000000
+#define MODE_Shop_weapon_buy 3001000
+#define MODE_Shop_weapon_sell 3002000
+#define MODE_Shop_weapon_buyOld 3003000
+
+#define MODE_Shop_armor_main 3010000
+#define MODE_Shop_akusesari_main 3020000
+#define MODE_Shop_item_main 3030000
 
 
 
@@ -148,12 +148,12 @@ int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作�
 
 int tourokuMapChip = 2;
 
-int sankaAgility[BATTLE_Agility_proc]; // 素早さ配列
-int iremonoAgilityHairetu[BATTLE_Agility_proc]; // 入れ物すばやさ配列
-int actionOrder[BATTLE_Agility_proc]; // 行動順配列
-int iremonoOrderHairetu[BATTLE_Agility_proc]; // 入れ物こうどうじゅん配列
-int mikataAgility[BATTLE_Agility_proc]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
-int tekiTairetuAgility[BATTLE_Agility_proc]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
+int sankaAgility[MODE_BATTLE_Agility_proc]; // 素早さ配列
+int iremonoAgilityHairetu[MODE_BATTLE_Agility_proc]; // 入れ物すばやさ配列
+int actionOrder[MODE_BATTLE_Agility_proc]; // 行動順配列
+int iremonoOrderHairetu[MODE_BATTLE_Agility_proc]; // 入れ物こうどうじゅん配列
+int mikataAgility[MODE_BATTLE_Agility_proc]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
+int tekiTairetuAgility[MODE_BATTLE_Agility_proc]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
 
 // 装備の材質:
 
@@ -411,7 +411,7 @@ static TCHAR filename_temp[100]; // ファイル読み書きで使う一時的�
 
 
 
-static int mode_scene = 100;
+static int mode_scene = MODE_OP;
 static int selecting_OP = 1;
 
 static int selecting_mainmenu = 1;
@@ -2203,7 +2203,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 	
 
-	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
+	int tempHairetu[MODE_BATTLE_Agility_proc + 1]; // 使わないかも?
 
 	tempHairetu[0] = 0;
 	tempHairetu[1] = -99;
@@ -2236,7 +2236,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc -1 ; ++loctempA)
+	for (int loctempA = 0; loctempA <= MODE_BATTLE_Agility_proc -1 ; ++loctempA)
 	{
 		actionOrder[loctempA] = loctempA ;
 		iremonoOrderHairetu[loctempA] = loctempA ;
@@ -2698,7 +2698,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HDC hdc = BeginPaint(hWnd, &ps);
 		// TODO: HDC を使用する描画コードをここに追加してください...
 
+		//MessageBox(NULL, TEXT("いまそこ。"), TEXT("キーテスト"), MB_OK);
+
 		if (mode_scene == MODE_OP || mode_scene == MODE_INITIAL) {
+
+			
 
 
 			if (mode_scene == MODE_OP) {
