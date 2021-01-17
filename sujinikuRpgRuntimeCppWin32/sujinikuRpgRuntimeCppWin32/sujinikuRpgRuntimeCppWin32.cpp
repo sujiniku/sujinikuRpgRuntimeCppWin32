@@ -66,7 +66,7 @@ using namespace Gdiplus;
 
 #define MODE_BATTLE_WIN 58000 // 戦闘勝利のモード番号
 
-#define MODE_BATTLE_Agility_proc 2000 // 戦闘時の素早さ行動順の処理のため
+#define BATTLE_Agility_proc 2000 // 戦闘時の素早さ行動順の処理のため
 
 
 #define MODE_Guild_Main 1000000 // ギルド処理
@@ -148,12 +148,12 @@ int whoAction = 5; // 0 なら主人公の攻撃。1なら敵の攻撃。試作�
 
 int tourokuMapChip = 2;
 
-int sankaAgility[MODE_BATTLE_Agility_proc]; // 素早さ配列
-int iremonoAgilityHairetu[MODE_BATTLE_Agility_proc]; // 入れ物すばやさ配列
-int actionOrder[MODE_BATTLE_Agility_proc]; // 行動順配列
-int iremonoOrderHairetu[MODE_BATTLE_Agility_proc]; // 入れ物こうどうじゅん配列
-int mikataAgility[MODE_BATTLE_Agility_proc]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
-int tekiTairetuAgility[MODE_BATTLE_Agility_proc]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
+int sankaAgility[BATTLE_Agility_proc]; // 素早さ配列
+int iremonoAgilityHairetu[BATTLE_Agility_proc]; // 入れ物すばやさ配列
+int actionOrder[BATTLE_Agility_proc]; // 行動順配列
+int iremonoOrderHairetu[BATTLE_Agility_proc]; // 入れ物こうどうじゅん配列
+int mikataAgility[BATTLE_Agility_proc]; // 味方の隊列での素早さ配列。「並び替え」で隊列順が変わるので。
+int tekiTairetuAgility[BATTLE_Agility_proc]; // 敵の隊列での素早さ配列。戦闘時のソートで使うので。
 
 // 装備の材質:
 
@@ -2203,7 +2203,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 	
 
-	int tempHairetu[MODE_BATTLE_Agility_proc + 1]; // 使わないかも?
+	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
 
 	tempHairetu[0] = 0;
 	tempHairetu[1] = -99;
@@ -2236,7 +2236,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	for (int loctempA = 0; loctempA <= MODE_BATTLE_Agility_proc -1 ; ++loctempA)
+	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc -1 ; ++loctempA)
 	{
 		actionOrder[loctempA] = loctempA ;
 		iremonoOrderHairetu[loctempA] = loctempA ;
