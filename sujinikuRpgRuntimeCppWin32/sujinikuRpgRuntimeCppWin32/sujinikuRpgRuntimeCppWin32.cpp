@@ -53,7 +53,7 @@ using namespace Gdiplus;
 
 #define MODE_EQUIP_MAIN 430
 #define MODE_EQUIP_EDIT 431
-#define MODE_EQUIP_ITEM 432
+#define MODE_EQUIP_HAND1 432
 
 
 
@@ -3343,7 +3343,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_EQUIP_ITEM) {
+		if (mode_scene == MODE_EQUIP_HAND1) {
 			// 装備の表示欄
 			// メインモードは装備キャラの選択モードである
 
@@ -3520,7 +3520,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-		} // end of MODE_EQUIP_ITEM
+		} // end of MODE_EQUIP_HAND1
 
 
 
@@ -5303,7 +5303,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 
-				mode_scene = MODE_EQUIP_ITEM;
+				if (whatedit == 0) {
+					mode_scene = MODE_EQUIP_HAND1;
+				}
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -5379,7 +5381,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_EQUIP_ITEM && key_remain > 0) {
+		if (mode_scene == MODE_EQUIP_HAND1 && key_remain > 0) {
 
 			int tempVal;
 
@@ -5389,26 +5391,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 
-				// mode_scene = MODE_EQUIP_ITEM;
-
-				// 数値ズレのバグ発生中。直せ。
-				int tempID;
-				tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_weapon_id   ;
-				
-				//have_weapon_ID;
-
-				// 外した装備の個数が1増える。
-				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID -1].have_kosuu + 1;
+				// mode_scene = MODE_EQUIP_HAND1;
 
 
-				// 装備したものは個数が1減る。
-				weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+				if (whatedit == 0) {
+					// 数値ズレのバグ発生中。直せ。
+					int tempID;
+					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_weapon_id;
+
+					//have_weapon_ID;
+
+					// 外した装備の個数が1増える。
+					weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
 
 
-				// 装備内容の更新。
-				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = itemHairetu[whatedit2];
+					// 装備したものは個数が1減る。
+					weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
 
 
+					// 装備内容の更新。
+					heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = itemHairetu[whatedit2];
+
+
+				}
 				// itemHairetu[whatedit2];
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -5478,7 +5483,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 			}
 
-		} // MODE_EQUIP_ITEM の終わり
+		} // MODE_EQUIP_HAND1 の終わり
 
 
 
