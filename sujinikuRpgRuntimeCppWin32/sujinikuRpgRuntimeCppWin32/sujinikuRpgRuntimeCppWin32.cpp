@@ -38,6 +38,23 @@ using namespace Gdiplus;
 
 
 
+#define MODE_Shop_weapon_main 3000000
+#define MODE_Shop_weapon_buy 3001000
+#define MODE_Shop_weapon_sell 3002000
+#define MODE_Shop_weapon_buyOld 3003000
+
+#define MODE_Shop_armor_main 12345 // 3010000
+#define MODE_Shop_armor_buy 3011000
+#define MODE_Shop_armor_sell 3012000
+#define MODE_Shop_armor_buyOld 3013000
+
+
+
+
+#define MODE_Shop_akusesari_main 3020000
+#define MODE_Shop_item_main 3030000
+
+
 
 #define MODE_MENU 40000 // メニュー画面のモード番号
 #define MODE_ITEM_TYPE 40500 // アイテムの「使用品」、「装備品」、「大事なもの」の区別
@@ -75,14 +92,6 @@ using namespace Gdiplus;
 
 
 
-#define MODE_Shop_weapon_main 3000000
-#define MODE_Shop_weapon_buy 3001000
-#define MODE_Shop_weapon_sell 3002000
-#define MODE_Shop_weapon_buyOld 3003000
-
-#define MODE_Shop_armor_main 3010000
-#define MODE_Shop_akusesari_main 3020000
-#define MODE_Shop_item_main 3030000
 
 
 
@@ -3886,16 +3895,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-
-
-		if (mode_scene == MODE_Shop_weapon_main ) {
+		if (mode_scene == MODE_Shop_weapon_main || mode_scene == MODE_Shop_armor_main) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
 			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
 
-			lstrcpy(mojibuf, TEXT("武器屋テスト。"));
+			if(mode_scene == MODE_Shop_weapon_main) {
+				lstrcpy(mojibuf, TEXT("武器屋テスト。"));
+			}
+			if (mode_scene == MODE_Shop_armor_main) {
+				lstrcpy(mojibuf, TEXT("防具屋テスト。"));
+			}
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
@@ -3963,20 +3975,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+			if (mode_scene == MODE_Shop_weapon_main) {
+				for (int temp = 1; temp <= 2; temp = temp + 1) {
 
-			for (int temp = 1; temp <= 2; temp = temp + 1) {
+					lstrcpy(mojibuf, weapon_def_list[temp].def_name);
+					TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
-				lstrcpy(mojibuf, weapon_def_list[temp].def_name); 
-				TextOut(hdc, 280, 200 + 30*temp, mojibuf, lstrlen(mojibuf));
+					lstrcpy(mojibuf, TEXT("50G"));
+					TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
-				lstrcpy(mojibuf, TEXT("50G"));
-				TextOut(hdc, 280 + 120, 200 + 30*temp, mojibuf, lstrlen(mojibuf));
+				}
+			}
 
+
+			if (mode_scene == MODE_Shop_armor_main) {
+				for (int temp = 1; temp <= 2; temp = temp + 1) {
+
+					lstrcpy(mojibuf, helm_def_list[temp].def_name);
+					TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+					lstrcpy(mojibuf, TEXT("50G"));
+					TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+				}
 			}
 
 		}
-
-
 
 
 		if (mode_scene == MODE_Shop_weapon_buy) {
@@ -4081,90 +4105,114 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-
-
-
-
-
-		if (mode_scene == MODE_Shop_armor_main) {
+		if (mode_scene == MODE_Shop_armor_buy) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
 			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
 
-			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
+			lstrcpy(mojibuf, TEXT("防具屋テスト買う。"));
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			hikaesai(hdc);
-			parsai(hdc);
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 100,
+				450, 150);
 
 
-			// ここが上書きされている。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
-			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+			int BuySellX = 280;
+			int BuySellY = 120;
 
-			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
-			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
-
-			mode_scene = MODE_Guild_Main;
-		}
-
+			int carsoruHigh = 30;
+			int spanX = 50;
 
 
 
-		if (mode_scene == MODE_Shop_akusesari_main ) {
-
-			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
-
-			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
-
-			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
-			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
-
-
-			hikaesai(hdc);
-			parsai(hdc);
+			Rectangle(hdc, 280 + spanX * (shoptar), offsetYtemp1 + 10,
+				320 + spanX * (shoptar), offsetYtemp1 + 60);
 
 
-			// ここが上書きされている。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
-			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+			lstrcpy(mojibuf, TEXT("買う"));
+			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
 
-			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
-			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+			lstrcpy(mojibuf, TEXT("売る"));
+			TextOut(hdc, BuySellX + spanX * 1, BuySellY, mojibuf, lstrlen(mojibuf));
 
-			mode_scene = MODE_Guild_Main;
-		}
+			lstrcpy(mojibuf, TEXT("中古"));
+			TextOut(hdc, BuySellX + spanX * 2, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("出る"));
+			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
+
+
+			int GoldRanX = 480; int GoldRanY = 50;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, GoldRanX, GoldRanY,
+				GoldRanX + 120, 110);
+
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, GoldRanX, GoldRanY + 10, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
+			TextOut(hdc, GoldRanX, GoldRanY + 10 + 20, mojibuf, lstrlen(mojibuf));
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 170,
+				450, 400);
+
+			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
+			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
 
 
 
-		if (mode_scene == MODE_Shop_item_main) {
+			lstrcpy(mojibuf, TEXT("商品名"));
+			TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
 
-			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+			lstrcpy(mojibuf, TEXT("価格"));
+			TextOut(hdc, 280 + 120, 200, mojibuf, lstrlen(mojibuf));
 
-			BrushBlue_set(hdc);
+			lstrcpy(mojibuf, TEXT("在庫"));
+			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("所持数"));
+			TextOut(hdc, 280 + 170 + 50, 200, mojibuf, lstrlen(mojibuf));
+
+
+
 			BrushPink_set(hdc);
+			Rectangle(hdc, 280, 200 + 60 + 30 * (whomTargetID),
+				320 + 40, offsetYtemp1 + 60 + 60 + 30 * (whomTargetID));
 
-			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
-			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+			for (int temp = 1; temp <= 2; temp = temp + 1) {
+
+				lstrcpy(mojibuf, helm_def_list[temp].def_name);
+				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
 
-			hikaesai(hdc);
-			parsai(hdc);
+				lstrcpy(mojibuf, TEXT("50G"));
+				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
 
-			// ここが上書きされている。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s が仲間に加わった。"), heros_def_list[whomTargetIDhikae].heros_name);
-			TextOut(hdc, 280, 300, mojibuf, lstrlen(mojibuf));
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[temp].have_kosuu);
+				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
-			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
-			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+			}
 
-			mode_scene = MODE_Guild_Main;
 		}
+
+
+
+
+
+
+
+
 
 
 
@@ -5789,6 +5837,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 防具や
 				if (whomTargetID == 1) {
+					// MessageBox(NULL, TEXT(" 防具屋にいる。"), TEXT("キーテスト"), MB_OK);
+					
 					shoptar = 1;
 					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
 
@@ -5911,7 +5961,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Shop_weapon_main && key_remain > 0) {
+		if ((mode_scene == MODE_Shop_weapon_main || mode_scene == MODE_Shop_armor_main ) && key_remain > 0) {
 			key_remain = 0;
 
 
@@ -5924,7 +5974,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 0) {
 					// MessageBox(NULL, TEXT("買う"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene = MODE_Shop_weapon_buy;
+					if (mode_scene == MODE_Shop_weapon_main) {
+						mode_scene = MODE_Shop_weapon_buy;
+					}
+
+					if (mode_scene == MODE_Shop_armor_main) {
+						mode_scene = MODE_Shop_armor_buy;
+					}
 					whomTargetID = 0;
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -6004,7 +6060,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // if shop weapon の終わり
 
 
-		if (mode_scene == MODE_Shop_weapon_buy && key_remain > 0) {
+
+		if ((mode_scene == MODE_Shop_weapon_buy || mode_scene == MODE_Shop_armor_buy)&& key_remain > 0) {
 			key_remain = 0;
 
 			// MessageBox(NULL, TEXT("いま買うルーチン"), TEXT("キーテスト"), MB_OK);
@@ -6025,7 +6082,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					 sinamonoList = 1;
 					// mode_scene = MODE_Shop_weapon_buy;
-					 weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu  +1;
+					 if (mode_scene == MODE_Shop_weapon_buy) {
+						 weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					 }
+					 if (mode_scene == MODE_Shop_armor_buy) {
+						 helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
+					 }
 
                     // 1番目の武器を買う処理
 
@@ -6040,7 +6102,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
 
 					sinamonoList = 2;
-					weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
+					}
 
 					// 2番目の武器を買う処理
 
@@ -6068,8 +6135,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'X':
 			{
+				if (mode_scene == MODE_Shop_weapon_buy) {
+					mode_scene = MODE_Shop_weapon_main;
+				}
+				if (mode_scene == MODE_Shop_armor_buy) {
+					mode_scene = MODE_Shop_armor_main;
+				}
 
-				mode_scene = MODE_Shop_weapon_main;
 				key_remain = 0;
 				whomTargetID = 0;
 
