@@ -4520,7 +4520,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
-
+										// パーティ内キャラのHPのロード
 										heros_def_list[partyNarabijyun[temp]].heros_hp = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
@@ -4555,6 +4555,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+										// パーティ各員の装備武器のロード
 										heros_def_list[partyNarabijyun[temp]].heros_weapon1 = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
@@ -4567,6 +4568,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									}
 
 
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+
+									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+										// 登録仲間のキャラHPのロード。一部はパーティと重複。
+										heros_def_list[temp].heros_hp = henkan;
+
+										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+										// 登録仲間のキャラ最大HPのロード。一部はパーティと重複。
+										heros_def_list[temp].heros_hp_max = henkan;
+
+										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
+
+									// 区切り
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+										// 登録仲間の装備武器のロード
+										heros_def_list[temp].heros_weapon1 = henkan;
+
+
+										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
 
 
 								}
@@ -4574,6 +4634,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 7) { 
 									
 									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
+
+										// アイテム個数のロード
 										item_have_list[temp].have_kosuu = henkan;
 
 										if (temp == 3 - 1) { break; }
@@ -4974,6 +5036,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
 								fprintf(fp2, "パーティキャラ %d 番目の武器: %d \n", temp + 1, weapon_def_list[
 									heros_def_list[partyNarabijyun[temp]].heros_weapon1].def_id);
+							}
+
+
+							// 登録仲間のパラメーター。　一部はパーティパラと重複する
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の現HP: %d \n", temp + 1, heros_def_list[temp].heros_hp);
+							}
+
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の最大HP: %d \n", temp + 1, heros_def_list[temp].heros_hp_max);
+							}
+
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の武器: %d \n", temp + 1, weapon_def_list[
+									heros_def_list[temp].heros_weapon1].def_id);
 							}
 
 
