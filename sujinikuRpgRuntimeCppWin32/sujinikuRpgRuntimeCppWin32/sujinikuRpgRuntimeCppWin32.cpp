@@ -1904,7 +1904,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 		if (temp == 0) {
-			// weapon_def_list[temp].def_id = 1;
+			weapon_def_list[temp].def_id = 0;
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("なし"));
 			weapon_def_list[temp].material = mateNothing;
 			weapon_def_list[temp].equip_type = typeNothing;
@@ -1913,7 +1913,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			// weapon_def_list[temp].def_id = 0;		
+			weapon_def_list[temp].def_id = 1;		
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄の槍"));
 			weapon_def_list[temp].material = mateIron;
 			weapon_def_list[temp].equip_type = spear;
@@ -1921,7 +1921,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			continue;
 		}
 
-		if (temp == 2) {	
+		if (temp == 2) {
+			weapon_def_list[temp].def_id = 2;
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄のメイス"));
 			weapon_def_list[temp].material = mateIron;
 			// weapon_def_list[temp].equip_type = spear;
@@ -4520,7 +4521,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 
-										heros_def_list[temp].heros_hp = henkan;
+										heros_def_list[partyNarabijyun[temp]].heros_hp_max = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
 
@@ -4535,7 +4536,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 5) {
 									
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
-										heros_def_list[temp].heros_hp_max = henkan;
+										heros_def_list[partyNarabijyun[temp]].heros_hp_max = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
 
@@ -4545,6 +4546,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										henkan = atoi(str2);
 
 									}
+
+
+									fgets(buffer1, 150, fp1);
+									strncpy(str1, strtok(buffer1, ":"), 150);
+									strncpy(str2, strtok(NULL, ":"), 150);
+									henkan = atoi(str2);
+
+
+									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+										heros_def_list[partyNarabijyun[temp]].heros_weapon1 = henkan;
+
+										if (temp == partyNinzuDone - 1) { break; }
+
+										fgets(buffer1, 150, fp1);
+										strncpy(str1, strtok(buffer1, ":"), 150);
+										strncpy(str2, strtok(NULL, ":"), 150);
+										henkan = atoi(str2);
+
+									}
+
+
+
 
 								}
 								if (j == 6) { your_money = henkan; }
@@ -4938,6 +4961,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								fprintf(fp2, "控え %d 人目のID: %d \n", temp + 1, hikaeNarabijyun[temp]);
 							}
 
+							// ロードの都合により、HPのforは最大HPのforとは統合しないこと。
 							for (int temp = 0; temp <= partyNinzuDone-1; ++temp) {
 								fprintf(fp2, "パーティ内キャラ %d 番目の現HP: %d \n", temp+1 , heros_def_list[partyNarabijyun[temp]].heros_hp);
 							}
@@ -4947,15 +4971,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							}
 
 
+							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
+								fprintf(fp2, "パーティキャラ %d 番目の武器: %d \n", temp + 1, weapon_def_list[
+									heros_def_list[partyNarabijyun[temp]].heros_weapon1].def_id);
+							}
+
+
+
 							fprintf(fp2, "所持金: %d G\n", your_money);
 
 							char aaa[100];
 
+
+							// アイテム類の所持数
+							// 使用品の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
 								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].item_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, item_have_list[temp].have_kosuu);
 							}
 
+							// 装備品の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
 								WideCharToMultiByte(CP_ACP, 0, weapon_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, weapon_have_list[temp].have_kosuu);
