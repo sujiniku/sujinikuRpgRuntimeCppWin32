@@ -4521,7 +4521,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 
-										heros_def_list[partyNarabijyun[temp]].heros_hp_max = henkan;
+										heros_def_list[partyNarabijyun[temp]].heros_hp = henkan;
 
 										if (temp == partyNinzuDone - 1) { break; }
 
