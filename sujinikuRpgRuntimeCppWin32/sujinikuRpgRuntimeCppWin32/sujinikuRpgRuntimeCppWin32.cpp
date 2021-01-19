@@ -4443,12 +4443,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							int henkan = 0;
 
+							fgets(buffer1, 150, fp1);
+							strncpy(str1, strtok(buffer1, ":"), 150);
+							strncpy(str2, strtok(NULL, ":"), 150);
+							henkan = atoi(str2);
+
 							for (int j = 1; j <= 9; ++j) {
 
-								fgets(buffer1, 150, fp1);
-								strncpy(str1, strtok(buffer1, ":"), 150);
-								strncpy(str2, strtok(NULL, ":"), 150);
-								henkan = atoi(str2);
+
 
 								if (j == 1) { where_map = henkan; }
 								if (j == 2) { chara_x = henkan; }
@@ -4461,6 +4463,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									strncpy(str2, strtok(NULL, ":"), 150);
 									henkan = atoi(str2);
 
+									// 区切り
 									for (int temp = 0; temp <= 5; temp = temp + 1) {
 										
 										// パーティ加入キャラ以外はフラグをゼロにセットさせるため
@@ -4468,14 +4471,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									}
 
 
+									// 区切り
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 										partyNarabijyun[temp] = henkan;
 
-
 										heros_def_list[partyNarabijyun[temp]].PartyIn = 1;
-
-
-
 
 										if (temp == partyNinzuDone -1 ) { break; }
 
@@ -4492,6 +4492,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									strncpy(str2, strtok(NULL, ":"), 150);
 									henkan = atoi(str2);
 
+									// 区切り
+
 									hikaeNinzu = henkan;
 
 									fgets(buffer1, 150, fp1);
@@ -4499,7 +4501,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									strncpy(str2, strtok(NULL, ":"), 150);
 									henkan = atoi(str2);
 
-									
+									// 区切り
+
 									for (int temp = 0; temp <= hikaeNinzu - 1; temp = temp + 1) {
 										hikaeNarabijyun[temp] = henkan;
 
@@ -4518,6 +4521,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									strncpy(str1, strtok(buffer1, ":"), 150);
 									strncpy(str2, strtok(NULL, ":"), 150);
 									henkan = atoi(str2);
+
+									// 区切り
 
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 										// パーティ内キャラのHPのロード
@@ -4616,43 +4621,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 6) { your_money = henkan; }
 								if (j == 7) { 
 									
-									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
+									int LoopLimit; // これはループ処理用の変数。for文の2項目で使う
 
-										// アイテム個数のロード
-										item_have_list[temp].have_kosuu = henkan;
+									int itemTourokuSuu = 3;
+									int bukiTourokuSuu = 3;
+									int itemTypeTotal = 2; // 「使用品」、「装備品」、「大事なもの」で3になる予定。
+									// まだ試作なので、合計数は2になってる。
 
-										if (temp == 3 - 1) { break; }
+									for (int subtemp = 0; subtemp <= itemTypeTotal - 1; subtemp = subtemp + 1) {
+
+										if (subtemp == 0) {										
+											LoopLimit = itemTourokuSuu;									
+										}
+										if (subtemp == 1) {
+											LoopLimit = bukiTourokuSuu;
+										}
+
+										for (int temp = 0; temp <= LoopLimit - 1; temp = temp + 1) {
+
+											if (subtemp == 0) {
+												// 使用品の個数のロード
+												item_have_list[temp].have_kosuu = henkan;
+											}
+											if (subtemp == 1) {
+												// 武器個数のロード
+												weapon_have_list[temp].have_kosuu = henkan;
+											}
+																																
+											if (temp == LoopLimit - 1) { break; }
+
+											fgets(buffer1, 150, fp1);
+											strncpy(str1, strtok(buffer1, ":"), 150);
+											strncpy(str2, strtok(NULL, ":"), 150);
+											henkan = atoi(str2);
+
+										}
+
+										if (subtemp == itemTypeTotal - 1) { break; } // この行も変化してるのを忘れるな
 
 										fgets(buffer1, 150, fp1);
 										strncpy(str1, strtok(buffer1, ":"), 150);
 										strncpy(str2, strtok(NULL, ":"), 150);
 										henkan = atoi(str2);
 
-									}
+									} // for subtemp end
 
-
-									fgets(buffer1, 150, fp1);
-									strncpy(str1, strtok(buffer1, ":"), 150);
-									strncpy(str2, strtok(NULL, ":"), 150);
-									henkan = atoi(str2);
-
-
-									for (int temp = 0; temp <= 3 - 1; temp = temp + 1) {
-										weapon_have_list[temp].have_kosuu = henkan;
-
-										if (temp == 3 - 1) { break; }
-
-										fgets(buffer1, 150, fp1);
-										strncpy(str1, strtok(buffer1, ":"), 150);
-										strncpy(str2, strtok(NULL, ":"), 150);
-										henkan = atoi(str2);
-									}
-								
-
-								}
+																	
+								} // if j7 end
 								
 
 								if (j == 7) { break; }
+
+								// ifの外
+								// セーブファイル中の次行を読み取るのが目的のコード
+								fgets(buffer1, 150, fp1);
+								strncpy(str1, strtok(buffer1, ":"), 150);
+								strncpy(str2, strtok(NULL, ":"), 150);
+								henkan = atoi(str2);
 
 							}
 							fclose(fp1);
