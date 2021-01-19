@@ -4574,59 +4574,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 
-									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-										// 登録仲間のキャラHPのロード。一部はパーティと重複。
-										heros_def_list[temp].heros_hp = henkan;
 
-										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
+									for (int subtemp = 0; subtemp <= 3 -1; subtemp = subtemp + 1) {									
+										for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
+											// 登録仲間のキャラHPのロード。一部はパーティと重複。
+											
+											if (subtemp == 0) {
+												// 登録仲間のキャラHPのロード。一部はパーティと重複。
+												heros_def_list[temp].heros_hp = henkan;
+											}
+											if (subtemp == 1) {
+												// 登録仲間のキャラ最大HPのロード。一部はパーティと重複。
+												heros_def_list[temp].heros_hp_max = henkan;
+											}
+											if (subtemp == 2) {
+												// 登録仲間の装備武器のロード
+												heros_def_list[temp].heros_weapon1 = henkan;
+											}
 
-										fgets(buffer1, 150, fp1);
-										strncpy(str1, strtok(buffer1, ":"), 150);
-										strncpy(str2, strtok(NULL, ":"), 150);
-										henkan = atoi(str2);
+											if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
 
-									}
+											fgets(buffer1, 150, fp1);
+											strncpy(str1, strtok(buffer1, ":"), 150);
+											strncpy(str2, strtok(NULL, ":"), 150);
+											henkan = atoi(str2);
 
+										}	// for tourokunakama end	
 
-									fgets(buffer1, 150, fp1);
-									strncpy(str1, strtok(buffer1, ":"), 150);
-									strncpy(str2, strtok(NULL, ":"), 150);
-									henkan = atoi(str2);
-
-									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-										// 登録仲間のキャラ最大HPのロード。一部はパーティと重複。
-										heros_def_list[temp].heros_hp_max = henkan;
-
-										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
-
-										fgets(buffer1, 150, fp1);
-										strncpy(str1, strtok(buffer1, ":"), 150);
-										strncpy(str2, strtok(NULL, ":"), 150);
-										henkan = atoi(str2);
-
-									}
-
-
-									// 区切り
-									fgets(buffer1, 150, fp1);
-									strncpy(str1, strtok(buffer1, ":"), 150);
-									strncpy(str2, strtok(NULL, ":"), 150);
-									henkan = atoi(str2);
-
-									for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
-										// 登録仲間の装備武器のロード
-										heros_def_list[temp].heros_weapon1 = henkan;
-
-
-										if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
+										if (subtemp == 3-1) { break; } // この行も変化してるのを忘れるな
 
 										fgets(buffer1, 150, fp1);
 										strncpy(str1, strtok(buffer1, ":"), 150);
 										strncpy(str2, strtok(NULL, ":"), 150);
 										henkan = atoi(str2);
 
-									}
 
+									} // for subtemp end
 
 
 								}
