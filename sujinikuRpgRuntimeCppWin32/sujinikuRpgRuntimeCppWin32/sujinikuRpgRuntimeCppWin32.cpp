@@ -5605,6 +5605,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					break;
 
+			case 'C':
+				// 装備を外す
+			{
+				int tempID;
+				tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
+
+				// 外した装備の個数が1増える。
+				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
+
+				// 素手になるので、下記行はコメントアウト
+				// 装備したものは個数が1減る。
+				// weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+
+
+				// 装備内容の更新。
+				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = 0; // 素手はIDが0番なので。
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
 			case 'X':
 				// メイン画面に戻る
 			{
@@ -5686,7 +5709,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				if (whatedit == 0) {
-					// 数値ズレのバグ発生中。直せ。
+					// 選択中の武器をこれから装備する
 					int tempID;
 					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
 
@@ -5724,6 +5747,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				UpdateWindow(hWnd);
 			}
 			break;
+
+
+			case 'C':
+				// 装備を外す
+			{
+				int tempID;
+				tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
+
+				// 外した装備の個数が1増える。
+				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
+
+				// 素手になるので、下記行はコメントアウト
+				// 装備したものは個数が1減る。
+				// weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+
+
+				// 装備内容の更新。
+				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = 0; // 素手はIDが0番なので。
+				
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
 
 			case VK_UP: {
 				// MessageBox(NULL, TEXT("上が押されました。"),
