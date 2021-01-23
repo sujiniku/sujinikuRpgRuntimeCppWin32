@@ -4681,8 +4681,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 
-
-									for (int subtemp = 0; subtemp <= 3 -1; subtemp = subtemp + 1) {									
+									int statsLimit = 4;
+									for (int subtemp = 0; subtemp <= statsLimit -1; subtemp = subtemp + 1) {
 										for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 											// 登録仲間のキャラHPのロード。一部はパーティと重複。
 											
@@ -4698,6 +4698,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 												// 登録仲間の装備武器のロード
 												heros_def_list[temp].heros_weapon1 = henkan;
 											}
+											if (subtemp == 3) {
+												// 登録仲間の装備シールドのロード
+												heros_def_list[temp].heros_shield = henkan;
+											}
 
 											if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
 
@@ -4708,7 +4712,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 										}	// for tourokunakama end	
 
-										if (subtemp == 3-1) { break; } // この行も変化してるのを忘れるな
+										if (subtemp == statsLimit -1) { break; } // この行も変化してるのを忘れるな
 
 										fgets(buffer1, 150, fp1);
 										strncpy(str1, strtok(buffer1, ":"), 150);
@@ -4727,8 +4731,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									int itemTourokuSuu = 3;
 									int bukiTourokuSuu = 3;
-									int itemTypeTotal = 2; // 「使用品」、「装備品」、「大事なもの」で3になる予定。
-									// まだ試作なので、合計数は2になってる。
+									int tateTourokuSuu = 2;
+
+									int itemTypeTotal = 3;// 「使用品」1＋「装備品」武器防具の種類の合計＋「大事なもの」
 
 									for (int subtemp = 0; subtemp <= itemTypeTotal - 1; subtemp = subtemp + 1) {
 
@@ -4737,6 +4742,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										}
 										if (subtemp == 1) {
 											LoopLimit = bukiTourokuSuu;
+										}
+										if (subtemp == 2) {
+											LoopLimit = tateTourokuSuu;
 										}
 
 										for (int temp = 0; temp <= LoopLimit - 1; temp = temp + 1) {
@@ -4749,24 +4757,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 												// 武器個数のロード
 												weapon_have_list[temp].have_kosuu = henkan;
 											}
-																																
-											if (temp == LoopLimit - 1) { break; }
+											if (subtemp == 2) {
+												// 盾個数のロード
+												shield_have_list[temp].have_kosuu = henkan;
+											}
+
+											if (temp == LoopLimit - 1 &&
+												subtemp == itemTypeTotal - 1
+												) { break; }
 
 											fgets(buffer1, 150, fp1);
 											strncpy(str1, strtok(buffer1, ":"), 150);
 											strncpy(str2, strtok(NULL, ":"), 150);
 											henkan = atoi(str2);
 
-										}
-
-										if (subtemp == itemTypeTotal - 1) { break; } // この行も変化してるのを忘れるな
-
-										fgets(buffer1, 150, fp1);
-										strncpy(str1, strtok(buffer1, ":"), 150);
-										strncpy(str2, strtok(NULL, ":"), 150);
-										henkan = atoi(str2);
+										}		
 
 									} // for subtemp end
+
 
 																	
 								} // if j7 end
@@ -5163,7 +5171,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									heros_def_list[temp].heros_weapon1].def_id);
 							}
 
-
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の盾: %d \n", temp + 1, shield_def_list[
+									heros_def_list[temp].heros_shield].def_id);
+							}
 
 							fprintf(fp2, "所持金: %d G\n", your_money);
 
@@ -5177,10 +5188,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								fprintf(fp2, "%s の個数: %d \n", aaa, item_have_list[temp].have_kosuu);
 							}
 
-							// 装備品の所持数
+							// 装備品の武器の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
 								WideCharToMultiByte(CP_ACP, 0, weapon_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, weapon_have_list[temp].have_kosuu);
+							}
+
+							// 装備品の盾の所持数
+							for (int temp = 0; temp <= 3 - 1; ++temp) {
+								WideCharToMultiByte(CP_ACP, 0, shield_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								fprintf(fp2, "%s の個数: %d \n", aaa, shield_have_list[temp].have_kosuu);
 							}
 
 							fclose(fp2);
@@ -5714,18 +5731,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 装備を外す
 			{
 				int tempID;
-				tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
+				if (whatedit == 0) {
+					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
 
-				// 外した装備の個数が1増える。
-				weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
+					// 外した装備の個数が1増える。
+					weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
 
-				// 素手になるので、下記行はコメントアウト
-				// 装備したものは個数が1減る。
-				// weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+					// 素手になるので、下記行はコメントアウト
+					// 装備したものは個数が1減る。
+					// weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
 
 
-				// 装備内容の更新。
-				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = 0; // 素手はIDが0番なので。
+					// 装備内容の更新。
+					heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = 0; // 素手はIDが0番なので。
+				}
+
+				if (whatedit == 1) {
+					tempID = (shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield]).have_def_id;
+
+					// 外した装備の個数が1増える。
+					shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].have_kosuu = shield_have_list[tempID - 1].have_kosuu + 1;
+
+					// 素手になるので、下記行はコメントアウト
+					// 装備したものは個数が1減る。
+					// weapon_have_list[itemHairetu[whatedit2]].have_kosuu = weapon_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+
+
+					// 装備内容の更新。
+					heros_def_list[partyNarabijyun[whomTargetID]].heros_shield = 0; // 素手はIDが0番なので。
+				}
+
+
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
