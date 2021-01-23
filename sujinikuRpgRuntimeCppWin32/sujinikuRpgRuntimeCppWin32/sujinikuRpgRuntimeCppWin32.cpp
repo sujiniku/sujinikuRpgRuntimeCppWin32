@@ -267,6 +267,25 @@ struct weapon_def
 
 };
 
+
+struct shield_def
+{
+	int def_id;
+	TCHAR def_name[MAX_LENGTH];
+	int material;
+	int equip_type;
+	int equipPower;// 攻撃力
+
+};
+
+
+struct shield_have
+{
+	int have_def_id;
+	int have_kosuu;
+};
+
+
 struct helm_def
 {
 	int def_id;
@@ -879,16 +898,19 @@ static struct item_have item_have_list[8];
 
 
 
-// ウェポン処理の構造体変数の作成
+// 装備品の処理の構造体配列の作成
 static struct weapon_def weapon_def_list[15]; // 武器処理の構造体配列の宣言
 static struct weapon_have weapon_have_list[15];
 
+static struct shield_def shield_def_list[15]; // シールド処理の構造体配列の宣言
+static struct shield_have shield_have_list[15];
 
-static struct helm_def helm_def_list[15]; // 武器処理の構造体配列の宣言
+
+static struct helm_def helm_def_list[15]; // カブト処理の構造体配列の宣言
 static struct helm_have helm_have_list[15];
 
 
-static struct armor_def armor_def_list[15]; // 武器処理の構造体配列の宣言
+static struct armor_def armor_def_list[15]; // ヨロイ処理の構造体配列の宣言
 static struct armor_have armor_have_list[15];
 
 
@@ -1934,7 +1956,41 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	//防具の定義
+	//防具の定義 カブト
+// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
+// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
+	for (int temp = 0; temp <= 10; temp = temp + 1) {
+
+		if (temp == 0) {
+			// weapon_def_list[temp].def_id = 1;
+			lstrcpy(shield_def_list[temp].def_name, TEXT("なし"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 0; // 攻撃力
+			continue; // 計算時間の節約のため
+		}
+
+		if (temp == 1) {
+			// weapon_def_list[temp].def_id = 0;		
+			lstrcpy(shield_def_list[temp].def_name, TEXT("木の盾"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 5; // 攻撃力	
+			continue;
+		}
+
+		if (temp == 2) {
+			lstrcpy(shield_def_list[temp].def_name, TEXT("鉄の盾"));
+			helm_def_list[temp].material = mateNothing;
+			helm_def_list[temp].equip_type = typeNothing;
+			helm_def_list[temp].equipPower = 10; // 攻撃力
+			continue;
+		}
+	}
+
+
+
+	//防具の定義 カブト
 // 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
 // どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
@@ -1967,7 +2023,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	//防具の定義
+	//防具の定義 ヨロイ
 // 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
 // どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
@@ -2128,8 +2184,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			heros_def_list[temp].heros_weapon1 = 1;
-
-
+			
+			heros_def_list[temp].heros_shield = 2;
 
 		}
 
@@ -2146,6 +2202,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			heros_def_list[temp].heros_weapon1 = 2;
+			heros_def_list[temp].heros_shield = 0;
 		}
 
 		if (temp == 2) {
@@ -2158,6 +2215,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			heros_def_list[temp].heros_HP0_flag = 0;
 			heros_def_list[temp].PartyIn = 0;
+
+			heros_def_list[temp].heros_shield = 1;
 		}
 
 		if (temp == 3) {
@@ -2170,6 +2229,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			heros_def_list[temp].heros_HP0_flag = 0;
 			heros_def_list[temp].PartyIn = 0;
+
+			heros_def_list[temp].heros_shield = 0;
 		}
 
 
@@ -3420,7 +3481,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (temp == 2) {
 					lstrcpy(mojibuf1, TEXT("盾"));
-					lstrcpy(mojibuf2, TEXT("木の盾"));
+					lstrcpy(mojibuf2, shield_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].def_name);; // shield_def_list[temp].def_name
 				}
 
 				if (temp == 3) {
@@ -3521,14 +3583,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			for (int temp = 1; temp <= 7; temp = temp + 1) {
 
 				if (temp == 1) {
-					lstrcpy(mojibuf1, TEXT("武器テスト"));
+					lstrcpy(mojibuf1, TEXT("武器"));
 					lstrcpy(mojibuf2, weapon_def_list[
 						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].def_name);
 				}
 
 				if (temp == 2) {
 					lstrcpy(mojibuf1, TEXT("盾"));
-					lstrcpy(mojibuf2, TEXT("木の盾"));
+					lstrcpy(mojibuf2, shield_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].def_name);
 				}
 
 				if (temp == 3) {
