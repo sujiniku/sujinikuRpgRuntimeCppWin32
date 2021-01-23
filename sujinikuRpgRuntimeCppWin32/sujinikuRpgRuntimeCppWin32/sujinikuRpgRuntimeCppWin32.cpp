@@ -70,8 +70,11 @@ using namespace Gdiplus;
 
 #define MODE_EQUIP_MAIN 43000
 #define MODE_EQUIP_EDIT 43100
-#define MODE_EQUIP_HAND1 43200
 
+#define MODE_EQUIP_HAND1 43200
+#define MODE_EQUIP_SHIELD 43210
+#define MODE_EQUIP_HELM 43220
+#define MODE_EQUIP_ARMOR 43230
 
 
 #define MODE_SAVE_MENU 44000 // セーブメニューのモード
@@ -1918,8 +1921,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 
-
-
 	//武器の定義
 	// 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
 	// どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
@@ -1956,13 +1957,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	//防具の定義 カブト
+	//防具の定義 タテ
 // 計算量が2乗時間のアルゴリズムだけど、とりあえず編集性やバグ耐性を優先し、計算時間は考慮しない。
 // どうしても計算時間を短縮したいなら、ifをswitch-breakに置き換えれば、読み込み時間を若干、減らせるか。
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 		if (temp == 0) {
-			// weapon_def_list[temp].def_id = 1;
+			shield_def_list[temp].def_id = temp;
 			lstrcpy(shield_def_list[temp].def_name, TEXT("なし"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -1971,7 +1972,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			// weapon_def_list[temp].def_id = 0;		
+			shield_def_list[temp].def_id = temp;
 			lstrcpy(shield_def_list[temp].def_name, TEXT("木の盾"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -1980,6 +1981,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 2) {
+			shield_def_list[temp].def_id = temp;
 			lstrcpy(shield_def_list[temp].def_name, TEXT("鉄の盾"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -1996,7 +1998,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 		if (temp == 0) {
-			// weapon_def_list[temp].def_id = 1;
+			helm_def_list[temp].def_id = temp;
 			lstrcpy(helm_def_list[temp].def_name, TEXT("なし"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -2005,7 +2007,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			// weapon_def_list[temp].def_id = 0;		
+			helm_def_list[temp].def_id = temp;
 			lstrcpy(helm_def_list[temp].def_name, TEXT("木の帽子"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -2014,6 +2016,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 2) {
+			helm_def_list[temp].def_id = temp;
 			lstrcpy(helm_def_list[temp].def_name, TEXT("鉄のカブト"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
@@ -2029,7 +2032,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 		if (temp == 0) {
-			// weapon_def_list[temp].def_id = 1;
+			armor_def_list[temp].def_id = temp;
 			lstrcpy(armor_def_list[temp].def_name, TEXT("なし"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
@@ -2038,7 +2041,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			// weapon_def_list[temp].def_id = 0;		
+			armor_def_list[temp].def_id = temp;		
 			lstrcpy(armor_def_list[temp].def_name, TEXT("皮の服"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
@@ -2047,6 +2050,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 2) {
+			armor_def_list[temp].def_id = temp;
 			lstrcpy(armor_def_list[temp].def_name, TEXT("木のヨロイ"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
@@ -2056,6 +2060,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 		if (temp == 3) {
+			armor_def_list[temp].def_id = temp;
 			lstrcpy(armor_def_list[temp].def_name, TEXT("鎖かたびら"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
@@ -3538,7 +3543,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_EQUIP_HAND1) {
+		if (mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD) {
 			// 装備の表示欄
 			// メインモードは装備キャラの選択モードである
 
@@ -3687,33 +3692,67 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon;
 			int ycommon;
 
-			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
-			{
 
-				if (weapon_have_list[idTemp].have_kosuu != 0) {
+			if (mode_scene == MODE_EQUIP_HAND1) {
+				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+				{
 
-					xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
-					ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+					if (weapon_have_list[idTemp].have_kosuu != 0) {
 
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
+						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
 
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
-					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
-					goukeiItem = goukeiItem + 1;
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-					itemHairetu[itemIDcount] = idTemp;
-					itemIDcount = itemIDcount + 1;
+						goukeiItem = goukeiItem + 1;
 
+						itemHairetu[itemIDcount] = idTemp;
+						itemIDcount = itemIDcount + 1;
+
+					}
+
+					if (weapon_have_list[idTemp].have_kosuu == 0) {
+						itemskip = itemskip + 1;
+
+					}
+				}
+			} // ウェポン
+
+			if (mode_scene == MODE_EQUIP_SHIELD) {
+				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+				{
+
+					if (shield_have_list[idTemp].have_kosuu != 0) {
+
+						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
+						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+						goukeiItem = goukeiItem + 1;
+
+						itemHairetu[itemIDcount] = idTemp;
+						itemIDcount = itemIDcount + 1;
+
+					}
+
+					if (shield_have_list[idTemp].have_kosuu == 0) {
+						itemskip = itemskip + 1;
+
+					}
 				}
 
-				if (weapon_have_list[idTemp].have_kosuu == 0) {
-					itemskip = itemskip + 1;
-
-				}
-			}
+			} // シールド
 
 
 		} // end of MODE_EQUIP_HAND1
@@ -5660,6 +5699,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatedit == 0) {
 					mode_scene = MODE_EQUIP_HAND1;
 				}
+				if (whatedit == 1) {
+					mode_scene = MODE_EQUIP_SHIELD;
+				}				
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -5756,9 +5798,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // MODE_EQUIP_EDIT の終わり
 
 
-
-
-		if (mode_scene == MODE_EQUIP_HAND1 && key_remain > 0) {
+		if ((mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD) && key_remain > 0) {
 
 			int tempVal;
 
@@ -5791,7 +5831,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				}
+
+				if (whatedit == 1) {
+					//MessageBox(NULL, TEXT("aaaにいる。"), TEXT("キーテスト"), MB_OK);
+
+					// 選択中の盾をこれから装備する
+					int tempID;
+					tempID = (shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield]).have_def_id;
+
+					//have_def_id;
+
+					// 外した装備の個数が1増える。
+					shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].have_kosuu = shield_have_list[tempID - 1].have_kosuu + 1;
+
+
+					// 装備したものは個数が1減る。
+					shield_have_list[itemHairetu[whatedit2]].have_kosuu = shield_have_list[itemHairetu[whatedit2]].have_kosuu - 1;
+
+
+					// 装備内容の更新。
+					heros_def_list[partyNarabijyun[whomTargetID]].heros_shield = itemHairetu[whatedit2];
+
+
+				}
 				// itemHairetu[whatedit2];
+
+
+
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
