@@ -126,7 +126,7 @@ int uwadumeFlag = 1; // 1なら上詰めする。0ならオフ。デバッグモ
 
 int akikosuu ;
 int akiHairetu[5];
-int itemHairetu[8];
+int itemHairetu[50];
 
 int event_tekiFast = 0 ;
 
@@ -3086,13 +3086,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon;
 			int ycommon;
 
-			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+			// 武器表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
 				if (weapon_have_list[idTemp].have_kosuu != 0) {
 
-					xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
-					ycommon = 130 + 30 * floor((idTemp - itemskip) / column);
+					xcommon = 30 + 300 * floor((idTemp - itemskip -1) % column);
+					ycommon = 130 + 30 * floor((idTemp - itemskip -1) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
@@ -3103,16 +3104,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					goukeiItem = goukeiItem + 1;
 
-					itemHairetu[itemIDcount] = idTemp;
-					itemIDcount = itemIDcount + 1;
-
+					if (idTemp != 2) {
+						// itemHairetu[itemIDcount] = idTemp;
+						// itemIDcount = itemIDcount + 1;
+					}
 				}
 
-				if (weapon_have_list[idTemp].have_kosuu == 0) {
+				if (weapon_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
 					itemskip = itemskip + 1;
 
 				}
-			}
+			} // 武器
+
+			itemskip = 0;
+			int LimintTemp = goukeiItem;
+			// ヘルム表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+				if (helm_have_list[idTemp].have_kosuu != 0) {
+					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+					xcommon = 30 + 300 * floor((idTemp - itemskip -1 + LimintTemp) % column);
+					ycommon = 130 + 30 * floor((idTemp - itemskip -1 + LimintTemp) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
+					
+					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (idTemp != 2) {
+						// itemHairetu[itemIDcount] = idTemp;
+						// itemIDcount = itemIDcount + 1;
+					}
+
+				}
+
+				if (helm_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				} 
+			} // かぶと
+
+
+
 
 			// デバッグ用モニター
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[0] %d"), itemHairetu[0]);
@@ -3129,7 +3169,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 230, 290, mojibuf, lstrlen(mojibuf));
 
 
-
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("goukeIte %d"), goukeiItem);
+			TextOut(hdc, 230, 290 +30, mojibuf, lstrlen(mojibuf));
 
 			// デバッグ用
 			lstrcpy(mojibuf, TEXT("sele_item :"));
