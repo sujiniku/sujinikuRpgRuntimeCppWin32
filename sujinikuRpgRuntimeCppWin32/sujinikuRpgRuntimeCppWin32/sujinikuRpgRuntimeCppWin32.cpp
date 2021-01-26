@@ -3116,8 +3116,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			} // 武器
 
+
+
 			itemskip = 0;
 			int LimintTemp = goukeiItem;
+			// シールド表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+				if (shield_have_list[idTemp].have_kosuu != 0) {
+					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
+					ycommon = 130 + 30 * floor((idTemp - itemskip - 1 + LimintTemp) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
+
+					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (idTemp != 2) {
+						// itemHairetu[itemIDcount] = idTemp;
+						// itemIDcount = itemIDcount + 1;
+					}
+
+				}
+
+				if (shield_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				}
+			} // シールド
+
+
+
+
+
+			itemskip = 0;
+			LimintTemp = goukeiItem;
 			// ヘルム表示
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
@@ -4770,11 +4811,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									
 									int LoopLimit; // これはループ処理用の変数。for文の2項目で使う
 
-									int itemTourokuSuu = 3;
+									int itemTourokuSuu = 3;// 「なし」も含める
 									int bukiTourokuSuu = 3;
-									int tateTourokuSuu = 2;
+									int tateTourokuSuu = 3;
 
-									int itemTypeTotal = 3;// 「使用品」1＋「装備品」武器防具の種類の合計＋「大事なもの」
+									int itemTypeTotal = 4;// 「使用品」1＋「装備品」武器防具の種類の合計＋「大事なもの」
+
+									int readEndFlag = 0;
 
 									for (int subtemp = 0; subtemp <= itemTypeTotal - 1; subtemp = subtemp + 1) {
 
@@ -4787,6 +4830,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										if (subtemp == 2) {
 											LoopLimit = tateTourokuSuu;
 										}
+										if (subtemp == 3) {
+											LoopLimit = 3; // kabutoTourokuSuu;
+										}
+
 
 										for (int temp = 0; temp <= LoopLimit - 1; temp = temp + 1) {
 
@@ -4801,11 +4848,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 											if (subtemp == 2) {
 												// 盾個数のロード
 												shield_have_list[temp].have_kosuu = henkan;
+												//MessageBox(NULL, TEXT("盾リード検出"), TEXT("メッセージ"), MB_OK);
 											}
+											if (subtemp == 3) {
+												// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
+												// 兜個数のロード
+												helm_have_list[temp].have_kosuu = henkan;
+																								
+												readEndFlag = 1;
+											}
+											
 
-											if (temp == LoopLimit - 1 &&
-												subtemp == itemTypeTotal - 1
-												) { break; }
+											if ((temp == LoopLimit - 1) &&	(subtemp == itemTypeTotal - 1) && (readEndFlag==1)) {
+												// デバッグ用のメッセージ
+												//MessageBox(NULL, TEXT("break in"), TEXT("メッセージ"), MB_OK);
+												break; 
+											}
 
 											fgets(buffer1, 150, fp1);
 											strncpy(str1, strtok(buffer1, ":"), 150);
@@ -5223,6 +5281,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 							// アイテム類の所持数
+
+									
 							// 使用品の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
 								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].item_name, -1, aaa, sizeof(aaa), NULL, NULL);
@@ -5240,6 +5300,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								WideCharToMultiByte(CP_ACP, 0, shield_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, shield_have_list[temp].have_kosuu);
 							}
+
+
+							// 装備品のカブトの所持数
+							for (int temp = 0; temp <= 3 - 1; ++temp) {
+								WideCharToMultiByte(CP_ACP, 0, helm_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								fprintf(fp2, "%s の個数: %d \n", aaa, helm_have_list[temp].have_kosuu);
+							}
+
 
 							fclose(fp2);
 						}
