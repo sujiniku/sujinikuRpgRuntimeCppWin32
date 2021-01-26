@@ -4110,8 +4110,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int spanX = 50;
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, 280 + spanX * (whomTargetID), offsetYtemp1 + 10 ,
-				320 + spanX * (whomTargetID), offsetYtemp1 + 60 );
+			Rectangle(hdc, BuySellX + spanX * (whomTargetID2), offsetYtemp1 + 10 ,
+				320 + spanX * (whomTargetID2), offsetYtemp1 + 60 );
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -4215,8 +4215,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, 280 + spanX * (shoptar), offsetYtemp1 + 10,
-				320 + spanX * (shoptar), offsetYtemp1 + 60);
+			Rectangle(hdc, BuySellX + spanX * (shoptar), offsetYtemp1 + 10,
+				BuySellX +40 + spanX * (shoptar), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -6283,7 +6283,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 1) {
 					// MessageBox(NULL, TEXT(" 防具屋にいる。"), TEXT("キーテスト"), MB_OK);
 					
-					shoptar = 1;
+					shoptar = 0;
 					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -6415,7 +6415,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				if (whomTargetID == 0) {
+				if (whomTargetID2 == 0) {
 					// MessageBox(NULL, TEXT("買う"), TEXT("キーテスト"), MB_OK);
 
 					if (mode_scene == MODE_Shop_weapon_main) {
@@ -6433,7 +6433,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				if (whomTargetID == 1) {
+				if (whomTargetID2 == 1) {
 					MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
 
 					mode_scene = MODE_Shop_weapon_sell;
@@ -6441,13 +6441,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				if (whomTargetID == 2) {
+				if (whomTargetID2 == 2) {
 					MessageBox(NULL, TEXT("中古の未実装"), TEXT("キーテスト"), MB_OK);
 
 					mode_scene = MODE_Shop_weapon_buyOld;
 				}
 
-				if (whomTargetID == 3) {
+				if (whomTargetID2 == 3) {
 					mode_scene = MODE_Shop_Main;
 				}
 
@@ -6466,13 +6466,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_RIGHT:
 			{
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
-				whomTargetID = whomTargetID + 1;
+				whomTargetID2 = whomTargetID2 + 1;
 
-				if (whomTargetID >= 3) {
-					whomTargetID =  3;
+				if (whomTargetID2 >= 3) {
+					whomTargetID2 =  3;
 				}
-				else if (whomTargetID < 0) {
-					whomTargetID = 0;
+				else if (whomTargetID2 < 0) {
+					whomTargetID2 = 0;
 				}
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -6485,13 +6485,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_LEFT:
 			{
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
-				whomTargetID = whomTargetID - 1;
+				whomTargetID2 = whomTargetID2 - 1;
 
-				if (whomTargetID >= 3) {
-					whomTargetID = 3;
+				if (whomTargetID2 >= 3) {
+					whomTargetID2 = 3;
 				}
-				else if (whomTargetID < 0) {
-					whomTargetID = 0;
+				else if (whomTargetID2 < 0) {
+					whomTargetID2 = 0;
 				}
 
 				InvalidateRect(hWnd, NULL, FALSE);
