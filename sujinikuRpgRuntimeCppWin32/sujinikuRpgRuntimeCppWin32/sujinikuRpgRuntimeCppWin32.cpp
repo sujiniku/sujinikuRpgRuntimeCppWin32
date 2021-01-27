@@ -1928,7 +1928,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			weapon_def_list[temp].def_id = 0;
-			lstrcpy(weapon_def_list[temp].def_name, TEXT("なし"));
+			lstrcpy(weapon_def_list[temp].def_name, TEXT("--------"));
 			weapon_def_list[temp].material = mateNothing;
 			weapon_def_list[temp].equip_type = typeNothing;
 			weapon_def_list[temp].equipPower = 0; // 攻撃力
@@ -1964,7 +1964,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			shield_def_list[temp].def_id = temp;
-			lstrcpy(shield_def_list[temp].def_name, TEXT("なし"));
+			lstrcpy(shield_def_list[temp].def_name, TEXT("--------"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
 			helm_def_list[temp].equipPower = 0; // 攻撃力
@@ -1999,7 +1999,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			helm_def_list[temp].def_id = temp;
-			lstrcpy(helm_def_list[temp].def_name, TEXT("なし"));
+			lstrcpy(helm_def_list[temp].def_name, TEXT("--------"));
 			helm_def_list[temp].material = mateNothing;
 			helm_def_list[temp].equip_type = typeNothing;
 			helm_def_list[temp].equipPower = 0; // 攻撃力
@@ -2033,7 +2033,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			armor_def_list[temp].def_id = temp;
-			lstrcpy(armor_def_list[temp].def_name, TEXT("なし"));
+			lstrcpy(armor_def_list[temp].def_name, TEXT("--------"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
 			armor_def_list[temp].equipPower = 0; // 攻撃力
@@ -3642,8 +3642,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int offsetY = 120;
 
 
-
-
 			// 背景の青
 			SelectObject(hdc, blue_thin_1);
 			Rectangle(hdc, 10, 100, 350, 300);
@@ -3760,7 +3758,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				(110 + 20) + 20 * (1 + whatedit2));
 
 
-
+			weapon_have_list[0].have_kosuu = 0;
 
 
 			// 移植中
@@ -3790,10 +3788,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
 						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-						goukeiItem = goukeiItem + 1;
+						// goukeiItem = goukeiItem + 1;
 
-						itemHairetu[itemIDcount] = idTemp;
-						itemIDcount = itemIDcount + 1;
+						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+						itemIDcount = itemIDcount + 1; // これは上コードで使う
 
 					}
 
@@ -3804,6 +3802,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			} // ウェポン
 
+
+			// シールド
 			if (mode_scene == MODE_EQUIP_SHIELD) {
 				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
 				{
@@ -3820,10 +3820,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
 						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-						goukeiItem = goukeiItem + 1;
+						// goukeiItem = goukeiItem + 1;
 
-						itemHairetu[itemIDcount] = idTemp;
-						itemIDcount = itemIDcount + 1;
+						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+						itemIDcount = itemIDcount + 1; // これは上コードで使う
 
 					}
 
@@ -5985,11 +5985,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// 選択中の武器をこれから装備する
 					int tempID;
 					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1]).have_def_id;
-
+					int tempEquip = heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1;
 					//have_def_id;
 
 					// 外した装備の個数が1増える。
-					weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1].have_kosuu = weapon_have_list[tempID - 1].have_kosuu + 1;
+					weapon_have_list[tempEquip].have_kosuu = weapon_have_list[tempEquip].have_kosuu + 1;
 
 
 					// 装備したものは個数が1減る。
@@ -5999,7 +5999,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// 装備内容の更新。
 					heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = itemHairetu[whatedit2];
 
-
+					weapon_have_list[0].have_kosuu = 0; // アイテム0番（未装備に対応）はつねに0個
 				}
 
 				if (whatedit == 1) {
@@ -6008,11 +6008,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// 選択中の盾をこれから装備する
 					int tempID;
 					tempID = (shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield]).have_def_id;
-
+					int tempEquip = heros_def_list[partyNarabijyun[whomTargetID]].heros_shield;
 					//have_def_id;
 
 					// 外した装備の個数が1増える。
-					shield_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].have_kosuu = shield_have_list[tempID - 1].have_kosuu + 1;
+					shield_have_list[tempEquip].have_kosuu = shield_have_list[tempEquip].have_kosuu + 1;
 
 
 					// 装備したものは個数が1減る。
@@ -6022,6 +6022,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// 装備内容の更新。
 					heros_def_list[partyNarabijyun[whomTargetID]].heros_shield = itemHairetu[whatedit2];
 
+
+					shield_have_list[0].have_kosuu = 0;
 
 				}
 				// itemHairetu[whatedit2];
