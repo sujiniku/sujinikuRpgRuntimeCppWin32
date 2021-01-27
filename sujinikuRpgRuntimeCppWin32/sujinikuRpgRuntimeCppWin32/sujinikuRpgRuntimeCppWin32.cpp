@@ -4354,59 +4354,84 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
 
 
+			int koumoku_Y =200;
 
 			lstrcpy(mojibuf, TEXT("商品名"));
-			TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280, koumoku_Y, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("価格"));
-			TextOut(hdc, 280 + 120, 200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 120, koumoku_Y, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("在庫"));
-			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 170, koumoku_Y, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("所持数"));
-			TextOut(hdc, 280 + 170 + 50, 200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 170 + 50, koumoku_Y, mojibuf, lstrlen(mojibuf));
 
 
+			int kasolOffsetY = 30;
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, 280, 200 + 60 + 30 * (whomTargetID),
-				320 + 40, offsetYtemp1 + 60 + 60 + 30 * (whomTargetID));
+			Rectangle(hdc, 280, koumoku_Y + 60 + kasolOffsetY * (whomTargetID),
+				320 + 40, offsetYtemp1 + 60 + 60 + kasolOffsetY * (whomTargetID));
 
-			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
-				lstrcpy(mojibuf, helm_def_list[temp].def_name);
-				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+			struct sinaList {
+				int Grouptype;
+				int subID;
+			};
+
+			struct sinaList hinmoku[5]; // 構造体配列の宣言
+
+		
+			// 売り物の定義
+			// 1品目
+	        // strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
+			hinmoku[0].Grouptype = 2;
+			hinmoku[0].subID = 1;
+
+
+			// 2品目   
+			hinmoku[1].Grouptype = 2;
+			hinmoku[1].subID = 2;
+			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
+
+
+			// 3品目   
+			hinmoku[2].Grouptype = 3;
+			hinmoku[2].subID = 1;
+
+
+			// 4品目   
+			hinmoku[3].Grouptype = 3;
+			hinmoku[3].subID = 2;
+
+
+			for (int temp = 0; temp <= 3; temp = temp + 1) {
+
+				if ( hinmoku[temp].Grouptype == 2) {
+					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
+				}
+				if ( hinmoku[temp].Grouptype == 3) {
+					lstrcpy(mojibuf, shield_def_list[hinmoku[temp].subID].def_name);
+				}
+				TextOut(hdc, 280, koumoku_Y +30+ 30 * temp, mojibuf, lstrlen(mojibuf));
 
 
 				lstrcpy(mojibuf, TEXT("50G"));
-				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, 280 + 120, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
+				if (hinmoku[temp].Grouptype == 2) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
+				}
+				if (hinmoku[temp].Grouptype == 3) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
+				}
+				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[temp].have_kosuu);
-				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
-
-			}
-
-
-
-			for (int temp = 3; temp <= 4; temp = temp + 1) {
-
-				lstrcpy(mojibuf, shield_def_list[temp-2].def_name);
-				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
-
-
-				lstrcpy(mojibuf, TEXT("50G"));
-				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
-
-
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[temp - 2].have_kosuu);
-				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
-
-			}
-
-
-		}
+			} // for temp 終わり
+		} // mode 防具buyの終わり
 
 
 
