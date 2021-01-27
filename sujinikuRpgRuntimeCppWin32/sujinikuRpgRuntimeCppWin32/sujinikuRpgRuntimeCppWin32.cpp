@@ -329,7 +329,7 @@ struct armor_have
 
 int equipWeaponPower;
 
-
+int bouguyaSina[10][10]; // 
 
 
 struct monster_def
@@ -3069,9 +3069,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 10, 100,
 				600, 400);
 
+			int spanY = 30;
+			int Y0 = 120;
+
 			BrushPink_set(hdc);
-			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
-				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
+			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, Y0 + (selecting_item_y - 1) * spanY,
+				250 + (selecting_item_x - 1) * 300, Y0 + spanY + (selecting_item_y - 1) * spanY);
 
 
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
@@ -3093,7 +3096,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (weapon_have_list[idTemp].have_kosuu != 0) {
 
 					xcommon = 30 + 300 * floor((idTemp - itemskip -1) % column);
-					ycommon = 130 + 30 * floor((idTemp - itemskip -1) / column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip -1) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
@@ -3127,7 +3130,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (shield_have_list[idTemp].have_kosuu != 0) {
 					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
 					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
-					ycommon = 130 + 30 * floor((idTemp - itemskip - 1 + LimintTemp) / column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
@@ -3153,10 +3156,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			} // シールド
 
-
-
-
-
 			itemskip = 0;
 			LimintTemp = goukeiItem;
 			// ヘルム表示
@@ -3166,7 +3165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (helm_have_list[idTemp].have_kosuu != 0) {
 					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
 					xcommon = 30 + 300 * floor((idTemp - itemskip -1 + LimintTemp) % column);
-					ycommon = 130 + 30 * floor((idTemp - itemskip -1 + LimintTemp) / column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip -1 + LimintTemp) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
 					lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
@@ -3281,7 +3280,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// ここに共通する前段階の作業を記述;
 
 				// 非共通;
-				if (j == 0) { lstrcpy(mojibuf, TEXT("道具777")); }
+				if (j == 0) { lstrcpy(mojibuf, TEXT("道具")); }
 				if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
 				if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
 				if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
@@ -4389,25 +4388,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
+
+
+			for (int temp = 3; temp <= 4; temp = temp + 1) {
+
+				lstrcpy(mojibuf, shield_def_list[temp-2].def_name);
+				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+
+				lstrcpy(mojibuf, TEXT("50G"));
+				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[temp - 2].have_kosuu);
+				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+			}
+
+
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -6564,14 +6563,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (whomTargetID == 2) {
 					// mode_scene = MODE_Shop_Main;
-					//MessageBox(NULL, TEXT("3買う未実装"), TEXT("キーテスト"), MB_OK);
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
 
-					//mode_scene == MODE_Shop_weapon_buyOld;
+					sinamonoList = 1;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 1番目の盾を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
 
 				}
 
 				if (whomTargetID == 3) {
-					//mode_scene = MODE_Shop_Main;
+					// mode_scene = MODE_Shop_Main;
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
+
+					sinamonoList = 2;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 2番目の盾を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
 				}
 
 			}
