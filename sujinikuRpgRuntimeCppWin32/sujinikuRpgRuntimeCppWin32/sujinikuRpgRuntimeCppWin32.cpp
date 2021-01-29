@@ -3573,7 +3573,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (temp == 3) {
 					lstrcpy(mojibuf1, TEXT("頭"));
-					lstrcpy(mojibuf2, TEXT("--------"));
+					lstrcpy(mojibuf2, helm_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_helm].def_name);
 				}
 
 				if (temp == 4) {
@@ -3624,7 +3625,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD) {
+		if (mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD  || mode_scene == MODE_EQUIP_HELM ) {
 			// 装備の表示欄
 			// メインモードは装備キャラの選択モードである
 
@@ -3680,7 +3681,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (temp == 3) {
 					lstrcpy(mojibuf1, TEXT("頭"));
-					lstrcpy(mojibuf2, TEXT("--------"));
+					lstrcpy(mojibuf2, helm_def_list[
+						heros_def_list[partyNarabijyun[whomTargetID]].heros_helm].def_name);
 				}
 
 				if (temp == 4) {
@@ -3834,6 +3836,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 			} // シールド
+
+
+			if (mode_scene == MODE_EQUIP_HELM) {
+				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+				{
+
+					if (helm_have_list[idTemp].have_kosuu != 0) {
+
+						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column); // コピペ時、ここを更新
+						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, helm_def_list[idTemp].def_name);  // コピペ時、ここを更新
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);  // コピペ時、ここを帰る
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+						// goukeiItem = goukeiItem + 1;
+
+						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+						itemIDcount = itemIDcount + 1; // これは上コードで使う
+
+					}
+
+					if (helm_have_list[idTemp].have_kosuu == 0) {  // コピペ時、ここを帰る
+						itemskip = itemskip + 1;
+
+					}
+				}
+
+			} // シールド
+
+
 
 
 		} // end of MODE_EQUIP_HAND1
@@ -4787,7 +4823,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 
-									int statsLimit = 4;
+									int statsLimit = 5;
 									for (int subtemp = 0; subtemp <= statsLimit -1; subtemp = subtemp + 1) {
 										for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 											// 登録仲間のキャラHPのロード。一部はパーティと重複。
@@ -4808,6 +4844,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 												// 登録仲間の装備シールドのロード
 												heros_def_list[temp].heros_shield = henkan;
 											}
+
+											if (subtemp == 4) {
+												// 登録仲間の装備ヘルムのロード
+												heros_def_list[temp].heros_helm = henkan;
+											}
+
 
 											if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
 
@@ -5298,6 +5340,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								fprintf(fp2, "登録キャラ %d 番目の盾: %d \n", temp + 1, shield_def_list[
 									heros_def_list[temp].heros_shield].def_id);
 							}
+
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の兜: %d \n", temp + 1, helm_def_list[
+									heros_def_list[temp].heros_helm].def_id);
+							}
+
 
 							fprintf(fp2, "所持金: %d G\n", your_money);
 
@@ -5851,7 +5899,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				if (whatedit == 1) {
 					mode_scene = MODE_EQUIP_SHIELD;
-				}				
+				}
+				if (whatedit == 2) {
+					mode_scene = MODE_EQUIP_HELM;
+				}
+
+
+
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -5968,7 +6023,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // MODE_EQUIP_EDIT の終わり
 
 
-		if ((mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD) && key_remain > 0) {
+		if ((mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD || mode_scene == MODE_EQUIP_HELM ) && key_remain > 0) {
 
 			int tempVal;
 
@@ -6029,7 +6084,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// itemHairetu[whatedit2];
 
 
+				if (whatedit == 2) {
+					//MessageBox(NULL, TEXT("aaaにいる。"), TEXT("キーテスト"), MB_OK);
 
+					// 選択中の兜をこれから装備する
+					int tempID;
+					tempID = (helm_have_list[heros_def_list[partyNarabijyun[whomTargetID]].heros_helm]).have_def_id;
+					int tempEquip = heros_def_list[partyNarabijyun[whomTargetID]].heros_helm;
+					//have_def_id;
+
+					// 外した装備の個数が1増える。
+					helm_have_list[tempEquip].have_kosuu = helm_have_list[tempEquip].have_kosuu + 1; // コピペ時、更新のこと
+
+
+					// 装備したものは個数が1減る。
+					helm_have_list[itemHairetu[whatedit2]].have_kosuu = helm_have_list[itemHairetu[whatedit2]].have_kosuu - 1;  // コピペ時、更新のこと
+
+
+					// 装備内容の更新。
+					heros_def_list[partyNarabijyun[whomTargetID]].heros_helm = itemHairetu[whatedit2]; // コピペ時、更新のこと
+
+
+					helm_have_list[0].have_kosuu = 0;  // コピペ時、更新のこと
+
+				}
+				// itemHairetu[whatedit2];
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
