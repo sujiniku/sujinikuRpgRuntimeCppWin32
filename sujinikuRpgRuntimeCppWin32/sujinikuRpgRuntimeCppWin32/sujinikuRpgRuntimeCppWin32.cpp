@@ -70,11 +70,12 @@ using namespace Gdiplus;
 
 #define MODE_EQUIP_MAIN 43000
 #define MODE_EQUIP_EDIT 43100
+#define MODE_EQUIP_EDIT2 43110
 
-#define MODE_EQUIP_HAND1 43200
-#define MODE_EQUIP_SHIELD 43210
-#define MODE_EQUIP_HELM 43220
-#define MODE_EQUIP_ARMOR 43230
+#define MODE2_EQUIP_HAND1 43200
+#define MODE2_EQUIP_SHIELD 43210
+#define MODE2_EQUIP_HELM 43220
+#define MODE2_EQUIP_ARMOR 43230
 
 
 #define MODE_SAVE_MENU 44000 // セーブメニューのモード
@@ -443,6 +444,8 @@ static TCHAR filename_temp[100]; // ファイル読み書きで使う一時的�
 
 
 static int mode_scene = MODE_OP;
+static int mode2_scene = 0;
+
 static int selecting_OP = 1;
 
 static int selecting_mainmenu = 1;
@@ -3506,128 +3509,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     // そのキャラの装備項目の選択がサブモード
 
-
-
-
-
         }
 
 
-
-
-		if (mode_scene == MODE_EQUIP_EDIT) {
-            // 装備の表示欄
-            // メインモードは装備キャラの選択モードである
-
-            MainGraFrontMenu(hdc);
-
-            BrushBlue_set(hdc);
-
-            BrushPink_set(hdc);
-
-            // Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
-            //	100 + (selecting_mainmenu - 1) * 100, 70);
-
-            int StatsHPbaseX = 130;
-            int StatsHPbaseY = 130;
-            int offsetY = 120;
-
-
-
-			
-			// 背景の青
-            SelectObject(hdc, blue_thin_1);
-            Rectangle(hdc, 10, 100, 350, 300);
-
-
-			// カーソル
-
-			BrushPink_set(hdc);
-            Rectangle(hdc, 90, (110+20) + 20 * (whatedit), 300 - 10,
-                      (110 +20)+ 20 * (1 + whatedit));
-
-
-			// 文字
-			SetBkMode(hdc, TRANSPARENT);
-
-			int soubiYbase = 110; int soubiYper = 20;
-
-            lstrcpy(mojibuf, heros_def_list[partyNarabijyun[whomTargetID] ].heros_name );                     
-			TextOut(hdc, 15, soubiYbase + soubiYper * 0, mojibuf,
-                    lstrlen(mojibuf));
-
-
-			for (int temp = 1; temp <= 7; temp = temp + 1) {
-
-				if (temp == 1) {
-					lstrcpy(mojibuf1, TEXT("武器"));
-					lstrcpy(mojibuf2, weapon_def_list[
-						heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1	].def_name ) ;
-				}
-
-				if (temp == 2) {
-					lstrcpy(mojibuf1, TEXT("盾"));
-					lstrcpy(mojibuf2, shield_def_list[
-						heros_def_list[partyNarabijyun[whomTargetID]].heros_shield].def_name);; // shield_def_list[temp].def_name
-				}
-
-				if (temp == 3) {
-					lstrcpy(mojibuf1, TEXT("頭"));
-					lstrcpy(mojibuf2, helm_def_list[
-						heros_def_list[partyNarabijyun[whomTargetID]].heros_helm].def_name);
-				}
-
-				if (temp == 4) {
-					lstrcpy(mojibuf1, TEXT("身体"));
-					lstrcpy(mojibuf2, TEXT("--------"));
-				}
-
-				if (temp == 5) {
-					lstrcpy(mojibuf1, TEXT("腕"));
-					lstrcpy(mojibuf2, TEXT("--------"));
-				}
-
-				if (temp == 6) {
-					lstrcpy(mojibuf1, TEXT("装飾品1"));
-					lstrcpy(mojibuf2, TEXT("--------"));
-				}
-
-
-				if (temp == 7) {
-					lstrcpy(mojibuf1, TEXT("装飾品2"));
-					lstrcpy(mojibuf2, TEXT("--------"));
-				}
-
-
-				TextOut(hdc, 15, soubiYbase + soubiYper * temp,
-					mojibuf1, lstrlen(mojibuf1));
-
-				TextOut(hdc, 90, soubiYbase + soubiYper * temp,
-					mojibuf2, lstrlen(mojibuf2));
-
-			}
-
-
-			// 背景の青
-            SelectObject(hdc, blue_thin_1);
-            Rectangle(hdc, 10, 350, 500, 400);
-
-            lstrcpy(mojibuf, TEXT("変更したい装備を選んでください。"));
-            TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
-
-                
-			SetBkMode(hdc, TRANSPARENT);
-
-
-            // そのキャラの装備項目の選択がサブモード
-        }// endo of MODE_EQUIP_EDIT
-
-
-
-
-		if (mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD  || mode_scene == MODE_EQUIP_HELM ) {
+		if (mode_scene == MODE_EQUIP_EDIT || mode_scene == MODE_EQUIP_EDIT2 ) {
 			// 装備の表示欄
 			// メインモードは装備キャラの選択モードである
+			// MessageBox(NULL, TEXT("aaaaココ1"), TEXT("メッセージ"), MB_OK);
+
 
 			MainGraFrontMenu(hdc);
 
@@ -3739,140 +3628,137 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+			if (mode_scene == MODE_EQUIP_EDIT2) {
 
-			SetBkMode(hdc, TRANSPARENT);
+				int souWInXsta = 400;
+				int souWInXend = 580;
 
-
-
-
-			int souWInXsta = 400;
-			int souWInXend = 580;
-
-			// 装備用アイテムのリスト表示
-			// 背景の青
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, souWInXsta, 100, souWInXend, 300);
+				// 装備用アイテムのリスト表示
+				// 背景の青
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, souWInXsta, 100, souWInXend, 300);
 
 
-			// カーソル
-			BrushPink_set(hdc);
-			Rectangle(hdc, souWInXsta + 20 , (110 + 20) + 20 * (whatedit2), souWInXend - 30 ,
-				(110 + 20) + 20 * (1 + whatedit2));
+				// カーソル
+				BrushPink_set(hdc);
+				Rectangle(hdc, souWInXsta + 20, (110 + 20) + 20 * (whatedit2), souWInXend - 30,
+					(110 + 20) + 20 * (1 + whatedit2));
 
 
-			weapon_have_list[0].have_kosuu = 0;
+				weapon_have_list[0].have_kosuu = 0;
 
 
-			// 移植中
-			int itemskip = 0;
-			goukeiItem = 0;
+				// 移植中
+				int itemskip = 0;
+				goukeiItem = 0;
 
-			int itemIDcount = 0;
-			int column = 1; // 装備コマンドの武器防具リストは1行なので
+				int itemIDcount = 0;
+				int column = 1; // 装備コマンドの武器防具リストは1行なので
 
-			int xcommon;
-			int ycommon;
+				int xcommon;
+				int ycommon;
+
+				SetBkMode(hdc, TRANSPARENT);
+
+				if (mode2_scene == MODE2_EQUIP_HAND1) {
+					for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+					{
+
+						if (weapon_have_list[idTemp].have_kosuu != 0) {
+
+							xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
+							ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+
+							SetBkMode(hdc, TRANSPARENT);
+							lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
+							TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+							// goukeiItem = goukeiItem + 1;
+
+							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+							itemIDcount = itemIDcount + 1; // これは上コードで使う
+
+						}
+
+						if (weapon_have_list[idTemp].have_kosuu == 0) {
+							itemskip = itemskip + 1;
+
+						}
+					}
+				} // ウェポン
 
 
-			if (mode_scene == MODE_EQUIP_HAND1) {
-				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
-				{
+				// シールド
+				if (mode2_scene == MODE2_EQUIP_SHIELD) {
+					for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+					{
 
-					if (weapon_have_list[idTemp].have_kosuu != 0) {
+						if (shield_have_list[idTemp].have_kosuu != 0) {
 
-						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
-						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+							xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
+							ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
 
-						SetBkMode(hdc, TRANSPARENT);
-						lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
-						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+							SetBkMode(hdc, TRANSPARENT);
+							lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
+							TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
-						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
+							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-						// goukeiItem = goukeiItem + 1;
+							// goukeiItem = goukeiItem + 1;
 
-						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
-						itemIDcount = itemIDcount + 1; // これは上コードで使う
+							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+							itemIDcount = itemIDcount + 1; // これは上コードで使う
 
+						}
+
+						if (shield_have_list[idTemp].have_kosuu == 0) {
+							itemskip = itemskip + 1;
+
+						}
 					}
 
-					if (weapon_have_list[idTemp].have_kosuu == 0) {
-						itemskip = itemskip + 1;
-
-					}
-				}
-			} // ウェポン
+				} // シールド
 
 
-			// シールド
-			if (mode_scene == MODE_EQUIP_SHIELD) {
-				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
-				{
+				if (mode2_scene == MODE2_EQUIP_HELM) {
+					for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+					{
 
-					if (shield_have_list[idTemp].have_kosuu != 0) {
+						if (helm_have_list[idTemp].have_kosuu != 0) {
 
-						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column);
-						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
+							xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column); // コピペ時、ここを更新
+							ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
 
-						SetBkMode(hdc, TRANSPARENT);
-						lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
-						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+							SetBkMode(hdc, TRANSPARENT);
+							lstrcpy(mojibuf, helm_def_list[idTemp].def_name);  // コピペ時、ここを更新
+							TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
-						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);  // コピペ時、ここを帰る
+							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-						// goukeiItem = goukeiItem + 1;
+							// goukeiItem = goukeiItem + 1;
 
-						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
-						itemIDcount = itemIDcount + 1; // これは上コードで使う
+							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
+							itemIDcount = itemIDcount + 1; // これは上コードで使う
 
-					}
+						}
 
-					if (shield_have_list[idTemp].have_kosuu == 0) {
-						itemskip = itemskip + 1;
+						if (helm_have_list[idTemp].have_kosuu == 0) {  // コピペ時、ここを帰る
+							itemskip = itemskip + 1;
 
-					}
-				}
-
-			} // シールド
-
-
-			if (mode_scene == MODE_EQUIP_HELM) {
-				for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
-				{
-
-					if (helm_have_list[idTemp].have_kosuu != 0) {
-
-						xcommon = souWInXsta + 300 * floor((idTemp - itemskip) % column); // コピペ時、ここを更新
-						ycommon = 130 + 20 * floor((idTemp - itemskip) / column);
-
-						SetBkMode(hdc, TRANSPARENT);
-						lstrcpy(mojibuf, helm_def_list[idTemp].def_name);  // コピペ時、ここを更新
-						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);  // コピペ時、ここを帰る
-						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
-						// goukeiItem = goukeiItem + 1;
-
-						itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
-						itemIDcount = itemIDcount + 1; // これは上コードで使う
-
+						}
 					}
 
-					if (helm_have_list[idTemp].have_kosuu == 0) {  // コピペ時、ここを帰る
-						itemskip = itemskip + 1;
+				} // ヘルム
 
-					}
-				}
-
-			} // シールド
+			}
 
 
-
-
-		} // end of MODE_EQUIP_HAND1
+		} // end of MODE_EQUIP_ 手～頭
 
 
 
@@ -5891,21 +5777,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (wParam) {
 
 			case 'Z': {
+
+				// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
+
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
-
+				mode_scene = MODE_EQUIP_EDIT2;
+					
 				if (whatedit == 0) {
-					mode_scene = MODE_EQUIP_HAND1;
+					mode2_scene = MODE2_EQUIP_HAND1;
 				}
 				if (whatedit == 1) {
-					mode_scene = MODE_EQUIP_SHIELD;
+					mode2_scene = MODE2_EQUIP_SHIELD;
 				}
 				if (whatedit == 2) {
-					mode_scene = MODE_EQUIP_HELM;
+					mode2_scene = MODE2_EQUIP_HELM;
 				}
-
-
-
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -6023,13 +5910,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // MODE_EQUIP_EDIT の終わり
 
 
-		if ((mode_scene == MODE_EQUIP_HAND1 || mode_scene == MODE_EQUIP_SHIELD || mode_scene == MODE_EQUIP_HELM ) && key_remain > 0) {
+		if (mode_scene == MODE_EQUIP_EDIT2 && key_remain > 0) {
+			// MessageBox(NULL, TEXT("outer"), TEXT("メッセージ"), MB_OK);
 
 			int tempVal;
 
 			switch (wParam) {
 
 			case 'Z': {
+
+				// MessageBox(NULL, TEXT("assdff"), TEXT("メッセージ"), MB_OK);
+
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 
