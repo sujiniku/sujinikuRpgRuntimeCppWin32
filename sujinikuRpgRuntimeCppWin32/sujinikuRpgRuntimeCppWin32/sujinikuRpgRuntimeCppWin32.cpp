@@ -128,6 +128,9 @@ int uwadumeFlag = 1; // 1なら上詰めする。0ならオフ。デバッグモ
 int akikosuu ;
 int akiHairetu[5];
 int itemHairetu[50];
+int itemTypeHairetu[50];
+
+
 
 int event_tekiFast = 0 ;
 
@@ -4211,6 +4214,273 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
+		if (mode_scene == MODE_Shop_weapon_sell) {
+
+			// MessageBox(NULL, TEXT("売却のテスト中。"), TEXT("キーテスト"), MB_OK);
+
+			BrushBlue_set(hdc);
+			BrushPink_set(hdc);
+
+			lstrcpy(mojibuf, TEXT("武器屋テスト売る。"));
+			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+			int offsetYtemp1 = 100;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 100,
+				450, 150);
+
+
+			int BuySellX = 280;
+			int BuySellY = 120;
+
+			int carsoruHigh = 30;
+			int spanX = 50;
+
+
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, BuySellX + spanX * (shoptar), offsetYtemp1 + 10,
+				BuySellX + 40 + spanX * (shoptar), offsetYtemp1 + 60);
+
+
+			lstrcpy(mojibuf, TEXT("買う"));
+			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("売る"));
+			TextOut(hdc, BuySellX + spanX * 1, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("中古"));
+			TextOut(hdc, BuySellX + spanX * 2, BuySellY, mojibuf, lstrlen(mojibuf));
+
+			lstrcpy(mojibuf, TEXT("出る"));
+			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
+
+
+			int GoldRanX = 480; int GoldRanY = 50;
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, GoldRanX, GoldRanY,
+				GoldRanX + 120, 110);
+
+			lstrcpy(mojibuf, TEXT("所持金"));
+			TextOut(hdc, GoldRanX, GoldRanY + 10, mojibuf, lstrlen(mojibuf));
+
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
+			TextOut(hdc, GoldRanX, GoldRanY + 10 + 20, mojibuf, lstrlen(mojibuf));
+
+
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 250, 170,
+				450, 400);
+
+			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
+			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
+
+
+			if(0){
+				lstrcpy(mojibuf, TEXT("商品名"));
+				TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, TEXT("価格"));
+				TextOut(hdc, 280 + 120, 200, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, TEXT("在庫"));
+				TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, TEXT("所持数"));
+				TextOut(hdc, 280 + 170 + 50, 200, mojibuf, lstrlen(mojibuf));
+			}
+
+
+
+
+
+
+
+			BrushBlue_set(hdc);
+			//Rectangle(hdc, 10, 100,
+			//	600, 400);
+
+			int spanY = 30;
+			int Y0 = 120;
+
+			BrushPink_set(hdc);
+			//Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, Y0 + (selecting_item_y - 1) * spanY,
+			//	250 + (selecting_item_x - 1) * 300, Y0 + spanY + (selecting_item_y - 1) * spanY);
+
+
+			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
+			//	TextOut(hdc, 130, 105, p, lstrlen(p));
+
+			int itemskip = 0;
+			goukeiItem = 0;
+
+			int itemIDcount = 0;
+			int column = 1; // 1に変更
+
+			int xcommon;
+			int ycommon;
+
+			// 武器表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+
+				if (weapon_have_list[idTemp].have_kosuu != 0) {
+
+					xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
+					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (1) {
+						itemHairetu[itemIDcount] = idTemp;
+						itemTypeHairetu[itemIDcount] = 1;
+						itemIDcount = itemIDcount + 1;
+					}
+				}
+
+				if (weapon_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
+					itemskip = itemskip + 1;
+
+				}
+			} // 武器
+
+
+
+			itemskip = 0;
+			int LimintTemp = goukeiItem;
+			// シールド表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+				if (shield_have_list[idTemp].have_kosuu != 0) {
+					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					//lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
+					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
+
+					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (1) {
+						itemHairetu[itemIDcount] = idTemp;
+						itemTypeHairetu[itemIDcount] = 2;
+						itemIDcount = itemIDcount + 1;
+					}
+
+				}
+
+				if (shield_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				}
+			} // シールド
+
+			itemskip = 0;
+			LimintTemp = goukeiItem;
+			// ヘルム表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+				if (helm_have_list[idTemp].have_kosuu != 0) {
+					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
+					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);
+					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
+
+					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (1) {
+						itemHairetu[itemIDcount] = idTemp;
+						itemTypeHairetu[itemIDcount] = 3;
+						itemIDcount = itemIDcount + 1;
+					}
+
+				}
+
+				if (helm_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+					itemskip = itemskip + 1;
+
+				}
+			} // かぶと
+
+			itemTypeHairetu[itemIDcount] = -99; // 終了を意味する数。
+
+
+			BrushPink_set(hdc);
+			Rectangle(hdc, 280, 200 + 60 + 30 * (whomTargetID),
+				320 + 40, offsetYtemp1 + 60 + 60 + 30 * (whomTargetID));
+			if (1) {
+				for (int temp = 0; temp <= 10; temp = temp + 1) {
+
+					if (itemTypeHairetu[temp] == -99) {
+						break;
+					}
+
+					if (itemTypeHairetu[temp] == 1) {
+						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp]].def_name);
+					}
+					if (itemTypeHairetu[temp] == 2) {
+						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp]].def_name);
+					}
+					if (itemTypeHairetu[temp] == 3) {
+						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp]].def_name);
+					}
+					TextOut(hdc, 280, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
+
+
+					lstrcpy(mojibuf, TEXT("50G"));
+					TextOut(hdc, 280 + 120, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
+
+					if (itemTypeHairetu[temp] == 1) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp]].have_kosuu);
+					}
+					if (itemTypeHairetu[temp] == 2) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[itemHairetu[temp]].have_kosuu);
+					}
+					if (itemTypeHairetu[temp] == 3) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[itemHairetu[temp]].have_kosuu);
+					}
+
+					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
+
+				}
+			}
+
+
+
+
+
+		} // sell end
+
+
+
+
+
 		if (mode_scene == MODE_Shop_armor_buy) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
@@ -5769,7 +6039,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // MODE_EQUIP_MAIN の終わり
 
 
-
+		// キー操作側は統合しちゃダメ。なぜなら操作内容が違う。
 		if (mode_scene == MODE_EQUIP_EDIT && key_remain > 0) {
 
 			int tempVal;
@@ -5910,6 +6180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // MODE_EQUIP_EDIT の終わり
 
 
+		// こっちは統合しちゃ駄目。操作内容が全く違うので。
 		if (mode_scene == MODE_EQUIP_EDIT2 && key_remain > 0) {
 			// MessageBox(NULL, TEXT("outer"), TEXT("メッセージ"), MB_OK);
 
@@ -6430,9 +6701,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				if (whomTargetID2 == 1) {
-					MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
+					// MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
 
 					mode_scene = MODE_Shop_weapon_sell;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
 
 				}
 
@@ -6659,6 +6933,171 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			} // switch 終わり
 		} // if MODE_Shop_weapon_buy の終わり
+
+
+
+
+
+
+		if ((mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell) && key_remain > 0) {
+			key_remain = 0;
+
+			// MessageBox(NULL, TEXT("いま買うルーチン"), TEXT("キーテスト"), MB_OK);
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				if (whomTargetID == 0) {
+
+
+					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
+
+					// mode_scene = MODE_Shop_Main;
+					 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
+
+					sinamonoList = 1;
+					// mode_scene = MODE_Shop_weapon_buy;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 1番目の武器を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+				}
+
+
+				if (whomTargetID == 1) {
+					// mode_scene = MODE_Shop_Main;
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
+
+					sinamonoList = 2;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 2番目の武器を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
+				}
+
+
+				if (whomTargetID == 2) {
+					// mode_scene = MODE_Shop_Main;
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
+
+					sinamonoList = 1;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 1番目の盾を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
+
+				}
+
+				if (whomTargetID == 3) {
+					// mode_scene = MODE_Shop_Main;
+					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
+
+					sinamonoList = 2;
+					if (mode_scene == MODE_Shop_weapon_buy) {
+						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
+					}
+					if (mode_scene == MODE_Shop_armor_buy) {
+						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
+					}
+
+					// 2番目の盾を買う処理
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					// mode_scene == MODE_Shop_weapon_sell;
+				}
+
+			}
+			break;
+
+			case 'X':
+			{
+				if (mode_scene == MODE_Shop_weapon_sell) {
+					mode_scene = MODE_Shop_weapon_main;
+				}
+				if (mode_scene == MODE_Shop_armor_sell) {
+					mode_scene = MODE_Shop_armor_main;
+				}
+
+				key_remain = 0;
+				whomTargetID = 0;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+			break;
+
+			case VK_DOWN:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID + 1;
+
+				if (whomTargetID >= goukeiItem -1) {
+					whomTargetID = goukeiItem -1;
+				}
+				else if (whomTargetID < 0) {
+					whomTargetID = 0;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID - 1;
+
+				if (whomTargetID >= 3) {
+					whomTargetID = 3;
+				}
+				else if (whomTargetID < 0) {
+					whomTargetID = 0;
+				}
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+
+			} // switch 終わり
+		} // if MODE_Shop_weapon_sell の終わり
+
 
 
 
