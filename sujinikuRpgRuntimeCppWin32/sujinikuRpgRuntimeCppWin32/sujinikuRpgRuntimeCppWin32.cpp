@@ -4196,20 +4196,105 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 280, 200 + 60 + 30 * (whomTargetID),
 				320 + 40, offsetYtemp1 + 60 + 60 + 30 * (whomTargetID));
 
-			for (int temp = 1; temp <= 2; temp = temp + 1) {
 
-				lstrcpy(mojibuf, weapon_def_list[temp].def_name);
-				TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
-				
+			if (0) {
+				for (int temp = 1; temp <= 2; temp = temp + 1) {
+
+					lstrcpy(mojibuf, weapon_def_list[temp].def_name);
+					TextOut(hdc, 280, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+
+					lstrcpy(mojibuf, TEXT("50G"));
+					TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[temp].have_kosuu);
+					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
+				}
+			}
+
+
+			struct sinaList {
+				int Grouptype;
+				int subID;
+			};
+
+			struct sinaList hinmoku[5]; // 構造体配列の宣言
+
+
+			// 売り物の定義
+			// 1品目
+			// strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
+			hinmoku[0].Grouptype = 1;
+			hinmoku[0].subID = 1;
+
+			itemHairetu[0] = hinmoku[0].subID;
+			itemTypeHairetu[0] = hinmoku[0].Grouptype;
+
+			// 2品目   
+			hinmoku[1].Grouptype = 1;
+			hinmoku[1].subID = 2;
+			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
+
+
+			// 3品目   
+			hinmoku[2].Grouptype = -99;
+			hinmoku[2].subID = -99;
+
+
+
+			goukeiItem = 0;
+
+			for (int aaa = 0; aaa <= 8; aaa = aaa + 1) {
+				if (hinmoku[aaa].Grouptype == -99) {
+					break;
+				}
+
+				itemHairetu[aaa] = hinmoku[aaa].subID;
+				itemTypeHairetu[aaa] = hinmoku[aaa].Grouptype;
+
+				goukeiItem = goukeiItem + 1;
+			}
+
+
+			int koumoku_Y = 200;
+			int kasolOffsetY = 30;
+
+			for (int temp = 0; temp <= 3; temp = temp + 1) {
+
+				if (hinmoku[temp].Grouptype == -99) {
+					break;
+				}
+
+				if (hinmoku[temp].Grouptype == 1) {
+					lstrcpy(mojibuf, weapon_def_list[hinmoku[temp].subID].def_name);
+				}
+				if (hinmoku[temp].Grouptype == 2) {
+					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
+				}
+				if (hinmoku[temp].Grouptype == 3) {
+					lstrcpy(mojibuf, shield_def_list[hinmoku[temp].subID].def_name);
+				}
+				TextOut(hdc, 280, koumoku_Y + 30 + 30 * temp, mojibuf, lstrlen(mojibuf));
+
 
 				lstrcpy(mojibuf, TEXT("50G"));
-				TextOut(hdc, 280 + 120, 200 + 30 * temp, mojibuf, lstrlen(mojibuf));
+				TextOut(hdc, 280 + 120, koumoku_Y + 30 + kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
 
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[temp].have_kosuu);
-				TextOut(hdc, 280 + 100 * 2+50, 200  + 30 * temp, mojibuf, lstrlen(mojibuf));
+				if (hinmoku[temp].Grouptype == 1) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[hinmoku[temp].subID].have_kosuu);
+				}
+				if (hinmoku[temp].Grouptype == 2) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
+				}
+				if (hinmoku[temp].Grouptype == 3) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
+				}
+				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y + 30 + kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
-			}
+			} // for temp 終わり
 
 		}
 
@@ -4619,6 +4704,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 4品目   
 			hinmoku[3].Grouptype = 3;
 			hinmoku[3].subID = 2;
+
+
+			// 5品目   
+			hinmoku[4].Grouptype = -99;
+			hinmoku[4].subID = -99;
+
+			goukeiItem = 0;
+
+			for (int aaa = 0; aaa <= 8; aaa = aaa + 1) {
+				if (hinmoku[aaa].Grouptype == -99) {
+					break;
+				}
+
+				itemHairetu[aaa] = hinmoku[aaa].subID;
+				itemTypeHairetu[aaa] = hinmoku[aaa].Grouptype;
+
+				goukeiItem = goukeiItem + 1;
+			}
 
 
 			for (int temp = 0; temp <= 3; temp = temp + 1) {
@@ -6807,93 +6910,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
-				if (whomTargetID == 0) {
+
+				// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
+
+				// mode_scene = MODE_Shop_Main;
+				 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
 
 
-					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
-
-					// mode_scene = MODE_Shop_Main;
-					 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
-
-					 sinamonoList = 1;
-					// mode_scene = MODE_Shop_weapon_buy;
-					 if (mode_scene == MODE_Shop_weapon_buy) {
-						 weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
-					 }
-					 if (mode_scene == MODE_Shop_armor_buy) {
-						 helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
-					 }
-
-                    // 1番目の武器を買う処理
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
+				// 売る処理
+				if (itemTypeHairetu[whomTargetID] == 1) {
+					weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
+				}
+				if (itemTypeHairetu[whomTargetID] == 3) {
+					shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
+				}
+				if (itemTypeHairetu[whomTargetID] == 2) {
+					helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
 				}
 
+				// 買う処理
 
-				if (whomTargetID == 1) {
-					// mode_scene = MODE_Shop_Main;
-					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
-
-					sinamonoList = 2;
-					if (mode_scene == MODE_Shop_weapon_buy) {
-						weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
-					}
-					if (mode_scene == MODE_Shop_armor_buy) {
-						helm_have_list[sinamonoList].have_kosuu = helm_have_list[sinamonoList].have_kosuu + 1;
-					}
-
-					// 2番目の武器を買う処理
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-					// mode_scene == MODE_Shop_weapon_sell;
-				}
-
-
-				if (whomTargetID == 2) {
-					// mode_scene = MODE_Shop_Main;
-					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
-
-					sinamonoList = 1;
-					if (mode_scene == MODE_Shop_weapon_buy) {
-						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
-					}
-					if (mode_scene == MODE_Shop_armor_buy) {
-						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
-					}
-
-					// 1番目の盾を買う処理
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-					// mode_scene == MODE_Shop_weapon_sell;
-
-				}
-
-				if (whomTargetID == 3) {
-					// mode_scene = MODE_Shop_Main;
-					// MessageBox(NULL, TEXT("2買う未実装"), TEXT("キーテスト"), MB_OK);
-
-					sinamonoList = 2;
-					if (mode_scene == MODE_Shop_weapon_buy) {
-						//weapon_have_list[sinamonoList].have_kosuu = weapon_have_list[sinamonoList].have_kosuu + 1;
-					}
-					if (mode_scene == MODE_Shop_armor_buy) {
-						shield_have_list[sinamonoList].have_kosuu = shield_have_list[sinamonoList].have_kosuu + 1;
-					}
-
-					// 2番目の盾を買う処理
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-					// mode_scene == MODE_Shop_weapon_sell;
-				}
-
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			
 			}
 			break;
 
@@ -6919,17 +6958,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID + 1;
-				if (mode_scene == MODE_Shop_armor_buy) {
-					if (whomTargetID >= 3) {
-						whomTargetID = 3;
-					}
-				}
-				if (mode_scene == MODE_Shop_weapon_buy) {
-					if (whomTargetID >= 1) {
-						whomTargetID = 1;
-					}
-				}
 
+				if (whomTargetID >= goukeiItem - 1) {
+					whomTargetID = goukeiItem - 1;
+				}
+				if (whomTargetID >= goukeiItem - 1) {
+					whomTargetID = goukeiItem - 1;
+				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
 				}
@@ -6946,8 +6981,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID - 1;
 
-				if (whomTargetID >= 3) {
-					whomTargetID = 3;
+				if (whomTargetID >= goukeiItem - 1) {
+					whomTargetID = goukeiItem - 1;
 				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
