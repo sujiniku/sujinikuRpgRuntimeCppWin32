@@ -98,6 +98,15 @@ using namespace Gdiplus;
 
 
 
+// アイテム種類番号
+int siyouType = 0;
+int wepoType = 1;
+int tateType = 2;
+int kabutoType = 3;
+
+
+
+
 
 HBITMAP mae_haikei;
 HDC mae_dc;
@@ -4226,14 +4235,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 売り物の定義
 			// 1品目
 			// strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
-			hinmoku[0].Grouptype = 1;
+			hinmoku[0].Grouptype = wepoType ;
 			hinmoku[0].subID = 1;
 
 			itemHairetu[0] = hinmoku[0].subID;
 			itemTypeHairetu[0] = hinmoku[0].Grouptype;
 
 			// 2品目   
-			hinmoku[1].Grouptype = 1;
+			hinmoku[1].Grouptype = wepoType ;
 			hinmoku[1].subID = 2;
 			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
 
@@ -4267,15 +4276,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 
-				if (hinmoku[temp].Grouptype == 1) {
+				if (hinmoku[temp].Grouptype == wepoType) {
 					lstrcpy(mojibuf, weapon_def_list[hinmoku[temp].subID].def_name);
 				}
-				if (hinmoku[temp].Grouptype == 2) {
-					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
-				}
-				if (hinmoku[temp].Grouptype == 3) {
+				if (hinmoku[temp].Grouptype == tateType) {
 					lstrcpy(mojibuf, shield_def_list[hinmoku[temp].subID].def_name);
 				}
+				if (hinmoku[temp].Grouptype == kabutoType) {
+					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
+				}
+
 				TextOut(hdc, 280, koumoku_Y + 30 + 30 * temp, mojibuf, lstrlen(mojibuf));
 
 
@@ -4283,13 +4293,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TextOut(hdc, 280 + 120, koumoku_Y + 30 + kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
 
-				if (hinmoku[temp].Grouptype == 1) {
+				if (hinmoku[temp].Grouptype == wepoType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[hinmoku[temp].subID].have_kosuu);
 				}
-				if (hinmoku[temp].Grouptype == 2) {
+				if (hinmoku[temp].Grouptype == kabutoType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
 				}
-				if (hinmoku[temp].Grouptype == 3) {
+				if (hinmoku[temp].Grouptype == tateType ) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
 				}
 				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y + 30 + kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
@@ -4542,13 +4552,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 
-					if (itemTypeHairetu[temp] == 1) {
+					if (itemTypeHairetu[temp] == wepoType) {
 						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp]].def_name);
 					}
-					if (itemTypeHairetu[temp] == 2) {
+					if (itemTypeHairetu[temp] == tateType) {
 						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp]].def_name);
 					}
-					if (itemTypeHairetu[temp] == 3) {
+					if (itemTypeHairetu[temp] == kabutoType) {
 						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp]].def_name);
 					}
 					TextOut(hdc, 280, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
@@ -4562,13 +4572,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					lstrcpy(mojibuf, TEXT("   "));
 					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
-					if (itemTypeHairetu[temp] == 1) {
+					if (itemTypeHairetu[temp] == wepoType) {
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp]].have_kosuu);
 					}
-					if (itemTypeHairetu[temp] == 2) {
+					if (itemTypeHairetu[temp] == tateType) {
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[itemHairetu[temp]].have_kosuu);
 					}
-					if (itemTypeHairetu[temp] == 3) {
+					if (itemTypeHairetu[temp] == kabutoType) {
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[itemHairetu[temp]].have_kosuu);
 					}
 
@@ -4686,23 +4696,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 売り物の定義
 			// 1品目
 	        // strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
-			hinmoku[0].Grouptype = 2;
+			hinmoku[0].Grouptype = tateType;
 			hinmoku[0].subID = 1;
 
 
 			// 2品目   
-			hinmoku[1].Grouptype = 2;
+			hinmoku[1].Grouptype = tateType;
 			hinmoku[1].subID = 2;
 			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
 
 
 			// 3品目   
-			hinmoku[2].Grouptype = 3;
+			hinmoku[2].Grouptype = kabutoType;
 			hinmoku[2].subID = 1;
 
 
 			// 4品目   
-			hinmoku[3].Grouptype = 3;
+			hinmoku[3].Grouptype = kabutoType;
 			hinmoku[3].subID = 2;
 
 
@@ -4726,10 +4736,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int temp = 0; temp <= 3; temp = temp + 1) {
 
-				if ( hinmoku[temp].Grouptype == 2) {
+				if ( hinmoku[temp].Grouptype == kabutoType) {
 					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
 				}
-				if ( hinmoku[temp].Grouptype == 3) {
+				if ( hinmoku[temp].Grouptype == tateType) {
 					lstrcpy(mojibuf, shield_def_list[hinmoku[temp].subID].def_name);
 				}
 				TextOut(hdc, 280, koumoku_Y +30+ 30 * temp, mojibuf, lstrlen(mojibuf));
@@ -4738,10 +4748,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				lstrcpy(mojibuf, TEXT("50G"));
 				TextOut(hdc, 280 + 120, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
 
-				if (hinmoku[temp].Grouptype == 2) {
+				if (hinmoku[temp].Grouptype == kabutoType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
 				}
-				if (hinmoku[temp].Grouptype == 3) {
+				if (hinmoku[temp].Grouptype == tateType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
 				}
 				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
@@ -6918,13 +6928,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 				// 売る処理
-				if (itemTypeHairetu[whomTargetID] == 1) {
+				if (itemTypeHairetu[whomTargetID] == wepoType) {
 					weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
 				}
-				if (itemTypeHairetu[whomTargetID] == 3) {
+				if (itemTypeHairetu[whomTargetID] == tateType) {
 					shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
 				}
-				if (itemTypeHairetu[whomTargetID] == 2) {
+				if (itemTypeHairetu[whomTargetID] == kabutoType) {
 					helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
 				}
 
@@ -7015,13 +7025,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 					sinamonoList = 1;
 					// 売る処理
-					if (itemTypeHairetu[whomTargetID] == 1) {
+					if (itemTypeHairetu[whomTargetID] == wepoType) {
 						weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
 					}
-					if (itemTypeHairetu[whomTargetID] == 2) {
+					if (itemTypeHairetu[whomTargetID] == tateType) {
 						shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
 					}
-					if (itemTypeHairetu[whomTargetID] == 3) {
+					if (itemTypeHairetu[whomTargetID] == kabutoType) {
 						helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
 					}
 
