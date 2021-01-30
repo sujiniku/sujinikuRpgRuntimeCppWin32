@@ -4451,6 +4451,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				for (int temp = 0; temp <= 10; temp = temp + 1) {
 
 					if (itemTypeHairetu[temp] == -99) {
+						lstrcpy(mojibuf, TEXT("   "));
+						TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
+
 						break;
 					}
 
@@ -4468,6 +4471,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					lstrcpy(mojibuf, TEXT("50G"));
 					TextOut(hdc, 280 + 120, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
+
+
+					// 個数欄の背景クリア用
+					lstrcpy(mojibuf, TEXT("   "));
+					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
 					if (itemTypeHairetu[temp] == 1) {
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp]].have_kosuu);
@@ -6911,10 +6919,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID + 1;
-
-				if (whomTargetID >= 3) {
-					whomTargetID = 3;
+				if (mode_scene == MODE_Shop_armor_buy) {
+					if (whomTargetID >= 3) {
+						whomTargetID = 3;
+					}
 				}
+				if (mode_scene == MODE_Shop_weapon_buy) {
+					if (whomTargetID >= 1) {
+						whomTargetID = 1;
+					}
+				}
+
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
 				}
@@ -6949,9 +6964,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-
-
-
 		if ((mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell) && key_remain > 0) {
 			key_remain = 0;
 
@@ -6964,12 +6976,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 
 					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
-
 					// mode_scene = MODE_Shop_Main;
-					 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
-
+					
 					sinamonoList = 1;
-					// mode_scene = MODE_Shop_weapon_buy;
+					// 売る処理
 					if (itemTypeHairetu[whomTargetID] == 1) {
 						weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
 					}
@@ -6981,7 +6991,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 
 
-					// 1番目の武器を買う処理
+					
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
