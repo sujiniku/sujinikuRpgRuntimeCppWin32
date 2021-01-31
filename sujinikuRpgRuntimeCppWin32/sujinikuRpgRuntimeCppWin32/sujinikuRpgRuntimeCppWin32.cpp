@@ -95,7 +95,7 @@ using namespace Gdiplus;
 #define MODE_Guild_Remove 2020000
 
 
-
+int pageSyori = 0;
 
 
 // アイテム種類番号
@@ -4380,7 +4380,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int carsoruHigh = 30;
 			int spanX = 50;
 
-
+			
 
 			BrushPink_set(hdc);
 			Rectangle(hdc, BuySellX + spanX * (shoptar), offsetYtemp1 + 10,
@@ -4635,18 +4635,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 
+					int temp2 = temp + pageSyori * 6;
 
-					if (itemTypeHairetu[temp] == siyouType) {
-						lstrcpy(mojibuf, item_def_list[itemHairetu[temp]].def_name);
+					if (itemTypeHairetu[temp2] == siyouType) {
+						lstrcpy(mojibuf, item_def_list[itemHairetu[temp2 ]].def_name);
 					}
-					if (itemTypeHairetu[temp] == wepoType) {
-						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp]].def_name);
+					if (itemTypeHairetu[temp2] == wepoType) {
+						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp2 ]].def_name);
 					}
-					if (itemTypeHairetu[temp] == tateType) {
-						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp]].def_name);
+					if (itemTypeHairetu[temp2] == tateType) {
+						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp2 ]].def_name);
 					}
-					if (itemTypeHairetu[temp] == kabutoType) {
-						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp]].def_name);
+					if (itemTypeHairetu[temp2] == kabutoType) {
+						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp2 ]].def_name);
 					}
 					TextOut(hdc, 280, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
 
@@ -4659,17 +4660,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					lstrcpy(mojibuf, TEXT("   "));
 					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
-					if (itemTypeHairetu[temp] == siyouType) {
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), item_have_list[itemHairetu[temp]].have_kosuu);
+					if (itemTypeHairetu[temp2] == siyouType) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), item_have_list[itemHairetu[temp2]].have_kosuu);
 					}
-					if (itemTypeHairetu[temp] == wepoType) {
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp]].have_kosuu);
+					if (itemTypeHairetu[temp2] == wepoType) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp2]].have_kosuu);
 					}
-					if (itemTypeHairetu[temp] == tateType) {
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[itemHairetu[temp]].have_kosuu);
+					if (itemTypeHairetu[temp2] == tateType) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[itemHairetu[temp2]].have_kosuu);
 					}
-					if (itemTypeHairetu[temp] == kabutoType) {
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[itemHairetu[temp]].have_kosuu);
+					if (itemTypeHairetu[temp2] == kabutoType) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[itemHairetu[temp2]].have_kosuu);
 					}
 
 					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
@@ -7149,6 +7150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				key_remain = 0;
 				whomTargetID = 0;
+				pageSyori = 0;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -7168,6 +7170,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					whomTargetID = 0;
 				}
 
+				if (whomTargetID >= 6) {
+					//MessageBox(NULL, TEXT("ページ送り処理の調査テスト"), TEXT("キーテスト"), MB_OK);
+					pageSyori = 1;
+					whomTargetID = 0;
+				}
+
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
 			}
@@ -7183,8 +7191,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID >= goukeiItem - 1) {
 					whomTargetID = goukeiItem - 1;
 				}
-				else if (whomTargetID < 0) {
+				else if ((pageSyori > 0) && (whomTargetID < 0)) {
+					pageSyori = pageSyori - 1;
+					whomTargetID = 5;
+				}
+				else if ((pageSyori ==0) && (whomTargetID < 0)) {
+					pageSyori = 0;
 					whomTargetID = 0;
+				}
+
+				if (whomTargetID >= 5) {
+					// MessageBox(NULL, TEXT("ページ戻し処理の調査テスト"), TEXT("キーテスト"), MB_OK);
 				}
 
 				InvalidateRect(hWnd, NULL, FALSE);
