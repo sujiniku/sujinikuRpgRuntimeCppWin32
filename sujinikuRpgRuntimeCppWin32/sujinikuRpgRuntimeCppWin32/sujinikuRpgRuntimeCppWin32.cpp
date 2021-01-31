@@ -4622,21 +4622,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-
-
+			// ページ送り時の一旦クリア用
+			for (int temp = 0; temp <= 6; temp = temp + 1) {
+				lstrcpy(mojibuf, TEXT("   "));
+				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
+			}
 
 			if (1) {
 				for (int temp = 0; temp <= 10; temp = temp + 1) {
+											
 
-					if (itemTypeHairetu[temp] == -99) {
+					int temp2 = temp + pageSyori * 6;
+
+					if (itemTypeHairetu[temp2] == -99) {
 						lstrcpy(mojibuf, TEXT("   "));
 						TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
 						break;
 					}
 
-					int temp2 = temp + pageSyori * 6;
-
+					
 					if (itemTypeHairetu[temp2] == siyouType) {
 						lstrcpy(mojibuf, item_def_list[itemHairetu[temp2 ]].def_name);
 					}
@@ -7111,23 +7116,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				key_remain = 0;
 
+				int temp2 = whomTargetID + pageSyori * 6;
+
 					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
 					// mode_scene = MODE_Shop_Main;
 					
 					sinamonoList = 1;
 					// 売る処理
 
-					if (itemTypeHairetu[whomTargetID] == siyouType) {
-						item_have_list[itemHairetu[whomTargetID]].have_kosuu = item_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
+					if (itemTypeHairetu[temp2] == siyouType) {
+						item_have_list[itemHairetu[temp2]].have_kosuu = item_have_list[itemHairetu[temp2]].have_kosuu - 1;
 					}
-					if (itemTypeHairetu[whomTargetID] == wepoType) {
-						weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
+					if (itemTypeHairetu[temp2] == wepoType) {
+						weapon_have_list[itemHairetu[temp2]].have_kosuu = weapon_have_list[itemHairetu[temp2]].have_kosuu - 1;
 					}
-					if (itemTypeHairetu[whomTargetID] == tateType) {
-						shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
+					if (itemTypeHairetu[temp2] == tateType) {
+						shield_have_list[itemHairetu[temp2]].have_kosuu = shield_have_list[itemHairetu[temp2]].have_kosuu - 1;
 					}
-					if (itemTypeHairetu[whomTargetID] == kabutoType) {
-						helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
+					if (itemTypeHairetu[temp2] == kabutoType) {
+						helm_have_list[itemHairetu[temp2]].have_kosuu = helm_have_list[itemHairetu[temp2]].have_kosuu - 1;
 					}
 
 
@@ -7163,6 +7170,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID + 1;
 
+
+				int temp2 = whomTargetID + pageSyori * 6;
+				if (temp2 >= goukeiItem) {
+					whomTargetID = whomTargetID - 1;
+				}
+
+
 				if (whomTargetID >= goukeiItem -1) {
 					whomTargetID = goukeiItem -1;
 				}
@@ -7174,7 +7188,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					//MessageBox(NULL, TEXT("ページ送り処理の調査テスト"), TEXT("キーテスト"), MB_OK);
 					pageSyori = 1;
 					whomTargetID = 0;
-				}
+				} 
+				
+				
+
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
