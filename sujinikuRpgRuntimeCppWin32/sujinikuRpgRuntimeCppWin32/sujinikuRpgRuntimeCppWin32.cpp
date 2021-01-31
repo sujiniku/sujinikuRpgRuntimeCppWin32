@@ -248,8 +248,8 @@ int guildResFlag = 0;
 
 struct item_def
 {
-	int item_id;
-	TCHAR item_name[MAX_LENGTH];
+	int def_id;
+	TCHAR def_name[MAX_LENGTH];
 	int power;
 	int item_type;
 };
@@ -257,7 +257,7 @@ struct item_def
 
 struct item_have
 {
-	int have_item_id;
+	int have_def_id;
 	int have_kosuu;
 };
 
@@ -1914,21 +1914,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	int tourokuItem = 3;
 	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
 
-		item_def_list[temp].item_id = temp + 1;
+		item_def_list[temp].def_id = temp + 1;
 
 		if (temp == 0) {
 			//薬草の定義
-			lstrcpy(item_def_list[temp].item_name, TEXT("薬草"));
+			lstrcpy(item_def_list[temp].def_name, TEXT("薬草"));
 			item_def_list[temp].item_type = 1;
 		}
 
 		if (temp == 1) {
-			lstrcpy(item_def_list[temp].item_name, TEXT("毒消し草"));
+			lstrcpy(item_def_list[temp].def_name, TEXT("毒消し草"));
 			item_def_list[temp].item_type = 2;
 		}
 
 		if (temp == 2) {
-			lstrcpy(item_def_list[temp].item_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
+			lstrcpy(item_def_list[temp].def_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
 			item_def_list[temp].item_type = 3;
 		}
 
@@ -2092,7 +2092,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//所持アイテムの個数などの初期値
 	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
 		
-		item_have_list[temp].have_item_id = temp + 1;
+		item_have_list[temp].have_def_id = temp + 1;
 
 		if (temp == 0) {			
 			item_have_list[temp].have_kosuu = 5;
@@ -2993,7 +2993,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ycommon = 130 + 30 * floor((idTemp - itemskip ) / column);
 
 					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, item_def_list[idTemp].item_name);
+					lstrcpy(mojibuf, item_def_list[idTemp].def_name);
 					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
@@ -3104,6 +3104,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon;
 			int ycommon;
 
+
+
+
+
+			itemskip = 0;
+			int LimintTemp = goukeiItem;
+
+			if (0) {
+				// 使用品表示
+				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+				{
+
+					if (item_have_list[idTemp].have_kosuu != 0) {
+
+						xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
+						ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
+
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, item_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+						goukeiItem = goukeiItem + 1;
+
+						if (idTemp != 2) {
+							// itemHairetu[itemIDcount] = idTemp;
+							// itemIDcount = itemIDcount + 1;
+						}
+					}
+
+					if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
+						itemskip = itemskip + 1;
+
+					}
+				} // 使用品表示
+
+			}
+
+			itemskip = 0;
+			LimintTemp = goukeiItem;
+
 			// 武器表示
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
@@ -3137,7 +3180,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			itemskip = 0;
-			int LimintTemp = goukeiItem;
+			LimintTemp = goukeiItem;
+
 			// シールド表示
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
@@ -4379,11 +4423,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			
 
-
-
-
-
-
+////////////// 何かのコピペの境
 
 			// BrushBlue_set(hdc);
 			//Rectangle(hdc, 10, 100,
@@ -4409,6 +4449,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon;
 			int ycommon;
 
+
+			// アイテム処理用
+			itemskip = 0;
+			int LimintTemp = goukeiItem;
+
+
+			// 使用品表示
+			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			{
+
+				if (item_have_list[idTemp].have_kosuu != 0) {
+
+					xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
+					ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
+
+					SetBkMode(hdc, TRANSPARENT);
+					lstrcpy(mojibuf, item_def_list[idTemp].def_name);
+					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
+					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+					goukeiItem = goukeiItem + 1;
+
+					if (1) {
+						itemHairetu[itemIDcount] = idTemp;
+						itemTypeHairetu[itemIDcount] = siyouType;
+						itemIDcount = itemIDcount + 1;
+					}
+				}
+
+				if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
+					itemskip = itemskip + 1;
+
+				}
+			} // 使用品表示
+
+
+
+			itemskip = 0;
+			LimintTemp = goukeiItem;
+
 			// 武器表示
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
@@ -4429,7 +4511,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					if (1) {
 						itemHairetu[itemIDcount] = idTemp;
-						itemTypeHairetu[itemIDcount] = 1;
+						itemTypeHairetu[itemIDcount] = wepoType;
 						itemIDcount = itemIDcount + 1;
 					}
 				}
@@ -4443,7 +4525,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			itemskip = 0;
-			int LimintTemp = goukeiItem;
+			LimintTemp = goukeiItem;
+
 			// シールド表示
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
@@ -4466,7 +4549,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					if (1) {
 						itemHairetu[itemIDcount] = idTemp;
-						itemTypeHairetu[itemIDcount] = 2;
+						itemTypeHairetu[itemIDcount] = tateType;
 						itemIDcount = itemIDcount + 1;
 					}
 
@@ -4502,7 +4585,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					if (1) {
 						itemHairetu[itemIDcount] = idTemp;
-						itemTypeHairetu[itemIDcount] = 3;
+						itemTypeHairetu[itemIDcount] = kabutoType;
 						itemIDcount = itemIDcount + 1;
 					}
 
@@ -4552,6 +4635,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 
+
+					if (itemTypeHairetu[temp] == siyouType) {
+						lstrcpy(mojibuf, item_def_list[itemHairetu[temp]].def_name);
+					}
 					if (itemTypeHairetu[temp] == wepoType) {
 						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp]].def_name);
 					}
@@ -4572,6 +4659,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					lstrcpy(mojibuf, TEXT("   "));
 					TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
+					if (itemTypeHairetu[temp] == siyouType) {
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), item_have_list[itemHairetu[temp]].have_kosuu);
+					}
 					if (itemTypeHairetu[temp] == wepoType) {
 						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), weapon_have_list[itemHairetu[temp]].have_kosuu);
 					}
@@ -5647,7 +5737,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									
 							// 使用品の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
-								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].item_name, -1, aaa, sizeof(aaa), NULL, NULL);
+								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
 								fprintf(fp2, "%s の個数: %d \n", aaa, item_have_list[temp].have_kosuu);
 							}
 
@@ -7025,6 +7115,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 					sinamonoList = 1;
 					// 売る処理
+
+					if (itemTypeHairetu[whomTargetID] == siyouType) {
+						item_have_list[itemHairetu[whomTargetID]].have_kosuu = item_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
+					}
 					if (itemTypeHairetu[whomTargetID] == wepoType) {
 						weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu - 1;
 					}
@@ -7036,8 +7130,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 
 
-					
-
+				
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 
@@ -7087,8 +7180,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID - 1;
 
-				if (whomTargetID >= 3) {
-					whomTargetID = 3;
+				if (whomTargetID >= goukeiItem - 1) {
+					whomTargetID = goukeiItem - 1;
 				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
