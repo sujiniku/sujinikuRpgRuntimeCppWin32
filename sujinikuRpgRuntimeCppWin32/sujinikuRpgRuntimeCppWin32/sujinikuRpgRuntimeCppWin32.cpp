@@ -1832,7 +1832,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// 以上、MSDN からの引用.
 
 
-
+	// 起動するよ
+	//ニューゲームするよ
+	//ニューゲームも起動プログラムの代用だよ
 
 	// 画像の読み込み「image1」は変数名。
 	//Image image1(L"background.png");
@@ -1912,24 +1914,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// アイテムの情報
 	int tourokuItem = 3;
-	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
+	for (int temp = 0; temp <= tourokuItem ; temp++) {
 
-		item_def_list[temp].def_id = temp + 1;
+		item_def_list[temp].def_id = temp ;
+		item_def_list[temp].item_type = siyouType;
 
 		if (temp == 0) {
 			//薬草の定義
-			lstrcpy(item_def_list[temp].def_name, TEXT("薬草"));
-			item_def_list[temp].item_type = 1;
+			lstrcpy(item_def_list[temp].def_name, TEXT("--------"));
 		}
 
 		if (temp == 1) {
-			lstrcpy(item_def_list[temp].def_name, TEXT("毒消し草"));
-			item_def_list[temp].item_type = 2;
+			//薬草の定義
+			lstrcpy(item_def_list[temp].def_name, TEXT("薬草"));			
 		}
 
 		if (temp == 2) {
-			lstrcpy(item_def_list[temp].def_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約
-			item_def_list[temp].item_type = 3;
+			lstrcpy(item_def_list[temp].def_name, TEXT("毒消し草"));			
+		}
+
+		if (temp == 3) {
+			lstrcpy(item_def_list[temp].def_name, TEXT("不死鳥の尾")); // 漢字の理由は字数の節約			
 		}
 
 	}
@@ -2087,22 +2092,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-
-
 	//所持アイテムの個数などの初期値
-	for (int temp = 0; temp <= tourokuItem - 1; temp++) {
+	for (int temp = 0; temp <= tourokuItem ; temp++) {
 		
 		item_have_list[temp].have_def_id = temp + 1;
 
-		if (temp == 0) {			
+		if (temp == 0) {
+			item_have_list[temp].have_kosuu = 0;
+		}
+		if (temp == 1) {			
 			item_have_list[temp].have_kosuu = 5;
 		}
 
-		if (temp == 1) {			
+		if (temp == 2) {			
 			item_have_list[temp].have_kosuu = 4;
 		}
 
-		if (temp == 2) {			
+		if (temp == 3) {			
 			item_have_list[temp].have_kosuu = 2;
 		}
 	}
@@ -2984,7 +2990,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon ;
 			int ycommon ;
 
-			for (idTemp = 0; idTemp <= 2; idTemp = idTemp + 1)
+			for (idTemp = 0; idTemp <= 3; idTemp = idTemp + 1)
 			{
 
 				if (item_have_list[idTemp].have_kosuu != 0) {
@@ -3113,7 +3119,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (0) {
 				// 使用品表示
-				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+				for (idTemp = 1; idTemp <= 3; idTemp = idTemp + 1)
 				{
 
 					if (item_have_list[idTemp].have_kosuu != 0) {
@@ -3130,7 +3136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						goukeiItem = goukeiItem + 1;
 
-						if (idTemp != 2) {
+						if (idTemp != 3) {
 							// itemHairetu[itemIDcount] = idTemp;
 							// itemIDcount = itemIDcount + 1;
 						}
@@ -4455,8 +4461,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int LimintTemp = goukeiItem;
 
 
-			// 使用品表示
-			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+			// 使用品の配列代入
+			for (idTemp = 1; idTemp <= 3; idTemp = idTemp + 1)
 			{
 
 				if (item_have_list[idTemp].have_kosuu != 0) {
@@ -4480,18 +4486,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 				}
 
-				if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
+				if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 3) {
 					itemskip = itemskip + 1;
 
 				}
-			} // 使用品表示
+			} // 使用品の配列代入
 
 
 
 			itemskip = 0;
 			LimintTemp = goukeiItem;
 
-			// 武器表示
+			// 武器の配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
 
@@ -4520,14 +4526,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					itemskip = itemskip + 1;
 
 				}
-			} // 武器
+			} // 武器の配列代入
 
 
 
 			itemskip = 0;
 			LimintTemp = goukeiItem;
 
-			// シールド表示
+			// シールドの配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
 				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
@@ -4563,7 +4569,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			itemskip = 0;
 			LimintTemp = goukeiItem;
-			// ヘルム表示
+			// ヘルムの配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
 				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
@@ -4595,7 +4601,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					itemskip = itemskip + 1;
 
 				}
-			} // かぶと
+			} // かぶとの配列代入
 
 			itemTypeHairetu[itemIDcount] = -99; // 終了を意味する数。
 
@@ -5952,7 +5958,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			{
 	
-				whatuse = itemHairetu[selecting_item - 1] + 1; // 
+				whatuse = itemHairetu[selecting_item -1] ; // 
 
 				
 
@@ -6039,17 +6045,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					tempVal = partyNarabijyun[whomTargetID] ;
 					
 					if (heros_def_list[tempVal].heros_hp < heros_def_list[tempVal].heros_hp_max) {
-						if (item_have_list[whatuse - 1].have_kosuu > 0) {
+						if (item_have_list[whatuse ].have_kosuu > 0) {
 							heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp + 5;
 							
 							if (heros_def_list[tempVal].heros_hp > heros_def_list[tempVal].heros_hp_max) {
 								heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp_max;
 							}
 
-							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
+							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
 
 						}					
 						
+						item_have_list[0].have_kosuu = 0;
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
 					}					
@@ -6062,14 +6069,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
 					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
 
-						if (item_have_list[whatuse - 1].have_kosuu > 0) {
+						if (item_have_list[whatuse ].have_kosuu > 0) {
 							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
-							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
+							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
 
 						}
 
@@ -6096,7 +6103,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
-							item_have_list[whatuse - 1].have_kosuu = item_have_list[whatuse - 1].have_kosuu - 1;
+							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
 
 
 						InvalidateRect(hWnd, NULL, FALSE);
