@@ -113,7 +113,7 @@ HDC mae_dc;
 
 int afterShop = 0;
 
-int shoptar = 0;
+int shopAct = 0;
 
 int sinamonoList = 0;
 
@@ -4195,11 +4195,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int carsoruHigh = 30;
 			int spanX = 50;
 
-
+			shopAct = 0; // 「買う」にカーソル
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, BuySellX + spanX * (shoptar), offsetYtemp1 + 10,
-				BuySellX +40 + spanX * (shoptar), offsetYtemp1 + 60);
+			Rectangle(hdc, BuySellX + spanX * (shopAct), offsetYtemp1 + 10,
+				BuySellX +40 + spanX * (shopAct), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -4347,6 +4347,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
+
+
+			// 「売る」のあとに「買う」したときの表示文の残骸の一旦クリア用
+			for (int temp = 0; temp <= 6; temp = temp + 1) {
+				lstrcpy(mojibuf, TEXT("   "));
+				TextOut(hdc, 280 + 100 * 2 + 50, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
+			}
+
+
 			int koumoku_Y = 200;
 			int kasolOffsetY = 30;
 
@@ -4416,11 +4425,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int carsoruHigh = 30;
 			int spanX = 50;
 
-			
+
+			shopAct = 1; // 「売る」にカーソル
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, BuySellX + spanX * (shoptar), offsetYtemp1 + 10,
-				BuySellX + 40 + spanX * (shoptar), offsetYtemp1 + 60);
+			Rectangle(hdc, BuySellX + spanX * (shopAct), offsetYtemp1 + 10,
+				BuySellX + 40 + spanX * (shopAct), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -6607,7 +6617,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 武器屋
 				if (whomTargetID == 0) {
-					shoptar = 0;
+					shopAct = 0;
 					mode_scene = MODE_Shop_weapon_main; 
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -6619,7 +6629,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID == 1) {
 					// MessageBox(NULL, TEXT(" 防具屋にいる。"), TEXT("キーテスト"), MB_OK);
 					
-					shoptar = 0;
+					shopAct = 0;
 					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
