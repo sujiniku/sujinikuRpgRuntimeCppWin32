@@ -3738,7 +3738,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
 							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-							// goukeiItem = goukeiItem + 1;
+							goukeiItem = goukeiItem + 1;
 
 							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
 							itemIDcount = itemIDcount + 1; // これは上コードで使う
@@ -3770,7 +3770,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
 							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-							// goukeiItem = goukeiItem + 1;
+							goukeiItem = goukeiItem + 1;
 
 							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
 							itemIDcount = itemIDcount + 1; // これは上コードで使う
@@ -3802,7 +3802,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);  // コピペ時、ここを帰る
 							TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-							// goukeiItem = goukeiItem + 1;
+							goukeiItem = goukeiItem + 1;
 
 							itemHairetu[itemIDcount] = idTemp; // これはボタン操作側で使う
 							itemIDcount = itemIDcount + 1; // これは上コードで使う
@@ -4453,7 +4453,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 250, 170,
 				450, 400);
 
-			lstrcpy(mojibuf, TEXT("ここにtest商品や所持品が表示されます"));
+			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
 			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
 
 
@@ -5661,7 +5661,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 1) {
 					//MessageBox(NULL, TEXT("消耗品とか。"), TEXT("キーテスト"), MB_OK);
 
-					selecting_item = 1;
+					selecting_item = 1;					
 					selecting_item_x = ((selecting_item - 1) % 2) + 1;
 					selecting_item_y = ((selecting_item - 1) / 2) + 1;
 
@@ -6332,8 +6332,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 
 			case 'X':
-				// メイン画面に戻る
+				// 装備スロット選択画面に戻る
 			{
+				whatedit2 = 0;
+
 				filterFlag = 0;
 				mode_scene = MODE_EQUIP_EDIT;
 
@@ -6376,6 +6378,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatedit2 >= 6) {
 					whatedit2 = 6;
 				}
+				if (whatedit2 >= goukeiItem - 1 && goukeiItem >= 1) {
+					whatedit2 = goukeiItem - 1;
+				}
+				if (goukeiItem == 0) {
+					whatedit2 = 0;
+				}
+
+				
 				else if (whatedit2 < 0) {
 					whatedit2 = 0;
 				}
@@ -6401,6 +6411,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatedit2 >= 6) {
 					whatedit2 = 6;
 				}
+				if (whatedit2 >= goukeiItem-1 && goukeiItem >= 1 ) {
+					whatedit2 = goukeiItem-1;
+				}
+				if (goukeiItem == 0) {
+					whatedit2 = 0;
+				}
+
+
 				else if (whatedit2 < 0) {
 					whatedit2 = 0;
 				}
