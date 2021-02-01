@@ -118,13 +118,13 @@ int shopAct = 0;
 int sinamonoList = 0;
 
 int popFlagTown = 0;
-TCHAR popMsg[MAX_LENGTH] = TEXT("aaaa") ;
+TCHAR popMsg[MAX_LENGTH] = TEXT("aaaa");
 
 
 const int partymax = 3; // 本当は4だけどテストのため1時的に3
 int whatuse = 0;
 
-int beforeselect=1; // なんらかの選択肢で直前に選んだ選択肢の番号。画面更新用に使う。
+int beforeselect = 1; // なんらかの選択肢で直前に選んだ選択肢の番号。画面更新用に使う。
 
 
 int whatedit = 0; // 装備コマンドなど、編集をするいろいろな作業用
@@ -134,14 +134,14 @@ int whatedit2 = 0; // ひとつの画面内に、前画面用カーソルを残�
 
 int uwadumeFlag = 1; // 1なら上詰めする。0ならオフ。デバッグモード用 // バグッたら0に戻すこと
 
-int akikosuu ;
+int akikosuu;
 int akiHairetu[5];
 int itemHairetu[50];
 int itemTypeHairetu[50];
 
 
 
-int event_tekiFast = 0 ;
+int event_tekiFast = 0;
 
 int event_tekiSoutou = 0;
 
@@ -225,7 +225,7 @@ enum resource_embedded_flag resource_embedded_var = off;
 
 
 int makeNakamaNinzu = 5; // プログラマーの作った仲間キャラの人数
-int tourokuNakama = 4-1; // 実際の人数より1少ない // ギルドに登録されてる仲間の人数なので変数
+int tourokuNakama = 4 - 1; // 実際の人数より1少ない // ギルドに登録されてる仲間の人数なので変数
 
 
 int partyNinzuDone = 2, enemyNinzu = 1;
@@ -665,7 +665,7 @@ static void BrushBlue_set(HDC hdc) {
 	SelectObject(hdc, pen_blue);
 
 	// HBRUSH blue_thin_1, blue_thin_2;
-	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255)); 
+	blue_thin_1 = CreateSolidBrush(RGB(210, 210, 255));
 	blue_thin_2 = (HBRUSH)SelectObject(hdc, blue_thin_1);
 
 }
@@ -729,7 +729,7 @@ void Draw_map(HDC hdc) {
 		{
 
 			iTemp = maptable[y_map][x_map] + 1;
-					hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
+			hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
 
 			SelectObject(hMdc, hbmp);
 			BitBlt(hbackDC, 225 + x_map * 32, 140 + y_map * 32, 32, 32, hMdc, 0, 0, SRCCOPY);
@@ -768,13 +768,13 @@ void Draw_map(HDC hdc) {
 
 	if (where_map == 1) {
 
-				hbmp = hbmp_what; // ギルドのチップ。
+		hbmp = hbmp_what; // ギルドのチップ。
 
-				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-				BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
+		BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 
 	}
-	
+
 
 	if (where_map == 2) {
 
@@ -855,14 +855,14 @@ void check_movable(HWND hWnd) {
 		}
 		else if (maptable[desti_y][desti_x] != 1) // 進行先に移動可能
 		{
-	
-				// 一歩前座標の更新
-				before_chara_x = chara_x ;				
-				before_chara_y = chara_y ;
-				
-				// 現在位置の更新
-				chara_x = desti_x;
-				chara_y = desti_y;
+
+			// 一歩前座標の更新
+			before_chara_x = chara_x;
+			before_chara_y = chara_y;
+
+			// 現在位置の更新
+			chara_x = desti_x;
+			chara_y = desti_y;
 
 
 
@@ -882,7 +882,7 @@ void check_movable(HWND hWnd) {
 
 // アイテムメニューでのカーソル位置の計算用
 void item_select(HWND hWnd) {
-	
+
 	if (selecting_item < 1) {
 		selecting_item = 1;
 	}
@@ -950,7 +950,7 @@ void hikaesai(HDC hdc) {
 	/*
 
 	mae_dc = CreateCompatibleDC(hdc);
-	
+
 	HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル
 	SelectObject(hbackDC, mae_haikei);
 	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
@@ -972,7 +972,7 @@ void hikaesai(HDC hdc) {
 
 	BrushPink_set(hdc);
 	Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetIDhikae),
-		150+30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
+		150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
 
 	int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 	int yspan1 = carsoruHigh;
@@ -1030,26 +1030,26 @@ void hikaesai(HDC hdc) {
 
 		// temp == tourokuNakama + 1    に相当
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す555】"));
-		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip ) + 120, mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip)+120, mojibuf, lstrlen(mojibuf));
 
 
 	}
 
 	// デバッグ文
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[0]: %d"), hikaeNarabijyun[0]);
-	TextOut(hdc, offsetXtemp1+100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120-50, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("Hikae[1]: %d"), hikaeNarabijyun[1]);
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50+20*1, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20 * 1, mojibuf, lstrlen(mojibuf));
 
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控え人数: %d"), hikaeNinzu);
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20*2, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20 * 2, mojibuf, lstrlen(mojibuf));
 
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whomCH: %d"), whomCHARA );
-	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20*3, mojibuf, lstrlen(mojibuf));
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whomCH: %d"), whomCHARA);
+	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20 * 3, mojibuf, lstrlen(mojibuf));
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("P人数: %d"), partyNinzuTemp );
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("P人数: %d"), partyNinzuTemp);
 	TextOut(hdc, offsetXtemp1 + 100, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120 - 50 + 20 * 4, mojibuf, lstrlen(mojibuf));
 
 
@@ -1075,7 +1075,7 @@ void parsai(HDC hdc) {
 
 	int kasoruHeight = 50;
 	BrushPink_set(hdc);
-	
+
 	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetIDparty),
 		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
 
@@ -1087,14 +1087,14 @@ void parsai(HDC hdc) {
 
 
 
-	for (int temp = 0; temp <= partymax -1 ; temp = temp + 1) {
+	for (int temp = 0; temp <= partymax - 1; temp = temp + 1) {
 
 		if (partyNarabijyun[temp] >= 0) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);			
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyun[temp]].heros_name);
 		}
 
 		if (partyNarabijyun[temp] < 0) {
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));			
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【空き枠】"));
 		}
 
 		TextOut(hdc, offsetXtemp2 + 30, offsetYtemp2 + 30 + yspan1 * (temp), mojibuf, lstrlen(mojibuf));
@@ -1164,9 +1164,9 @@ static void MainGraMenu(HDC hdc) {
 	}
 
 	if (mode_scene == MODE_ITEM_TYPE) {
-		Rectangle(hbackDC, 20 + (selecting_mainmenu - 1) * (100+10), 20+20,
-			100 + (selecting_mainmenu - 1) * (100+10), 70);
-	
+		Rectangle(hbackDC, 20 + (selecting_mainmenu - 1) * (100 + 10), 20 + 20,
+			100 + (selecting_mainmenu - 1) * (100 + 10), 70);
+
 	}
 
 	// 道具～セーブ のメニュー欄
@@ -1255,9 +1255,9 @@ static void MainGraMenu(HDC hdc) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[partyNarabijyun[j]].heros_hp_max);
 		TextOut(hbackDC, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
-		
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("PN: %d"), partyNarabijyun[j] );
-		TextOut(hbackDC, StatsHPbaseX - 50 , StatsHPbaseY + 40  + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("PN: %d"), partyNarabijyun[j]);
+		TextOut(hbackDC, StatsHPbaseX - 50, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
 		if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag != 1) {
@@ -1278,7 +1278,7 @@ static void MainGraMenu(HDC hdc) {
 
 
 
-	
+
 	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
 
 	// DeleteDC(hMdc); // これを入れると、マップが表示されない。
@@ -1360,7 +1360,7 @@ void check_encount_enemy(HWND hWnd) {
 
 
 void Akihaikeisan() {
-	
+
 	// int kousinNarabijyun[5];
 
 	partyNinzuDone = partyNinzuTemp;
@@ -1374,7 +1374,7 @@ void Akihaikeisan() {
 		}
 
 		if (partyNarabijyun[temp] < 0) {
-			
+
 			akiHairetu[skip] = temp;
 
 			skip = skip + 1;
@@ -1455,8 +1455,8 @@ void pre_guild(HWND hWnd) {
 
 void check_encount_town(HWND hWnd) {
 
-	if ( where_map ==1 &&  chara_x == town_X && chara_y == town_Y ) {
-		
+	if (where_map == 1 && chara_x == town_X && chara_y == town_Y) {
+
 
 		popFlagTown = 1;
 		lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
@@ -1515,12 +1515,12 @@ void check_MapTransition(HWND hWnd) {
 			{
 				// 代入内容は、移動先マップの代入をすることに注意
 
-				for (int i = 0; i <= tourokuMapChip-1; ++i){ // 全マップをチェック
+				for (int i = 0; i <= tourokuMapChip - 1; ++i) { // 全マップをチェック
 					if (where_map == i + 1) {
-						maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];					
-					}			
+						maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];
+					}
 				}
-				
+
 			}
 		}
 
@@ -1681,7 +1681,7 @@ void draw_battle_common_after(HDC hdc) {
 	for (int iTemp = 0; iTemp <= partyNinzuDone - 1; iTemp++)
 	{
 
-		tempVAl = partyNarabijyun[iTemp] ;
+		tempVAl = partyNarabijyun[iTemp];
 		Rectangle(hdc, 10 + iTemp * offsetBattleX, windowTempA - chara_window_size_x,
 			10 + chara_window_size_x + iTemp * offsetBattleX, 410);
 
@@ -1717,30 +1717,30 @@ void draw_battle_common_after(HDC hdc) {
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoAgilityHairetu[tempMonitor]);
-		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor *30, agilityProcMonitorY + 20, mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 20, mojibuf, lstrlen(mojibuf));
 	}
 
 
-		// 行動順配列の表示テスト 
-		lstrcpy(mojibuf, TEXT("行動順配列"));
-	TextOut(hdc, agilityProcMonitorX , agilityProcMonitorY +50, mojibuf, lstrlen(mojibuf));
+	// 行動順配列の表示テスト 
+	lstrcpy(mojibuf, TEXT("行動順配列"));
+	TextOut(hdc, agilityProcMonitorX, agilityProcMonitorY + 50, mojibuf, lstrlen(mojibuf));
 
 	lstrcpy(mojibuf, TEXT("irem"));
-	TextOut(hdc, agilityProcMonitorX -10, agilityProcMonitorY + 40 + 30, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), iremonoOrderHairetu[tempMonitor]);
 		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30, mojibuf, lstrlen(mojibuf));
 	}
-	
+
 
 	// 行動順配列の表示テスト // こっちはactionOrder
 	lstrcpy(mojibuf, TEXT("act"));
-	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 *2, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
-		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 *2, mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
 	}
 
 
@@ -1754,7 +1754,7 @@ void draw_battle_common_after(HDC hdc) {
 	lstrcpy(mojibuf, TEXT("HP"));
 	TextOut(hdc, monsterMiddleX, 180, mojibuf, lstrlen(mojibuf));
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), monster_hp);
-	TextOut(hdc, monsterMiddleX +30, monsterMiddleY+ FontYoffset, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, monsterMiddleX + 30, monsterMiddleY + FontYoffset, mojibuf, lstrlen(mojibuf));
 
 
 	/* タイマーのテスト */
@@ -1773,7 +1773,7 @@ void draw_battle_HeroDamage(HDC hdc) {
 
 	/* キャラの負ったダメージ */
 	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("ダメージ %d "), damage_EnemyAttack);
-	
+
 
 	if (heros_def_list[0].heros_HP0_flag != 1) {
 		TextOut(hdc, 20, 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
@@ -1781,7 +1781,7 @@ void draw_battle_HeroDamage(HDC hdc) {
 
 
 	if (heros_def_list[0].heros_HP0_flag == 1) {
-		TextOut(hdc, 20 + chara_window_size_x , 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
+		TextOut(hdc, 20 + chara_window_size_x, 410 - chara_window_size_x + 10 - 30, mojibuf, lstrlen(mojibuf));
 	}
 
 }
@@ -1796,7 +1796,7 @@ void draw_battle_EnemyDamage(HDC hdc) {
 	/* 敵に与えたダメージ */
 	_stprintf_s(mojibuf, 300, TEXT("ダメージ %d "), damage_HeroAttack);
 
-		TextOut(hdc, 300, 130, mojibuf, lstrlen(mojibuf));
+	TextOut(hdc, 300, 130, mojibuf, lstrlen(mojibuf));
 
 }
 
@@ -1914,9 +1914,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// アイテムの情報
 	int tourokuItem = 3;
-	for (int temp = 0; temp <= tourokuItem ; temp++) {
+	for (int temp = 0; temp <= tourokuItem; temp++) {
 
-		item_def_list[temp].def_id = temp ;
+		item_def_list[temp].def_id = temp;
 		item_def_list[temp].item_type = siyouType;
 
 		if (temp == 0) {
@@ -1926,11 +1926,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 1) {
 			//薬草の定義
-			lstrcpy(item_def_list[temp].def_name, TEXT("薬草"));			
+			lstrcpy(item_def_list[temp].def_name, TEXT("薬草"));
 		}
 
 		if (temp == 2) {
-			lstrcpy(item_def_list[temp].def_name, TEXT("毒消し草"));			
+			lstrcpy(item_def_list[temp].def_name, TEXT("毒消し草"));
 		}
 
 		if (temp == 3) {
@@ -1956,7 +1956,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			weapon_def_list[temp].def_id = 1;		
+			weapon_def_list[temp].def_id = 1;
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄の槍"));
 			weapon_def_list[temp].material = mateIron;
 			weapon_def_list[temp].equip_type = spear;
@@ -2061,7 +2061,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		if (temp == 1) {
-			armor_def_list[temp].def_id = temp;		
+			armor_def_list[temp].def_id = temp;
 			lstrcpy(armor_def_list[temp].def_name, TEXT("皮の服"));
 			armor_def_list[temp].material = mateNothing;
 			armor_def_list[temp].equip_type = typeNothing;
@@ -2093,22 +2093,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	//所持アイテムの個数などの初期値
-	for (int temp = 0; temp <= tourokuItem ; temp++) {
-		
+	for (int temp = 0; temp <= tourokuItem; temp++) {
+
 		item_have_list[temp].have_def_id = temp + 1;
 
 		if (temp == 0) {
 			item_have_list[temp].have_kosuu = 0;
 		}
-		if (temp == 1) {			
+		if (temp == 1) {
 			item_have_list[temp].have_kosuu = 5;
 		}
 
-		if (temp == 2) {			
+		if (temp == 2) {
 			item_have_list[temp].have_kosuu = 4;
 		}
 
-		if (temp == 3) {			
+		if (temp == 3) {
 			item_have_list[temp].have_kosuu = 2;
 		}
 	}
@@ -2195,7 +2195,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	// キャラクターの定義
-	for (int temp = 0; temp <= makeNakamaNinzu +1; temp++) {
+	for (int temp = 0; temp <= makeNakamaNinzu + 1; temp++) {
 
 		if (temp == 0) {
 			lstrcpy(heros_def_list[temp].heros_name, TEXT("エロス"));
@@ -2210,7 +2210,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			heros_def_list[temp].heros_weapon1 = 1;
-			
+
 			heros_def_list[temp].heros_shield = 2;
 
 		}
@@ -2279,10 +2279,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	partyNarabijyun[0] = 0; // 
 	partyNarabijyun[1] = 1;
 	partyNarabijyun[2] = -1; // マイナス番なら、そこで終了
- 
+
 
 	// ニューゲームの時点で、戦闘不能フラグを更新
-	for (int temp = 0; temp < tourokuNakama ; ++temp) {
+	for (int temp = 0; temp < tourokuNakama; ++temp) {
 
 		if (heros_def_list[temp].heros_hp < 1) {
 			heros_def_list[temp].heros_hp = 0;
@@ -2298,7 +2298,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	}
-	
+
 
 	int tempHairetu[BATTLE_Agility_proc + 1]; // 使わないかも?
 
@@ -2333,10 +2333,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
-	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc -1 ; ++loctempA)
+	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc - 1; ++loctempA)
 	{
-		actionOrder[loctempA] = loctempA ;
-		iremonoOrderHairetu[loctempA] = loctempA ;
+		actionOrder[loctempA] = loctempA;
+		iremonoOrderHairetu[loctempA] = loctempA;
 	}
 
 
@@ -2639,9 +2639,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-									
+
 		fclose(fileMapDatabasePointer);
-		
+
 
 		break;
 
@@ -2652,141 +2652,141 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// MODE_BATTLE_COMMAND
 		}
 
-		if (mode_scene == MODE_saving_Now) {			
+		if (mode_scene == MODE_saving_Now) {
 			TimeCount++;
 			if (TimeCount >= 4) {
 				// MessageBox(NULL, TEXT("セーブタイマー4以上;"), TEXT("場所テスト"), MB_OK);
 
 				mode_scene = MODE_MENU;
 				TimeCount = 0;
-			 }		
+			}
 
 			InvalidateRect(hWnd, NULL, FALSE); // 引数3番目はここではfalseに。
 			UpdateWindow(hWnd);
 		}
 
-		if (mode_scene == MODE_BATTLE_NOW ) {
-			
+		if (mode_scene == MODE_BATTLE_NOW) {
+
 			TimeCount++; // バトル時以外はカウントしない
 			int timerCheckCount = 0;
 
 
-			
+
 			// モンスターの死亡判定
-				if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
-						TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
-						enemyAlldeadFlag = 1;
+			if (encount_mons_alive == 0 && enemyAlldeadFlag == 0) {
+				TimeCount = 0; // 死んでから数秒後に戦勝の報告画面に移らせるので、いったん0にセット
+				enemyAlldeadFlag = 1;
 
-						//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);					
-				}
+				//MessageBox(NULL, TEXT("enemyAlldeadFlag == 1;"), TEXT("場所テスト"), MB_OK);					
+			}
 
-					InvalidateRect(hWnd, NULL, FALSE);
-
-				
-				// MessageBox(NULL, TEXT("battleIDの次にいる。"), TEXT("場所テスト"), MB_OK);
+			InvalidateRect(hWnd, NULL, FALSE);
 
 
-				timerCheckCount = 0;
-				battleID = battleID + 1; 
-
-				//////////////////////////////////
-
-				// 敵が全滅している場合
-				if (encount_mons_alive == 0 && enemyAlldeadFlag == 1 && TimeCount >= 3 ) {
-
-					//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
-
-					// カネと経験値の更新
-					your_money = your_money + monster_def_list[encount_monters_id - 1].mon_gold;
-
-					heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-					heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-					
-					heros_def_list[partyNarabijyun[2]].heros_exp = heros_def_list[partyNarabijyun[2]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+			// MessageBox(NULL, TEXT("battleIDの次にいる。"), TEXT("場所テスト"), MB_OK);
 
 
-					// partyNarabijyun[2]
+			timerCheckCount = 0;
+			battleID = battleID + 1;
 
-					gekiha_tekiSuu = gekiha_tekiSuu + 1; // クエスト系イベント処理のテスト
+			//////////////////////////////////
 
-					// モード遷移
-					mode_scene = MODE_BATTLE_WIN; key_remain = 1;
+			// 敵が全滅している場合
+			if (encount_mons_alive == 0 && enemyAlldeadFlag == 1 && TimeCount >= 3) {
 
+				//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
 
-					enemy_already_attack_flag = 0; // フラグのリセット	
-					hero1_already_attack_flag = 0;
+				// カネと経験値の更新
+				your_money = your_money + monster_def_list[encount_monters_id - 1].mon_gold;
 
-					//KillTimer(hWnd, 1);
-					battleTimeFlag = 0;
-				  
-					TimeCount = 0; 
-					globalTempA = 0;
+				heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+				heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-					break;
-				}
-
-				if (encount_mons_alive == 1 && TimeCount >= 13) {
-
-					mode_scene = MODE_BATTLE_COMMAND;
-					TimeCount = 0;
-					timerFlag = 0;
-					globalTempA = 0;
-				}
-
-				// なんらかの理由で上記のTimeCountリセットがされない場合、
-				//		安全のため50カウントで強制リセット
-				if (TimeCount >= 50) {
-					//KillTimer(hWnd, 1);
-					battleTimeFlag = 0;
-					TimeCount = 0;
-					battleID = 0;
-
-					mode_scene = MODE_BATTLE_COMMAND;
-				}
+				heros_def_list[partyNarabijyun[2]].heros_exp = heros_def_list[partyNarabijyun[2]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 
 
+				// partyNarabijyun[2]
 
-				for (int battleTempA = 0; battleTempA <= partyNinzuDone - 1 + enemyNinzu; ++battleTempA) {
-					if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
-					{
-						timerFlag = 1 + battleTempA;
-						globalTempA = battleTempA;
+				gekiha_tekiSuu = gekiha_tekiSuu + 1; // クエスト系イベント処理のテスト
 
-						// 行動者が味方側の場合
-						if (actionOrder[battleTempA] < partyNinzuDone) {
-							heroside_attack(hWnd);
-						}
-
-						// 行動者が敵側の場合					
-						if (actionOrder[battleTempA] >= partyNinzuDone) {
-							if (encount_mons_alive == 1) {
-								enemy_attack(hWnd);
-							}
-
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
-						}
-					}
-				}
+				// モード遷移
+				mode_scene = MODE_BATTLE_WIN; key_remain = 1;
 
 
+				enemy_already_attack_flag = 0; // フラグのリセット	
+				hero1_already_attack_flag = 0;
 
+				//KillTimer(hWnd, 1);
+				battleTimeFlag = 0;
+
+				TimeCount = 0;
+				globalTempA = 0;
 
 				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+				break;
+			}
 
-					// break;
-			// } // for文の終わり
+			if (encount_mons_alive == 1 && TimeCount >= 13) {
 
-				
+				mode_scene = MODE_BATTLE_COMMAND;
+				TimeCount = 0;
+				timerFlag = 0;
+				globalTempA = 0;
+			}
 
+			// なんらかの理由で上記のTimeCountリセットがされない場合、
+			//		安全のため50カウントで強制リセット
+			if (TimeCount >= 50) {
+				//KillTimer(hWnd, 1);
+				battleTimeFlag = 0;
+				TimeCount = 0;
 				battleID = 0;
+
+				mode_scene = MODE_BATTLE_COMMAND;
+			}
+
+
+
+			for (int battleTempA = 0; battleTempA <= partyNinzuDone - 1 + enemyNinzu; ++battleTempA) {
+				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
+				{
+					timerFlag = 1 + battleTempA;
+					globalTempA = battleTempA;
+
+					// 行動者が味方側の場合
+					if (actionOrder[battleTempA] < partyNinzuDone) {
+						heroside_attack(hWnd);
+					}
+
+					// 行動者が敵側の場合					
+					if (actionOrder[battleTempA] >= partyNinzuDone) {
+						if (encount_mons_alive == 1) {
+							enemy_attack(hWnd);
+						}
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					}
+				}
+			}
+
+
+
+
+			InvalidateRect(hWnd, NULL, FALSE);
+
+			// break;
+	// } // for文の終わり
+
+
+
+			battleID = 0;
 
 		} // if (mode_scene == MODE_BATTLE_NOW  ) { // のカッコ
 
 		// ここは誰かの行動のたびに繰り返すので、戦闘終了処理はココに入れちゃダメ
-		
+
 		break;
 
 	case WM_PAINT:
@@ -2799,7 +2799,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_OP || mode_scene == MODE_INITIAL) {
 
-			
+
 
 
 			if (mode_scene == MODE_OP) {
@@ -2829,7 +2829,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					//ここに共通する後段階の作業を記述;
 					TextOut(hdc, OpCommandX, OpCommandY + ComOffsetPerY * j, mojibuf, lstrlen(mojibuf));
-				}				
+				}
 			}
 
 
@@ -2890,7 +2890,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					// 代入内容は、移動先マップの代入をすることに注意
 
-					for (int i = 1; i <= tourokuMapChip ; ++i) { // こっちのforはマスク作業用
+					for (int i = 1; i <= tourokuMapChip; ++i) { // こっちのforはマスク作業用
 						if (where_map == i) {
 							maptable[y_map][x_map] = map_def_list[i].map_table[y_map][x_map];
 						}
@@ -2913,14 +2913,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// mode_scene == MODE_ITEM_TYPE
 
 		if (mode_scene == MODE_ITEM_TYPE) {
-
 			MainGraMenu(hdc);
-
 		}
 
 
-
-		if (mode_scene == MODE_ITEM_MENU_BACK) {
+		if (mode_scene == MODE_ITEM_MENU_BACK || mode_scene == MODE_ITEMweapon_MENU_BACK) {
 
 			MainGraMenu(hdc);
 
@@ -2935,161 +2932,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
 			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
 
-
-			mode_scene = MODE_ITEM_MENU_FRONT;
-		}
-
-
-		// MODE_ITEMweapon_MENU_BACK
-
-		if (mode_scene == MODE_ITEMweapon_MENU_BACK) {
-
-			MainGraMenu(hdc);
-
-			// ここまで、背景フィルターで隠される。
-
-			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
-			Graphics graphics(hdc);
-
-			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
-			Image image2(L"filter.png");
-
-			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
-
-
-			mode_scene = MODE_ITEMweapon_MENU_FRONT;
-		}
-
-
-
-
-		if (mode_scene == MODE_ITEM_MENU_FRONT) {
-			
-
-			MainGraFrontMenu(hdc);
-
-			BrushBlue_set(hdc);
-			Rectangle(hdc, 10, 100,
-				600, 400);
-
-			BrushPink_set(hdc);
-			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, 110 + (selecting_item_y - 1) * 50,
-				250 + (selecting_item_x - 1) * 300, 150 + (selecting_item_y - 1) * 50);
-
-			
-			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
-			//	TextOut(hdc, 130, 105, p, lstrlen(p));
-
-			int itemskip = 0;
-			goukeiItem = 0;
-
-			int itemIDcount=0;
-			int column = 2;
-
-			int xcommon ;
-			int ycommon ;
-
-			for (idTemp = 0; idTemp <= 3; idTemp = idTemp + 1)
-			{
-
-				if (item_have_list[idTemp].have_kosuu != 0) {
-					
-					xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
-					ycommon = 130 + 30 * floor((idTemp - itemskip ) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, item_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
-					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
-					goukeiItem = goukeiItem + 1;
-
-					itemHairetu[itemIDcount] = idTemp;
-					itemIDcount = itemIDcount +1;
-
-				}
-
-				if (item_have_list[idTemp].have_kosuu == 0) {
-					itemskip = itemskip + 1;
-
-				}
+			if (mode_scene == MODE_ITEM_MENU_BACK) {
+				mode_scene = MODE_ITEM_MENU_FRONT;
 			}
-
-			// デバッグ用モニター
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[0] %d"), itemHairetu[0]);
-			TextOut(hdc, 230, 200, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[1] %d"), itemHairetu[1]);
-			TextOut(hdc, 230, 230, mojibuf, lstrlen(mojibuf));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("itemHairetu[2] %d"), itemHairetu[2]);
-			TextOut(hdc, 230, 260, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatuse %d"), whatuse);
-			TextOut(hdc, 230, 290, mojibuf, lstrlen(mojibuf));
-
-
-
-
-			// デバッグ用
-			lstrcpy(mojibuf, TEXT("sele_item :"));
-			//TextOut(hdc, 430, 200, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("SI: %d"), selecting_item);
-			TextOut(hdc, 530, 200, mojibuf, lstrlen(mojibuf));
-
-
-			lstrcpy(mojibuf, TEXT("item_x :"));
-			TextOut(hdc, 430, 230, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), selecting_item_x);
-			TextOut(hdc, 490, 230, mojibuf, lstrlen(mojibuf));
-
-
-			lstrcpy(mojibuf, TEXT("item_y :"));
-			TextOut(hdc, 430, 280, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), selecting_item_y);
-			TextOut(hdc, 490, 280, mojibuf, lstrlen(mojibuf));
-
-
-
-
-			// アイテム効果の確認用
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[0].heros_name);
-			TextOut(hdc, 400, 300, mojibuf, lstrlen(mojibuf));
-
-
-			lstrcpy(mojibuf, TEXT("HP"));
-			TextOut(hdc, 400, 300 + 30, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[0].heros_hp);
-			TextOut(hdc, 400 + 30, 300 + 30, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("/ %d"), heros_def_list[0].heros_hp_max);
-			TextOut(hdc, 400 + 60, 300 + 30, mojibuf, lstrlen(mojibuf));
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
-			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-
+			if (mode_scene == MODE_ITEMweapon_MENU_BACK) {
+				mode_scene = MODE_ITEMweapon_MENU_FRONT;
+			}
 		}
 
 
-		if (mode_scene == MODE_ITEMweapon_MENU_FRONT) {
+		if (mode_scene == MODE_ITEM_MENU_FRONT || mode_scene == MODE_ITEMweapon_MENU_FRONT) {
 
-
+			// 背景ボード描画
 			MainGraFrontMenu(hdc);
 
 			BrushBlue_set(hdc);
 			Rectangle(hdc, 10, 100,
 				600, 400);
 
+			// カーソル描画設定
 			int spanY = 30;
 			int Y0 = 120;
 
@@ -3097,9 +2958,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, Y0 + (selecting_item_y - 1) * spanY,
 				250 + (selecting_item_x - 1) * 300, Y0 + spanY + (selecting_item_y - 1) * spanY);
 
-
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
-			//	TextOut(hdc, 130, 105, p, lstrlen(p));
+				//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
 			int itemskip = 0;
 			goukeiItem = 0;
@@ -3110,22 +2970,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int xcommon;
 			int ycommon;
 
+			// 表示フラグ
+			int ViewFlagItem = 1;
+			int ViewFlagWeapon = 0;
+			int ViewFlagShield = 0;
+			int ViewFlagHelm = 0;
 
+			if (mode_scene == MODE_ITEMweapon_MENU_FRONT || mode_scene == MODE_ITEM_MENU_FRONT) {
 
+				// 表示フラグ設定
+				if (mode_scene == MODE_ITEM_MENU_FRONT) {
+					ViewFlagItem = 1;
+					ViewFlagWeapon = 0;
+					ViewFlagShield = 0;
+					ViewFlagHelm = 0;
+				}
 
+				if (mode_scene == MODE_ITEMweapon_MENU_FRONT) {
+					ViewFlagItem = 0;
+					ViewFlagWeapon = 1;
+					ViewFlagShield = 1;
+					ViewFlagHelm = 1;
+				}
+			}
 
 			itemskip = 0;
 			int LimintTemp = goukeiItem;
+			goukeiItem = 0;
 
-			if (0) {
-				// 使用品表示
-				for (idTemp = 1; idTemp <= 3; idTemp = idTemp + 1)
+
+			// 使用品の表示
+			if (ViewFlagItem) {
+				itemskip = 0; // 直前のコードと重複してるけど、順番入れ替えを考えて残す
+				LimintTemp = goukeiItem;
+
+				for (idTemp = 0; idTemp <= 3; idTemp = idTemp + 1)
 				{
 
 					if (item_have_list[idTemp].have_kosuu != 0) {
 
-						xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
-						ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
+						xcommon = 30 + 300 * floor((idTemp - itemskip) % column);
+						ycommon = 130 + 30 * floor((idTemp - itemskip) / column);
 
 						SetBkMode(hdc, TRANSPARENT);
 						lstrcpy(mojibuf, item_def_list[idTemp].def_name);
@@ -3136,127 +3021,136 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						goukeiItem = goukeiItem + 1;
 
-						if (idTemp != 3) {
+						itemHairetu[itemIDcount] = idTemp;
+						itemIDcount = itemIDcount + 1;
+
+					}
+
+					if (item_have_list[idTemp].have_kosuu == 0) {
+						itemskip = itemskip + 1;
+
+					}
+				}
+			}
+
+
+
+			// 武器表示
+			if (ViewFlagWeapon) {
+				itemskip = 0;
+				LimintTemp = goukeiItem;
+
+
+				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+				{
+
+					if (weapon_have_list[idTemp].have_kosuu != 0) {
+
+						xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
+						ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
+
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+						goukeiItem = goukeiItem + 1;
+
+						if (idTemp != 2) {
 							// itemHairetu[itemIDcount] = idTemp;
 							// itemIDcount = itemIDcount + 1;
 						}
 					}
 
-					if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
+					if (weapon_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
 						itemskip = itemskip + 1;
 
 					}
-				} // 使用品表示
-
+				} // 武器
 			}
 
-			itemskip = 0;
-			LimintTemp = goukeiItem;
 
-			// 武器表示
-			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
-			{
-
-				if (weapon_have_list[idTemp].have_kosuu != 0) {
-
-					xcommon = 30 + 300 * floor((idTemp - itemskip -1) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip -1) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
-					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
-					goukeiItem = goukeiItem + 1;
-
-					if (idTemp != 2) {
-						// itemHairetu[itemIDcount] = idTemp;
-						// itemIDcount = itemIDcount + 1;
-					}
-				}
-
-				if (weapon_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
-					itemskip = itemskip + 1;
-
-				}
-			} // 武器
-
-
-
-			itemskip = 0;
-			LimintTemp = goukeiItem;
 
 			// シールド表示
-			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
-			{
-				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
-				if (shield_have_list[idTemp].have_kosuu != 0) {
-					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
-					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
+			if (ViewFlagShield) {
+				itemskip = 0;
+				LimintTemp = goukeiItem;
 
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+				{
+					// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+					if (shield_have_list[idTemp].have_kosuu != 0) {
+						// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+						xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
+						ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
 
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
-					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
-					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
+						// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
 
-					goukeiItem = goukeiItem + 1;
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
-					if (idTemp != 2) {
-						// itemHairetu[itemIDcount] = idTemp;
-						// itemIDcount = itemIDcount + 1;
+						goukeiItem = goukeiItem + 1;
+
+						if (idTemp != 2) {
+							// itemHairetu[itemIDcount] = idTemp;
+							// itemIDcount = itemIDcount + 1;
+						}
+
 					}
 
-				}
+					if (shield_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+						itemskip = itemskip + 1;
 
-				if (shield_have_list[idTemp - itemIDcount].have_kosuu == 0) {
-					itemskip = itemskip + 1;
+					}
+				} // シールド
+			}
 
-				}
-			} // シールド
 
-			itemskip = 0;
-			LimintTemp = goukeiItem;
+
 			// ヘルム表示
-			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
-			{
-				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
-				if (helm_have_list[idTemp].have_kosuu != 0) {
-					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
-					xcommon = 30 + 300 * floor((idTemp - itemskip -1 + LimintTemp) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip -1 + LimintTemp) / column);
+			if (ViewFlagHelm) {
+				itemskip = 0;
+				LimintTemp = goukeiItem;
 
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
+				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
+				{
+					// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+					if (helm_have_list[idTemp].have_kosuu != 0) {
+						// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
+						xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
+						ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
 
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);
-					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
-					
-					TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+						SetBkMode(hdc, TRANSPARENT);
+						lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
+						TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
 
-					goukeiItem = goukeiItem + 1;
+						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);
+						// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
 
-					if (idTemp != 2) {
-						// itemHairetu[itemIDcount] = idTemp;
-						// itemIDcount = itemIDcount + 1;
+						TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
+
+						goukeiItem = goukeiItem + 1;
+
+						if (idTemp != 2) {
+							// itemHairetu[itemIDcount] = idTemp;
+							// itemIDcount = itemIDcount + 1;
+						}
+
 					}
 
-				}
+					if (helm_have_list[idTemp - itemIDcount].have_kosuu == 0) {
+						itemskip = itemskip + 1;
 
-				if (helm_have_list[idTemp - itemIDcount].have_kosuu == 0) {
-					itemskip = itemskip + 1;
+					}
+				} // かぶと
 
-				} 
-			} // かぶと
-
-
+			}
 
 
 			// デバッグ用モニター
@@ -3275,7 +3169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("goukeIte %d"), goukeiItem);
-			TextOut(hdc, 230, 290 +30, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 230, 290 + 30, mojibuf, lstrlen(mojibuf));
 
 			// デバッグ用
 			lstrcpy(mojibuf, TEXT("sele_item :"));
@@ -3320,7 +3214,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
 			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
-		}
+
+		} // end
+
 
 
 		if (mode_scene == MODE_ITEM_WHOM_BACK) {
@@ -3393,12 +3289,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			// 画像の読み込み「image2」は変数名。これが背景フィルター。
-			if (filterFlag == 0){
-			
+			if (filterFlag == 0) {
+
 				Image image2(L"filter.png");
 
-			// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-			
+				// 画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+
 				graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
 				filterFlag = 1;
 			}
@@ -3424,7 +3320,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int StatsHPbaseX = 130; int StatsHPbaseY = 130;
 			int offsetY = 120;
 
-			
+
 			for (int j = 0; j <= partyNinzuDone - 1; ++j) {
 				// 背景の青
 				SelectObject(hdc, blue_thin_1);
@@ -3459,122 +3355,122 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
 				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
-				
-				if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1 ) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));				
-					TextOut(hdc, StatsHPbaseX , StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));	
+
+				if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag == 1) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
+					TextOut(hdc, StatsHPbaseX, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
 				}
 
 
 
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
 				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-				
+
 			}
 		}
 
 
 
-		
+
 
 		if (mode_scene == MODE_EQUIP_MAIN) {
-                    // 装備の表示欄
-                    // メインモードは装備キャラの選択モードである
+			// 装備の表示欄
+			// メインモードは装備キャラの選択モードである
 
-                    MainGraFrontMenu(hdc);
+			MainGraFrontMenu(hdc);
 
-                    BrushBlue_set(hdc);
+			BrushBlue_set(hdc);
 
-                    BrushPink_set(hdc);
+			BrushPink_set(hdc);
 
-                    // Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
-                    //	100 + (selecting_mainmenu - 1) * 100, 70);
+			// Rectangle(hdc, 20 + (selecting_mainmenu - 1) * 100, 20,
+			//	100 + (selecting_mainmenu - 1) * 100, 70);
 
-                    int StatsHPbaseX = 130;
-                    int StatsHPbaseY = 130;
-                    int offsetY = 120;
-
-									
-					// 背景の青
-                    SelectObject(hdc, blue_thin_1);					
-					Rectangle(hdc, 10, 350, 500, 400);
-
-					SetBkMode(hdc, TRANSPARENT);
-                    lstrcpy(mojibuf,
-                            TEXT("装備を変更するキャラを選んでください。"));
-                    TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
+			int StatsHPbaseX = 130;
+			int StatsHPbaseY = 130;
+			int offsetY = 120;
 
 
+			// 背景の青
+			SelectObject(hdc, blue_thin_1);
+			Rectangle(hdc, 10, 350, 500, 400);
 
-                    for (int j = 0; j <= partyNinzuDone - 1; ++j) {
-                        // 背景の青
-                        SelectObject(hdc, blue_thin_1);
-                        Rectangle(hdc, 10, 100 + offsetY * j, 300,
-                                  200 + offsetY * j);
-
-                        // カーソル
-                        if (whomTargetID == j) {
-                            BrushPink_set(hdc);
-
-                            Rectangle(hdc, 
-								10 + 10, 100 + 10 + 120 * (whomTargetID),
-								300 - 10, 100 + 70 + 120 * (whomTargetID));
-                           
-                        }
-
-                        SetBkMode(hdc, TRANSPARENT);
-
-                        _stprintf_s(
-                            mojibuf, MAX_LENGTH, TEXT("%s"),
-                            heros_def_list[partyNarabijyun[j]].heros_name);
-                        TextOut(hdc, StatsHPbaseX,
-                                StatsHPbaseY - 25 + offsetY * j, mojibuf,
-                                lstrlen(mojibuf));
-
-                        lstrcpy(mojibuf, TEXT("HP"));
-                        TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j,
-                                mojibuf, lstrlen(mojibuf));
-
-                        _stprintf_s(
-                            mojibuf, MAX_LENGTH, TEXT("%d"),
-                            heros_def_list[partyNarabijyun[j]].heros_hp);
-                        TextOut(hdc, StatsHPbaseX + 30,
-                                StatsHPbaseY + offsetY * j, mojibuf,
-                                lstrlen(mojibuf));
-
-                        _stprintf_s(
-                            mojibuf, MAX_LENGTH, TEXT("/ %d"),
-                            heros_def_list[partyNarabijyun[j]].heros_hp_max);
-                        TextOut(hdc, StatsHPbaseX + 30 * 2,
-                                StatsHPbaseY + offsetY * j, mojibuf,
-                                lstrlen(mojibuf));
-
-                        _stprintf_s(
-                            mojibuf, MAX_LENGTH, TEXT("%d"),
-                            heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
-                        TextOut(hdc, StatsHPbaseX,
-                                StatsHPbaseY + 40 + offsetY * j, mojibuf,
-                                lstrlen(mojibuf));
-
-                        if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag ==
-                            1) {
-                            _stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
-                            TextOut(hdc, StatsHPbaseX,
-                                    StatsHPbaseY + 40 + offsetY * j, mojibuf,
-                                    lstrlen(mojibuf));
-                        }
-
-        
-						_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene); 	
-						TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
-                    }
-
-                    // そのキャラの装備項目の選択がサブモード
-
-        }
+			SetBkMode(hdc, TRANSPARENT);
+			lstrcpy(mojibuf,
+				TEXT("装備を変更するキャラを選んでください。"));
+			TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
 
 
-		if (mode_scene == MODE_EQUIP_EDIT || mode_scene == MODE_EQUIP_EDIT2 ) {
+
+			for (int j = 0; j <= partyNinzuDone - 1; ++j) {
+				// 背景の青
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, 10, 100 + offsetY * j, 300,
+					200 + offsetY * j);
+
+				// カーソル
+				if (whomTargetID == j) {
+					BrushPink_set(hdc);
+
+					Rectangle(hdc,
+						10 + 10, 100 + 10 + 120 * (whomTargetID),
+						300 - 10, 100 + 70 + 120 * (whomTargetID));
+
+				}
+
+				SetBkMode(hdc, TRANSPARENT);
+
+				_stprintf_s(
+					mojibuf, MAX_LENGTH, TEXT("%s"),
+					heros_def_list[partyNarabijyun[j]].heros_name);
+				TextOut(hdc, StatsHPbaseX,
+					StatsHPbaseY - 25 + offsetY * j, mojibuf,
+					lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, TEXT("HP"));
+				TextOut(hdc, StatsHPbaseX, StatsHPbaseY + offsetY * j,
+					mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(
+					mojibuf, MAX_LENGTH, TEXT("%d"),
+					heros_def_list[partyNarabijyun[j]].heros_hp);
+				TextOut(hdc, StatsHPbaseX + 30,
+					StatsHPbaseY + offsetY * j, mojibuf,
+					lstrlen(mojibuf));
+
+				_stprintf_s(
+					mojibuf, MAX_LENGTH, TEXT("/ %d"),
+					heros_def_list[partyNarabijyun[j]].heros_hp_max);
+				TextOut(hdc, StatsHPbaseX + 30 * 2,
+					StatsHPbaseY + offsetY * j, mojibuf,
+					lstrlen(mojibuf));
+
+				_stprintf_s(
+					mojibuf, MAX_LENGTH, TEXT("%d"),
+					heros_def_list[partyNarabijyun[j]].heros_HP0_flag);
+				TextOut(hdc, StatsHPbaseX,
+					StatsHPbaseY + 40 + offsetY * j, mojibuf,
+					lstrlen(mojibuf));
+
+				if (heros_def_list[partyNarabijyun[j]].heros_HP0_flag ==
+					1) {
+					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("戦闘不能"));
+					TextOut(hdc, StatsHPbaseX,
+						StatsHPbaseY + 40 + offsetY * j, mojibuf,
+						lstrlen(mojibuf));
+				}
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("mode: %d"), mode_scene);
+				TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
+			}
+
+			// そのキャラの装備項目の選択がサブモード
+
+		}
+
+
+		if (mode_scene == MODE_EQUIP_EDIT || mode_scene == MODE_EQUIP_EDIT2) {
 			// 装備の表示欄
 			// メインモードは装備キャラの選択モードである
 			// MessageBox(NULL, TEXT("aaaaココ1"), TEXT("メッセージ"), MB_OK);
@@ -3676,8 +3572,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			// デバッグ文。装備個数ズレのバグ調査。
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatedit2: %d"), whatedit2 );
-			TextOut(hdc, 15, 350 + 10+20, mojibuf, lstrlen(mojibuf));
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("whatedit2: %d"), whatedit2);
+			TextOut(hdc, 15, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("iHw2: %d"), itemHairetu[whatedit2]);
 			TextOut(hdc, 15 + 130, 350 + 10 + 20, mojibuf, lstrlen(mojibuf));
@@ -3833,10 +3729,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_saving_Now) {
 			_stprintf_s(strCount, MAX_LENGTH, TEXT("TimeCount: %d"), TimeCount);
-			TextOut(hdc, 500, 110, strCount, lstrlen(strCount));			
+			TextOut(hdc, 500, 110, strCount, lstrlen(strCount));
 		}
 
-		
+
 
 		if (mode_scene == MODE_TOWN) {
 
@@ -3889,7 +3785,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				lstrcpy(popMsg, TEXT("パーティの編成をできます。"));
 			}
 
-			if (whomTargetID == 1 && afterShop == 0 ) {
+			if (whomTargetID == 1 && afterShop == 0) {
 				lstrcpy(popMsg, TEXT("HPを全回復します。"));
 			}
 
@@ -3913,11 +3809,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
-				// temp == tourokuNakama + 1    に相当
-			//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
-			//	TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
+			// temp == tourokuNakama + 1    に相当
+		//	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
+		//	TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (tourokuNakama + 1) + 120, mojibuf, lstrlen(mojibuf));
 
-			
+
 
 
 		}
@@ -4070,7 +3966,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
 
-			if(mode_scene == MODE_Shop_weapon_main) {
+			if (mode_scene == MODE_Shop_weapon_main) {
 				lstrcpy(mojibuf, TEXT("武器屋テスト。"));
 			}
 			if (mode_scene == MODE_Shop_armor_main) {
@@ -4093,8 +3989,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int spanX = 50;
 
 			BrushPink_set(hdc);
-			Rectangle(hdc, BuySellX + spanX * (whomTargetID2), offsetYtemp1 + 10 ,
-				320 + spanX * (whomTargetID2), offsetYtemp1 + 60 );
+			Rectangle(hdc, BuySellX + spanX * (whomTargetID2), offsetYtemp1 + 10,
+				320 + spanX * (whomTargetID2), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -4113,14 +4009,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int GoldRanX = 480; int GoldRanY = 50;
 			SelectObject(hdc, blue_thin_1);
 			Rectangle(hdc, GoldRanX, GoldRanY,
-				GoldRanX +120, 110);
+				GoldRanX + 120, 110);
 
 			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, GoldRanX , GoldRanY + 10 , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldRanX, GoldRanY + 10, mojibuf, lstrlen(mojibuf));
 
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
-			TextOut(hdc, GoldRanX, GoldRanY +10 +20, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, GoldRanX, GoldRanY + 10 + 20, mojibuf, lstrlen(mojibuf));
 
 
 			SelectObject(hdc, blue_thin_1);
@@ -4128,18 +4024,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				450, 400);
 
 			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
-			TextOut(hdc, 280,170, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
 
 
 
 			lstrcpy(mojibuf, TEXT("商品名"));
-			TextOut(hdc, 280, 200 , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("価格"));
-			TextOut(hdc, 280 + 120, 200 , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 120, 200, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("在庫"));
-			TextOut(hdc, 280 + 170, 200 , mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
 
 
 
@@ -4171,7 +4067,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_Shop_weapon_buy || (mode_scene == MODE_Shop_armor_buy ) ) {
+		if (mode_scene == MODE_Shop_weapon_buy || (mode_scene == MODE_Shop_armor_buy)) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -4199,7 +4095,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			BrushPink_set(hdc);
 			Rectangle(hdc, BuySellX + spanX * (shopAct), offsetYtemp1 + 10,
-				BuySellX +40 + spanX * (shopAct), offsetYtemp1 + 60);
+				BuySellX + 40 + spanX * (shopAct), offsetYtemp1 + 60);
 
 
 			lstrcpy(mojibuf, TEXT("買う"));
@@ -4247,7 +4143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 280 + 170, 200, mojibuf, lstrlen(mojibuf));
 
 			lstrcpy(mojibuf, TEXT("所持数"));
-			TextOut(hdc, 280 + 170 +50 , 200, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, 280 + 170 + 50, 200, mojibuf, lstrlen(mojibuf));
 
 
 
@@ -4388,7 +4284,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (hinmoku[temp].Grouptype == kabutoType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
 				}
-				if (hinmoku[temp].Grouptype == tateType ) {
+				if (hinmoku[temp].Grouptype == tateType) {
 					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
 				}
 				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y + 30 + kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
@@ -4398,7 +4294,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell ) {
+		if (mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell) {
 
 			SetBkMode(hdc, OPAQUE);
 			// SetBkMode(hdc, TRANSPARENT);
@@ -4467,15 +4363,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
 
 
-			
 
-////////////// 何かのコピペの境
+
+			////////////// 何かのコピペの境
 
 
 			int spanY = 30;
 			int Y0 = 120;
 
-			
+
 			int itemskip = 0;
 			goukeiItem = 0;
 
@@ -4521,7 +4417,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
 				if (weapon_have_list[idTemp].have_kosuu != 0) {
-				
+
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4544,10 +4440,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// シールドの配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
-			{				
+			{
 				if (shield_have_list[idTemp].have_kosuu != 0) {
 					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
-					
+
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4571,7 +4467,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
 				if (helm_have_list[idTemp].have_kosuu != 0) {
-					
+
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4622,7 +4518,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (1) {
 				for (int temp = 0; temp <= 10; temp = temp + 1) {
-											
+
 
 					int temp2 = temp + pageSyori * 6;
 
@@ -4633,24 +4529,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 
-					
+
 					if (itemTypeHairetu[temp2] == siyouType) {
-						lstrcpy(mojibuf, item_def_list[itemHairetu[temp2 ]].def_name);
+						lstrcpy(mojibuf, item_def_list[itemHairetu[temp2]].def_name);
 					}
 					if (itemTypeHairetu[temp2] == wepoType) {
-						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp2 ]].def_name);
+						lstrcpy(mojibuf, weapon_def_list[itemHairetu[temp2]].def_name);
 					}
 					if (itemTypeHairetu[temp2] == tateType) {
-						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp2 ]].def_name);
+						lstrcpy(mojibuf, shield_def_list[itemHairetu[temp2]].def_name);
 					}
 					if (itemTypeHairetu[temp2] == kabutoType) {
-						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp2 ]].def_name);
+						lstrcpy(mojibuf, helm_def_list[itemHairetu[temp2]].def_name);
 					}
-					TextOut(hdc, 280, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, 280, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
 
 					lstrcpy(mojibuf, TEXT("50G"));
-					TextOut(hdc, 280 + 120, 200 + 30 * (temp+1), mojibuf, lstrlen(mojibuf));
+					TextOut(hdc, 280 + 120, 200 + 30 * (temp + 1), mojibuf, lstrlen(mojibuf));
 
 
 					// 個数欄の背景クリア用
@@ -4692,22 +4588,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			/* カーソル */
 			Rectangle(hdc, BattleComBaseX + (selecting_battle_mainmenu - 1) * 100, BattleComBaseY,
-				BattleComBaseY + 80 + (selecting_battle_mainmenu - 1) * 100, BattleComBaseY +50);
+				BattleComBaseY + 80 + (selecting_battle_mainmenu - 1) * 100, BattleComBaseY + 50);
 
 			/* コマンド */
 			SetBkMode(hdc, TRANSPARENT);
 
 			int comandoOffset = 100;
-			
+
 			for (int j = 0; j <= 3; ++j) {
-				
+
 				if (j == 0) { lstrcpy(mojibuf, TEXT("戦う")); }
 				if (j == 1) { lstrcpy(mojibuf, TEXT("逃げる")); }
 				if (j == 2) { lstrcpy(mojibuf, TEXT("未定1")); }
 				if (j == 3) { lstrcpy(mojibuf, TEXT("未定2")); }
 
 				TextOut(hdc, BattleComBaseX + j * comandoOffset, BattleComBaseY, mojibuf, lstrlen(mojibuf));
-			}		
+			}
 
 			draw_battle_common_after(hdc); // ステータス
 		}
@@ -4718,18 +4614,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mode_scene == MODE_BATTLE_NOW) {
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
-			
+
 
 			// 「○○の攻撃！」を表示
 			// actionOrder[globalTempA]
 			// int ActVal = partyNarabijyun[globalTempA];
 
-			
-			int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]] ;
+
+			int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
 
 			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
 				if (ActNaraGrob <= partyNinzuDone - 1) {
-					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[ActNaraGrob].heros_name );
+					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[ActNaraGrob].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -4761,7 +4657,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			if (ActNaraGrob >= partyNinzuDone) {
-				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));				
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));
 				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 				draw_battle_HeroDamage(hdc);
@@ -4770,17 +4666,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-			int debugMonitorX = 30; int debugMonitorY = 400 - 300; 
+			int debugMonitorX = 30; int debugMonitorY = 400 - 300;
 			int MonitorPerY = FontYoffset; // = 30;
 
 
 			for (int j = 0; j <= 2; ++j) {
 
-				
+
 				if (j == 0) { _stprintf_s(mojibuf, TEXT("%d %s"), ActNaraGrob, TEXT("ActNaraGrob")); }
 				if (j == 1) { _stprintf_s(mojibuf, TEXT("%d %s"), globalTempA, TEXT("globalTempA")); }
 				if (j == 2) { _stprintf_s(mojibuf, TEXT("%d %s"), timerFlag, TEXT("timerFlag")); }
-				
+
 				TextOut(hdc, debugMonitorX, debugMonitorY + MonitorPerY * j, mojibuf, lstrlen(mojibuf));
 			}
 
@@ -4817,7 +4713,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, BattleWinTextBaseX, BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d  EXP"), monster_def_list[encount_monters_id - 1].mon_exp);
-			TextOut(hdc, BattleWinTextBaseX + 90 , BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
+			TextOut(hdc, BattleWinTextBaseX + 90, BattleWinTextBaseY + WinTextOffsetPerY, mojibuf, lstrlen(mojibuf));
 
 
 			lstrcpy(mojibuf, TEXT("金"));
@@ -4825,17 +4721,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d  G"), monster_def_list[encount_monters_id - 1].mon_gold);
 			TextOut(hdc, BattleWinTextBaseX + 90, BattleWinTextBaseY + WinTextOffsetPerY * 2, mojibuf, lstrlen(mojibuf));
-		
-		
-		
-		
+
+
+
+
 			if (gekiha_tekiSuu >= tekiSuu) {
 				lstrcpy(mojibuf, TEXT("このエリアの敵をすべて倒した。"));
 				TextOut(hdc, battleMassBaseX, battleMassBaseY + 50, mojibuf, lstrlen(mojibuf));
 
 			}
-		
-		
+
+
 		}
 
 
@@ -4906,9 +4802,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								if (j == 1) { where_map = henkan; }
 								if (j == 2) { chara_x = henkan; }
 								if (j == 3) { chara_y = henkan; }
-								if (j == 4) { 
+								if (j == 4) {
 									partyNinzuDone = henkan;
-									
+
 									fgets(buffer1, 150, fp1);
 									strncpy(str1, strtok(buffer1, ":"), 150);
 									strncpy(str2, strtok(NULL, ":"), 150);
@@ -4916,7 +4812,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									// 区切り
 									for (int temp = 0; temp <= 5; temp = temp + 1) {
-										
+
 										// パーティ加入キャラ以外はフラグをゼロにセットさせるため
 										heros_def_list[temp].PartyIn = 0;
 									}
@@ -4928,7 +4824,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 										heros_def_list[partyNarabijyun[temp]].PartyIn = 1;
 
-										if (temp == partyNinzuDone -1 ) { break; }
+										if (temp == partyNinzuDone - 1) { break; }
 
 										fgets(buffer1, 150, fp1);
 										strncpy(str1, strtok(buffer1, ":"), 150);
@@ -4990,7 +4886,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 								}
 								if (j == 5) {
-									
+
 									for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
 										heros_def_list[partyNarabijyun[temp]].heros_hp_max = henkan;
 
@@ -5031,10 +4927,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 									int statsLimit = 5;
-									for (int subtemp = 0; subtemp <= statsLimit -1; subtemp = subtemp + 1) {
+									for (int subtemp = 0; subtemp <= statsLimit - 1; subtemp = subtemp + 1) {
 										for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 											// 登録仲間のキャラHPのロード。一部はパーティと重複。
-											
+
 											if (subtemp == 0) {
 												// 登録仲間のキャラHPのロード。一部はパーティと重複。
 												heros_def_list[temp].heros_hp = henkan;
@@ -5067,7 +4963,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 										}	// for tourokunakama end	
 
-										if (subtemp == statsLimit -1) { break; } // この行も変化してるのを忘れるな
+										if (subtemp == statsLimit - 1) { break; } // この行も変化してるのを忘れるな
 
 										fgets(buffer1, 150, fp1);
 										strncpy(str1, strtok(buffer1, ":"), 150);
@@ -5080,8 +4976,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 								}
 								if (j == 6) { your_money = henkan; }
-								if (j == 7) { 
-									
+								if (j == 7) {
+
 									int LoopLimit; // これはループ処理用の変数。for文の2項目で使う
 
 									int itemTourokuSuu = 3;// 「なし」も含める
@@ -5094,8 +4990,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 									for (int subtemp = 0; subtemp <= itemTypeTotal - 1; subtemp = subtemp + 1) {
 
-										if (subtemp == 0) {										
-											LoopLimit = itemTourokuSuu;									
+										if (subtemp == 0) {
+											LoopLimit = itemTourokuSuu;
 										}
 										if (subtemp == 1) {
 											LoopLimit = bukiTourokuSuu;
@@ -5127,15 +5023,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 												// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
 												// 兜個数のロード
 												helm_have_list[temp].have_kosuu = henkan;
-																								
+
 												readEndFlag = 1;
 											}
-											
 
-											if ((temp == LoopLimit - 1) &&	(subtemp == itemTypeTotal - 1) && (readEndFlag==1)) {
+
+											if ((temp == LoopLimit - 1) && (subtemp == itemTypeTotal - 1) && (readEndFlag == 1)) {
 												// デバッグ用のメッセージ
 												//MessageBox(NULL, TEXT("break in"), TEXT("メッセージ"), MB_OK);
-												break; 
+												break;
 											}
 
 											fgets(buffer1, 150, fp1);
@@ -5143,14 +5039,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 											strncpy(str2, strtok(NULL, ":"), 150);
 											henkan = atoi(str2);
 
-										}		
+										}
 
 									} // for subtemp end
 
 
-																	
+
 								} // if j7 end
-								
+
 
 								if (j == 7) { break; }
 
@@ -5276,8 +5172,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					chara_x = start_x;
 					chara_y = start_y;
 
-					before_chara_x = start_x ; // 退却処理で1歩前に戻るときに使う。
-					before_chara_x = start_y ;
+					before_chara_x = start_x; // 退却処理で1歩前に戻るときに使う。
+					before_chara_x = start_y;
 
 
 					_stprintf_s(mojibuf, TEXT("%s %s"), TEXT("俺の名は"), heros_def_list[0].heros_name);
@@ -5345,7 +5241,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 
-				// メニュー画面に遷移
+			// メニュー画面に遷移
 			case 'X':
 
 			{
@@ -5503,7 +5399,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 							// heros_def_list[partyNarabijyun[j]].heros_name
-							fprintf(fp2, "パーティ人数: %d \n", partyNinzuDone );
+							fprintf(fp2, "パーティ人数: %d \n", partyNinzuDone);
 							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
 								fprintf(fp2, "パーティ %d 人目のID: %d \n", temp + 1, partyNarabijyun[temp]);
 							}
@@ -5514,8 +5410,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							}
 
 							// ロードの都合により、HPのforは最大HPのforとは統合しないこと。
-							for (int temp = 0; temp <= partyNinzuDone-1; ++temp) {
-								fprintf(fp2, "パーティ内キャラ %d 番目の現HP: %d \n", temp+1 , heros_def_list[partyNarabijyun[temp]].heros_hp);
+							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
+								fprintf(fp2, "パーティ内キャラ %d 番目の現HP: %d \n", temp + 1, heros_def_list[partyNarabijyun[temp]].heros_hp);
 							}
 
 							for (int temp = 0; temp <= partyNinzuDone - 1; ++temp) {
@@ -5561,7 +5457,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							// アイテム類の所持数
 
-									
+
 							// 使用品の所持数
 							for (int temp = 0; temp <= 3 - 1; ++temp) {
 								WideCharToMultiByte(CP_ACP, 0, item_def_list[temp].def_name, -1, aaa, sizeof(aaa), NULL, NULL);
@@ -5671,7 +5567,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 1) {
 					//MessageBox(NULL, TEXT("消耗品とか。"), TEXT("キーテスト"), MB_OK);
 
-					selecting_item = 1;					
+					selecting_item = 1;
 					selecting_item_x = ((selecting_item - 1) % 2) + 1;
 					selecting_item_y = ((selecting_item - 1) / 2) + 1;
 
@@ -5767,23 +5663,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}
 
-		
 
 
-		if ((mode_scene == MODE_ITEM_MENU_FRONT || mode_scene == MODE_ITEMweapon_MENU_FRONT )&& key_remain > 0) {
-			
+
+		if ((mode_scene == MODE_ITEM_MENU_FRONT || mode_scene == MODE_ITEMweapon_MENU_FRONT) && key_remain > 0) {
+
 			// 矢印キーの入力前後でカーソルが同じ位置のままだったら、画面を更新しないための処理
-			selecting_itemBefore = selecting_item ;
+			selecting_itemBefore = selecting_item;
 
 			switch (wParam)
 			{
 
 			case 'Z':
 			{
-	
-				whatuse = itemHairetu[selecting_item -1] ; // 
 
-				
+				whatuse = itemHairetu[selecting_item - 1]; // 
+
+
 
 				key_remain = 0;
 
@@ -5791,9 +5687,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (mode_scene == MODE_ITEM_MENU_FRONT) {
 					mode_scene = MODE_ITEM_WHOM_BACK;; // 		
 				}
-					
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
 
 			} //caseZ　の終わり
 
@@ -5849,7 +5745,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_ITEM_WHOM_FRONT && key_remain > 0) {
 
-			int tempVal ;
+			int tempVal;
 
 			switch (wParam)
 			{
@@ -5865,41 +5761,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatuse == 1) {
 
 
-					tempVal = partyNarabijyun[whomTargetID] ;
-					
+					tempVal = partyNarabijyun[whomTargetID];
+
 					if (heros_def_list[tempVal].heros_hp < heros_def_list[tempVal].heros_hp_max) {
-						if (item_have_list[whatuse ].have_kosuu > 0) {
+						if (item_have_list[whatuse].have_kosuu > 0) {
 							heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp + 5;
-							
+
 							if (heros_def_list[tempVal].heros_hp > heros_def_list[tempVal].heros_hp_max) {
 								heros_def_list[tempVal].heros_hp = heros_def_list[tempVal].heros_hp_max;
 							}
 
-							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
+							item_have_list[whatuse].have_kosuu = item_have_list[whatuse].have_kosuu - 1;
 
-						}					
-						
+						}
+
 						item_have_list[0].have_kosuu = 0;
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
-					}					
+					}
 				}
 
 
 				// 毒消しの効果
 				if (whatuse == 2) {
-					
+
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
 					if (heros_def_list[whomTargetID].heros_hp < heros_def_list[whomTargetID].heros_hp_max) {
 
-						if (item_have_list[whatuse ].have_kosuu > 0) {
+						if (item_have_list[whatuse].have_kosuu > 0) {
 							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 1;
 
 							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
 								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
 							}
 
-							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
+							item_have_list[whatuse].have_kosuu = item_have_list[whatuse].have_kosuu - 1;
 
 						}
 
@@ -5911,27 +5807,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 
-	
+
 				// 不死鳥の尾の効果
 				if (whatuse == 3) {
-				
-						heros_def_list[whomTargetID].heros_HP0_flag = 0;
 
-							heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 3;
+					heros_def_list[whomTargetID].heros_HP0_flag = 0;
 
-							//MessageBox(NULL, TEXT("いまココaaaa"), TEXT("メッセージ"), MB_OK);
+					heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp + 3;
 
-							
-
-							if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
-								heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
-							}
-
-							item_have_list[whatuse ].have_kosuu = item_have_list[whatuse ].have_kosuu - 1;
+					//MessageBox(NULL, TEXT("いまココaaaa"), TEXT("メッセージ"), MB_OK);
 
 
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
+
+					if (heros_def_list[whomTargetID].heros_hp > heros_def_list[whomTargetID].heros_hp_max) {
+						heros_def_list[whomTargetID].heros_hp = heros_def_list[whomTargetID].heros_hp_max;
+					}
+
+					item_have_list[whatuse].have_kosuu = item_have_list[whatuse].have_kosuu - 1;
+
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
 
 
 				}
@@ -5949,7 +5845,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//アイテム選択画面に戻る
 			{
 				filterFlag = 0;
-				mode_scene = MODE_ITEM_MENU_BACK ;
+				mode_scene = MODE_ITEM_MENU_BACK;
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -6114,7 +6010,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 				mode_scene = MODE_EQUIP_EDIT2;
-					
+
 				if (whatedit == 0) {
 					mode2_scene = MODE2_EQUIP_HAND1;
 				}
@@ -6371,7 +6267,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				// 装備内容の更新。
 				heros_def_list[partyNarabijyun[whomTargetID]].heros_weapon1 = 0; // 素手はIDが0番なので。
-				
+
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
 
@@ -6395,7 +6291,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					whatedit2 = 0;
 				}
 
-				
+
 				else if (whatedit2 < 0) {
 					whatedit2 = 0;
 				}
@@ -6421,8 +6317,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whatedit2 >= 6) {
 					whatedit2 = 6;
 				}
-				if (whatedit2 >= goukeiItem-1 && goukeiItem >= 1 ) {
-					whatedit2 = goukeiItem-1;
+				if (whatedit2 >= goukeiItem - 1 && goukeiItem >= 1) {
+					whatedit2 = goukeiItem - 1;
 				}
 				if (goukeiItem == 0) {
 					whatedit2 = 0;
@@ -6482,18 +6378,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					int tempYado;
 					// partyNinzuDone
-					
-					
+
+
 					int aaaa = 0;
-							
-					for (aaaa = 0; aaaa <= partyNinzuDone - 1 ; aaaa = aaaa + 1) {
+
+					for (aaaa = 0; aaaa <= partyNinzuDone - 1; aaaa = aaaa + 1) {
 
 						tempYado = partyNarabijyun[aaaa];
 						heros_def_list[tempYado].heros_hp = heros_def_list[tempYado].heros_hp_max;
 						// heros_def_list[tempYado].heros_mp = heros_def_list[tempYado].heros_mp_max;
 
 					}
-				
+
 					// mode_scene = MODE_MAP;
 
 					// mode_scene = MODE_Guild_Main;
@@ -6603,7 +6499,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		} // if タウンの終わり
 
 
-		
+
 		if (mode_scene == MODE_Shop_Main && key_remain > 0) {
 
 
@@ -6618,7 +6514,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 武器屋
 				if (whomTargetID == 0) {
 					shopAct = 0;
-					mode_scene = MODE_Shop_weapon_main; 
+					mode_scene = MODE_Shop_weapon_main;
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -6628,9 +6524,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 防具や
 				if (whomTargetID == 1) {
 					// MessageBox(NULL, TEXT(" 防具屋にいる。"), TEXT("キーテスト"), MB_OK);
-					
+
 					shopAct = 0;
-					mode_scene = MODE_Shop_armor_main ; // 未実装なので、
+					mode_scene = MODE_Shop_armor_main; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -6639,7 +6535,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 装飾品
 				if (whomTargetID == 2) {
 
-					mode_scene = MODE_Shop_akusesari_main ; // 未実装なので、
+					mode_scene = MODE_Shop_akusesari_main; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -6651,7 +6547,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// 道具
 				if (whomTargetID == 3) {
 					MessageBox(NULL, TEXT(" 道具屋にいる。"), TEXT("キーテスト"), MB_OK);
-					mode_scene = MODE_Shop_item_main ; // 未実装なので、
+					mode_scene = MODE_Shop_item_main; // 未実装なので、
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
@@ -6664,7 +6560,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// MessageBox(NULL, TEXT(" 「出る」にいる。"), TEXT("キーテスト"), MB_OK);
 
 					whomTargetID = 0;
-					whomCHARA = whomTargetID  + 1;
+					whomCHARA = whomTargetID + 1;
 
 
 					mode_scene = MODE_TOWN;
@@ -6751,7 +6647,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if ((mode_scene == MODE_Shop_weapon_main || mode_scene == MODE_Shop_armor_main ) && key_remain > 0) {
+		if ((mode_scene == MODE_Shop_weapon_main || mode_scene == MODE_Shop_armor_main) && key_remain > 0) {
 			key_remain = 0;
 
 
@@ -6824,7 +6720,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				whomTargetID2 = whomTargetID2 + 1;
 
 				if (whomTargetID2 >= 3) {
-					whomTargetID2 =  3;
+					whomTargetID2 = 3;
 				}
 				else if (whomTargetID2 < 0) {
 					whomTargetID2 = 0;
@@ -6860,7 +6756,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if ((mode_scene == MODE_Shop_weapon_buy || mode_scene == MODE_Shop_armor_buy)&& key_remain > 0) {
+		if ((mode_scene == MODE_Shop_weapon_buy || mode_scene == MODE_Shop_armor_buy) && key_remain > 0) {
 			key_remain = 0;
 
 			// MessageBox(NULL, TEXT("いま買うルーチン"), TEXT("キーテスト"), MB_OK);
@@ -6893,7 +6789,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
-			
+
 			}
 			break;
 
@@ -6973,31 +6869,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				int temp2 = whomTargetID + pageSyori * 6;
 
-					// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
-					// mode_scene = MODE_Shop_Main;
-					
-					sinamonoList = 1;
-					// 売る処理
+				// MessageBox(NULL, TEXT("なかルーチン"), TEXT("キーテスト"), MB_OK);
+				// mode_scene = MODE_Shop_Main;
 
-					if (itemTypeHairetu[temp2] == siyouType) {
-						item_have_list[itemHairetu[temp2]].have_kosuu = item_have_list[itemHairetu[temp2]].have_kosuu - 1;
-					}
-					if (itemTypeHairetu[temp2] == wepoType) {
-						weapon_have_list[itemHairetu[temp2]].have_kosuu = weapon_have_list[itemHairetu[temp2]].have_kosuu - 1;
-					}
-					if (itemTypeHairetu[temp2] == tateType) {
-						shield_have_list[itemHairetu[temp2]].have_kosuu = shield_have_list[itemHairetu[temp2]].have_kosuu - 1;
-					}
-					if (itemTypeHairetu[temp2] == kabutoType) {
-						helm_have_list[itemHairetu[temp2]].have_kosuu = helm_have_list[itemHairetu[temp2]].have_kosuu - 1;
-					}
+				sinamonoList = 1;
+				// 売る処理
+
+				if (itemTypeHairetu[temp2] == siyouType) {
+					item_have_list[itemHairetu[temp2]].have_kosuu = item_have_list[itemHairetu[temp2]].have_kosuu - 1;
+				}
+				if (itemTypeHairetu[temp2] == wepoType) {
+					weapon_have_list[itemHairetu[temp2]].have_kosuu = weapon_have_list[itemHairetu[temp2]].have_kosuu - 1;
+				}
+				if (itemTypeHairetu[temp2] == tateType) {
+					shield_have_list[itemHairetu[temp2]].have_kosuu = shield_have_list[itemHairetu[temp2]].have_kosuu - 1;
+				}
+				if (itemTypeHairetu[temp2] == kabutoType) {
+					helm_have_list[itemHairetu[temp2]].have_kosuu = helm_have_list[itemHairetu[temp2]].have_kosuu - 1;
+				}
 
 
-				
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
 
-				
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+
 			}
 			break;
 
@@ -7032,8 +6928,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				if (whomTargetID >= goukeiItem -1) {
-					whomTargetID = goukeiItem -1;
+				if (whomTargetID >= goukeiItem - 1) {
+					whomTargetID = goukeiItem - 1;
 				}
 				else if (whomTargetID < 0) {
 					whomTargetID = 0;
@@ -7043,9 +6939,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					//MessageBox(NULL, TEXT("ページ送り処理の調査テスト"), TEXT("キーテスト"), MB_OK);
 					pageSyori = 1;
 					whomTargetID = 0;
-				} 
-				
-				
+				}
+
+
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -7067,7 +6963,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					pageSyori = pageSyori - 1;
 					whomTargetID = 5;
 				}
-				else if ((pageSyori ==0) && (whomTargetID < 0)) {
+				else if ((pageSyori == 0) && (whomTargetID < 0)) {
 					pageSyori = 0;
 					whomTargetID = 0;
 				}
@@ -7102,135 +6998,135 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 
 
-	
 
-					if (uwadumeFlag == 0) {
 
-						if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
-						// こっちはパーティ側の上書き用
-							if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
+				if (uwadumeFlag == 0) {
 
-								heros_def_list[whomCHARA - 1].PartyIn = 1;
+					if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
+					// こっちはパーティ側の上書き用
+						if (heros_def_list[whomCHARA - 1].PartyIn == 0) {
 
-								// 仕様変更により、順番を変えてもバグらない。
-								// 下記の順序を守ること・・・だった。守らないとバグだった。
-								partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
-								// 人数の更新
-								partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
-								hikaeNinzu = hikaeNinzu - 1;
+							heros_def_list[whomCHARA - 1].PartyIn = 1;
 
-								akiHairetu[0] = akiHairetu[1];
+							// 仕様変更により、順番を変えてもバグらない。
+							// 下記の順序を守ること・・・だった。守らないとバグだった。
+							partyNarabijyun[akiHairetu[0]] = whomCHARA - 1; // 先に代入
+							// 人数の更新
+							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+							hikaeNinzu = hikaeNinzu - 1;
 
-								uwagaki = 1;
+							akiHairetu[0] = akiHairetu[1];
 
-								akikosuu = akikosuu - 1;
+							uwagaki = 1;
 
-								mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+							akikosuu = akikosuu - 1;
 
-								InvalidateRect(hWnd, NULL, FALSE);
-								UpdateWindow(hWnd);
-							}
-
-						}
-
-						if (akikosuu <= 0) {
-
-							mode_scene = MODE_Guild_Main;
+							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
 
 							InvalidateRect(hWnd, NULL, FALSE);
 							UpdateWindow(hWnd);
 						}
 
+					}
 
-						if (whomTargetIDhikae == tourokuNakama + 1) {
-							// partyNinzuDone = partyNinzuDone -1;
+					if (akikosuu <= 0) {
 
-							uwagaki = 1;
+						mode_scene = MODE_Guild_Main;
 
-							mode_scene = MODE_Guild_Remove;
-						}
-
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
 					}
 
 
+					if (whomTargetIDhikae == tourokuNakama + 1) {
+						// partyNinzuDone = partyNinzuDone -1;
 
-					if (uwadumeFlag == 1) {
+						uwagaki = 1;
 
-						// パーティ加入すると控え人数が変わるので、移動先モード判定は先に行う必要あり。
-						if (whomCHARA == hikaeNinzu+1 ) {
-
-							uwagaki = 1;
-
-							mode_scene = MODE_Guild_Remove;
-
-
-							break; // 下記の加入モードをbreakで省略しないと行けないので、ここにbreak
-						}
-
-
-						// 以下、メインモード。
-
-						if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
-						// こっちはパーティ側の上書き用
-							if (heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn == 0) {
-
-								heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn = 1;
-
-								// 仕様変更により、順番を変えてもバグらない。
-								// 下記の順序を守ること・・・だった。守らないとバグだった。
-								partyNarabijyun[akiHairetu[0]] = hikaeNarabijyun[whomCHARA - 1]; // 先に代入
-								// 人数の更新
-								partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
-
-
-								hikaeNinzu = hikaeNinzu - 1;
-								
-
-
-								akiHairetu[0] = akiHairetu[1];
-
-								uwagaki = 1;
-
-								akikosuu = akikosuu - 1;
-
-								mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
-
-								InvalidateRect(hWnd, NULL, FALSE);
-								UpdateWindow(hWnd);
-							}
-						}
-
-
-						if (akikosuu <= 0) {
-
-							mode_scene = MODE_Guild_Main;
-
-							InvalidateRect(hWnd, NULL, FALSE);
-							UpdateWindow(hWnd);
-						}
-
-
-						// ギルド突入時にも処理しているが、突入処理はここでは不要なので、こっちでも別途、実装。
-						// 控えメンバー側のリスト描画
-						hikaeKeisan();
-
-
-
-
+						mode_scene = MODE_Guild_Remove;
 					}
-				
 
-									/*
-				
-
-				if (whomTargetIDhikae == tourokuNakama+1 ) {			
-					// partyNinzuDone = partyNinzuDone -1;
-
-					uwagaki = 1;
-					
-					mode_scene = MODE_Guild_Remove;
 				}
-								*/
+
+
+
+				if (uwadumeFlag == 1) {
+
+					// パーティ加入すると控え人数が変わるので、移動先モード判定は先に行う必要あり。
+					if (whomCHARA == hikaeNinzu + 1) {
+
+						uwagaki = 1;
+
+						mode_scene = MODE_Guild_Remove;
+
+
+						break; // 下記の加入モードをbreakで省略しないと行けないので、ここにbreak
+					}
+
+
+					// 以下、メインモード。
+
+					if (akikosuu >= 1 && whomCHARA - 1 <= tourokuNakama) {  // パーティ側の空き個数
+					// こっちはパーティ側の上書き用
+						if (heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn == 0) {
+
+							heros_def_list[hikaeNarabijyun[whomCHARA - 1]].PartyIn = 1;
+
+							// 仕様変更により、順番を変えてもバグらない。
+							// 下記の順序を守ること・・・だった。守らないとバグだった。
+							partyNarabijyun[akiHairetu[0]] = hikaeNarabijyun[whomCHARA - 1]; // 先に代入
+							// 人数の更新
+							partyNinzuTemp = partyNinzuTemp + 1; // あとから人数を加算
+
+
+							hikaeNinzu = hikaeNinzu - 1;
+
+
+
+							akiHairetu[0] = akiHairetu[1];
+
+							uwagaki = 1;
+
+							akikosuu = akikosuu - 1;
+
+							mode_scene = MODE_Guild_Responce; // レスポンス中に空き配列の計算をするので残すこと
+
+							InvalidateRect(hWnd, NULL, FALSE);
+							UpdateWindow(hWnd);
+						}
+					}
+
+
+					if (akikosuu <= 0) {
+
+						mode_scene = MODE_Guild_Main;
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+					}
+
+
+					// ギルド突入時にも処理しているが、突入処理はここでは不要なので、こっちでも別途、実装。
+					// 控えメンバー側のリスト描画
+					hikaeKeisan();
+
+
+
+
+				}
+
+
+				/*
+
+
+if (whomTargetIDhikae == tourokuNakama+1 ) {
+	// partyNinzuDone = partyNinzuDone -1;
+
+	uwagaki = 1;
+
+	mode_scene = MODE_Guild_Remove;
+}
+				*/
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -7241,7 +7137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'X':
 			{
-				key_remain = 0; 
+				key_remain = 0;
 
 
 				int skip = 0;
@@ -7260,7 +7156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 
 					if (partyNarabijyun[temp] < 0) {
-						skip = skip + 1; 
+						skip = skip + 1;
 					}
 				}
 
@@ -7276,26 +7172,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 			break;
-			
+
 			case VK_UP:
 			{
 
-				
 
-					// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
-					whomCHARA = whomCHARA - 1;
 
-					if (whomCHARA > tourokuNakama + 2) {
-						whomCHARA = tourokuNakama + 2;
-					}
-					else if (whomCHARA < 1) {
-						whomCHARA = 1;
-					}
-					whomTargetIDhikae = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+				// MessageBox(NULL, TEXT("上が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA - 1;
 
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-				
+				if (whomCHARA > tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetIDhikae = whomCHARA - 1; // 描画で使うのでhikae は残すこと。
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
 
 
 			}
@@ -7305,19 +7201,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_DOWN:
 			{
 
-					// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
-					whomCHARA = whomCHARA + 1;
+				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
+				whomCHARA = whomCHARA + 1;
 
-					if (whomCHARA >= tourokuNakama + 2) {
-						whomCHARA = tourokuNakama + 2;
-					}
-					else if (whomCHARA < 1) {
-						whomCHARA = 1;
-					}
-					whomTargetIDhikae = whomCHARA - 1;
+				if (whomCHARA >= tourokuNakama + 2) {
+					whomCHARA = tourokuNakama + 2;
+				}
+				else if (whomCHARA < 1) {
+					whomCHARA = 1;
+				}
+				whomTargetIDhikae = whomCHARA - 1;
 
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
 
 
 
@@ -7374,7 +7270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-		if (mode_scene == MODE_Guild_Responce && key_remain > 0)  {
+		if (mode_scene == MODE_Guild_Responce && key_remain > 0) {
 
 			switch (wParam)
 			{
@@ -7416,7 +7312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case 'Z':
 			{
-				if (uwadumeFlag == 0){
+				if (uwadumeFlag == 0) {
 					key_remain = 0;
 
 
@@ -7438,7 +7334,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
-		
+
 				}
 
 
@@ -7638,11 +7534,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					if (selecting_battle_mainmenu == 2)
 					{
 						// MessageBox(NULL, TEXT("逃亡（開発中）"), TEXT("戦闘テスト"), MB_OK);
-					
+
 
 						desti_x = before_chara_x;
 						desti_y = before_chara_y;
-					
+
 						chara_x = before_chara_x;
 						chara_y = before_chara_y;
 
@@ -7653,17 +7549,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 						mode_scene = MODE_MAP;
-					
+
 
 
 
 						InvalidateRect(hWnd, NULL, FALSE);
 						UpdateWindow(hWnd);
-					
-					
-					
-					
-					
+
+
+
+
+
 					}
 
 					if (selecting_battle_mainmenu == 3)
@@ -7719,57 +7615,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_BATTLE_WIN) {
-		//	MessageBox(NULL, TEXT("応急処置のカッコ内"), TEXT("戦闘テスト"), MB_OK);
-	
+			//	MessageBox(NULL, TEXT("応急処置のカッコ内"), TEXT("戦闘テスト"), MB_OK);
+
 			key_remain = 1; // バグの応急処置
 			// 応急処置できた
 
 		}
 		if (mode_scene == MODE_BATTLE_WIN && key_remain > 0) {
 
-//			MessageBox(NULL, TEXT("ばとうぃんのカッコ内"), TEXT("戦闘テスト"), MB_OK);
-			// 入れる
+			//			MessageBox(NULL, TEXT("ばとうぃんのカッコ内"), TEXT("戦闘テスト"), MB_OK);
+						// 入れる
 
 			switch (wParam)
 
-					case 'Z':
-						key_remain = 0;
+	case 'Z':
+		key_remain = 0;
 
-						mode_scene = MODE_MAP;
-//						MessageBox(NULL, TEXT(" MODE_BATTLE_WINのマップ遷移にいる。"), TEXT("キーテスト"), MB_OK);
+		mode_scene = MODE_MAP;
+		//						MessageBox(NULL, TEXT(" MODE_BATTLE_WINのマップ遷移にいる。"), TEXT("キーテスト"), MB_OK);
 
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-						break;
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
+		break;
 		}
 
 
-			key_remain = 1;
+		key_remain = 1;
 
-			return 0;
+		return 0;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-		return 0;
 	}
+	return 0;
+}
 
 
-	// バージョン情報ボックスのメッセージ ハンドラーです。
-	INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+// バージョン情報ボックスのメッセージ ハンドラーです。
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
 	{
-		UNREFERENCED_PARAMETER(lParam);
-		switch (message)
-		{
-		case WM_INITDIALOG:
-			return (INT_PTR)TRUE;
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
 
-		case WM_COMMAND:
-			if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-			{
-				EndDialog(hDlg, LOWORD(wParam));
-				return (INT_PTR)TRUE;
-			}
-			break;
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
 		}
-		return (INT_PTR)FALSE;
+		break;
 	}
+	return (INT_PTR)FALSE;
+}
