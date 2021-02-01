@@ -5661,6 +5661,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (selecting_mainmenu == 1) {
 					//MessageBox(NULL, TEXT("消耗品とか。"), TEXT("キーテスト"), MB_OK);
 
+					selecting_item = 1;
+					selecting_item_x = ((selecting_item - 1) % 2) + 1;
+					selecting_item_y = ((selecting_item - 1) / 2) + 1;
+
 					mode_scene = MODE_ITEM_MENU_BACK; // MODE_ITEM_MENU_BACK;
 
 					InvalidateRect(hWnd, NULL, FALSE);
@@ -5672,6 +5676,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (selecting_mainmenu == 2) {
 					// MessageBox(NULL, TEXT("装備品の確認。未実装。装備コマンドとは別"), TEXT("テスト"), MB_OK);
+					selecting_item = 1;
+					selecting_item_x = ((selecting_item - 1) % 2) + 1;
+					selecting_item_y = ((selecting_item - 1) / 2) + 1;
+
 
 					mode_scene = MODE_ITEMweapon_MENU_BACK;
 
