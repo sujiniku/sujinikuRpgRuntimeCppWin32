@@ -4171,7 +4171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_Shop_weapon_buy) {
+		if (mode_scene == MODE_Shop_weapon_buy || (mode_scene == MODE_Shop_armor_buy ) ) {
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -4179,7 +4179,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BrushPink_set(hdc);
 
 			lstrcpy(mojibuf, TEXT("武器屋テスト買う。"));
-			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+			//TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
 
@@ -4282,25 +4282,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			struct sinaList hinmoku[5]; // 構造体配列の宣言
 
 
-			// 売り物の定義
-			// 1品目
+			if (mode_scene == MODE_Shop_weapon_buy) {
+				// 売り物の定義
+				// 1品目
+				// strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
+				hinmoku[0].Grouptype = wepoType;
+				hinmoku[0].subID = 1;
+
+				itemHairetu[0] = hinmoku[0].subID;
+				itemTypeHairetu[0] = hinmoku[0].Grouptype;
+
+				// 2品目   
+				hinmoku[1].Grouptype = wepoType;
+				hinmoku[1].subID = 2;
+				//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
+
+
+				// 3品目   
+				hinmoku[2].Grouptype = -99;
+				hinmoku[2].subID = -99;
+			}
+
+			if (mode_scene == MODE_Shop_armor_buy) {
+				// 売り物の定義
+				// 1品目
 			// strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
-			hinmoku[0].Grouptype = wepoType ;
-			hinmoku[0].subID = 1;
-
-			itemHairetu[0] = hinmoku[0].subID;
-			itemTypeHairetu[0] = hinmoku[0].Grouptype;
-
-			// 2品目   
-			hinmoku[1].Grouptype = wepoType ;
-			hinmoku[1].subID = 2;
-			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
+				hinmoku[0].Grouptype = tateType;
+				hinmoku[0].subID = 1;
 
 
-			// 3品目   
-			hinmoku[2].Grouptype = -99;
-			hinmoku[2].subID = -99;
+				// 2品目   
+				hinmoku[1].Grouptype = tateType;
+				hinmoku[1].subID = 2;
+				//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
 
+
+				// 3品目   
+				hinmoku[2].Grouptype = kabutoType;
+				hinmoku[2].subID = 1;
+
+
+				// 4品目   
+				hinmoku[3].Grouptype = kabutoType;
+				hinmoku[3].subID = 2;
+
+
+				// 5品目   
+				hinmoku[4].Grouptype = -99;
+				hinmoku[4].subID = -99;
+			}
 
 
 			goukeiItem = 0;
@@ -4359,7 +4389,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		if (mode_scene == MODE_Shop_weapon_sell) {
+		if (mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell ) {
 
 			SetBkMode(hdc, OPAQUE);
 			// SetBkMode(hdc, TRANSPARENT);
@@ -4431,21 +4461,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 ////////////// 何かのコピペの境
 
-			// BrushBlue_set(hdc);
-			//Rectangle(hdc, 10, 100,
-			//	600, 400);
 
 			int spanY = 30;
 			int Y0 = 120;
 
-			//BrushPink_set(hdc);
-			//Rectangle(hdc, 20 + (selecting_item_x - 1) * 300, Y0 + (selecting_item_y - 1) * spanY,
-			//	250 + (selecting_item_x - 1) * 300, Y0 + spanY + (selecting_item_y - 1) * spanY);
-
-
-			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
-			//	TextOut(hdc, 130, 105, p, lstrlen(p));
-
+			
 			int itemskip = 0;
 			goukeiItem = 0;
 
@@ -4466,16 +4486,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 
 				if (item_have_list[idTemp].have_kosuu != 0) {
-
-					xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, item_def_list[idTemp].def_name);
-					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), item_have_list[idTemp].have_kosuu);
-					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
 
 					goukeiItem = goukeiItem + 1;
 
@@ -4500,19 +4510,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 武器の配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
 			{
-
 				if (weapon_have_list[idTemp].have_kosuu != 0) {
-
-					xcommon = 30 + 300 * floor((idTemp - itemskip - 1) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip - 1) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, weapon_def_list[idTemp].def_name);
-					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), weapon_have_list[idTemp].have_kosuu);
-					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
+				
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4535,22 +4534,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// シールドの配列代入
 			for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
-			{
-				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
+			{				
 				if (shield_have_list[idTemp].have_kosuu != 0) {
 					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
-					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					//lstrcpy(mojibuf, shield_def_list[idTemp].def_name);
-					TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), shield_have_list[idTemp].have_kosuu);
-					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
-
-					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
+					
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4574,19 +4561,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				// MessageBox(NULL, TEXT("テスト22"), TEXT("キーテスト"), MB_OK);
 				if (helm_have_list[idTemp].have_kosuu != 0) {
-					// MessageBox(NULL, TEXT("テストhelm"), TEXT("キーテスト"), MB_OK);
-					xcommon = 30 + 300 * floor((idTemp - itemskip - 1 + LimintTemp) % column);
-					ycommon = 130 + spanY * floor((idTemp - itemskip - 1 + LimintTemp) / column);
-
-					SetBkMode(hdc, TRANSPARENT);
-					lstrcpy(mojibuf, helm_def_list[idTemp].def_name);
-					//TextOut(hdc, xcommon, ycommon, mojibuf, lstrlen(mojibuf));
-
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("x %d"), helm_have_list[idTemp].have_kosuu);
-					// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("test kosuu"));
-
-					//TextOut(hdc, xcommon + 130, ycommon, mojibuf, lstrlen(mojibuf));
-
+					
 					goukeiItem = goukeiItem + 1;
 
 					if (1) {
@@ -4613,6 +4588,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
 			SetBkMode(hdc, OPAQUE);
 
+			// 見出し
 			if (1) {
 				lstrcpy(mojibuf, TEXT("商品名"));
 				TextOut(hdc, 280, 200, mojibuf, lstrlen(mojibuf));
@@ -4688,178 +4664,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 			}
-
-
-
-
-
 		} // sell end
-
-
-
-
-
-		if (mode_scene == MODE_Shop_armor_buy) {
-
-			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
-
-			BrushBlue_set(hdc);
-			BrushPink_set(hdc);
-
-			lstrcpy(mojibuf, TEXT("防具屋テスト買う。"));
-			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
-
-
-
-			int offsetYtemp1 = 100;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 250, 100,
-				450, 150);
-
-
-			int BuySellX = 280;
-			int BuySellY = 120;
-
-			int carsoruHigh = 30;
-			int spanX = 50;
-
-
-
-			BrushPink_set(hdc);
-			Rectangle(hdc, 280 + spanX * (shoptar), offsetYtemp1 + 10,
-				320 + spanX * (shoptar), offsetYtemp1 + 60);
-
-
-			lstrcpy(mojibuf, TEXT("買う"));
-			TextOut(hdc, BuySellX, BuySellY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("売る"));
-			TextOut(hdc, BuySellX + spanX * 1, BuySellY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("中古"));
-			TextOut(hdc, BuySellX + spanX * 2, BuySellY, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("出る"));
-			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
-
-
-			int GoldRanX = 480; int GoldRanY = 50;
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, GoldRanX, GoldRanY,
-				GoldRanX + 120, 110);
-
-			lstrcpy(mojibuf, TEXT("所持金"));
-			TextOut(hdc, GoldRanX, GoldRanY + 10, mojibuf, lstrlen(mojibuf));
-
-
-			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d G"), your_money);
-			TextOut(hdc, GoldRanX, GoldRanY + 10 + 20, mojibuf, lstrlen(mojibuf));
-
-
-			SelectObject(hdc, blue_thin_1);
-			Rectangle(hdc, 250, 170,
-				450, 400);
-
-			lstrcpy(mojibuf, TEXT("ここに商品や所持品が表示されます"));
-			TextOut(hdc, 280, 170, mojibuf, lstrlen(mojibuf));
-
-
-			int koumoku_Y =200;
-
-			lstrcpy(mojibuf, TEXT("商品名"));
-			TextOut(hdc, 280, koumoku_Y, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("価格"));
-			TextOut(hdc, 280 + 120, koumoku_Y, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("在庫"));
-			TextOut(hdc, 280 + 170, koumoku_Y, mojibuf, lstrlen(mojibuf));
-
-			lstrcpy(mojibuf, TEXT("所持数"));
-			TextOut(hdc, 280 + 170 + 50, koumoku_Y, mojibuf, lstrlen(mojibuf));
-
-
-			int kasolOffsetY = 30;
-
-			BrushPink_set(hdc);
-			Rectangle(hdc, 280, koumoku_Y + 60 + kasolOffsetY * (whomTargetID),
-				320 + 40, offsetYtemp1 + 60 + 60 + kasolOffsetY * (whomTargetID));
-
-
-
-			struct sinaList {
-				int Grouptype;
-				int subID;
-			};
-
-			struct sinaList hinmoku[5]; // 構造体配列の宣言
-
-		
-			// 売り物の定義
-			// 1品目
-	        // strcpy_s(  hinmoku[0].ItemName, 10 ,"毒消し"); 
-			hinmoku[0].Grouptype = tateType;
-			hinmoku[0].subID = 1;
-
-
-			// 2品目   
-			hinmoku[1].Grouptype = tateType;
-			hinmoku[1].subID = 2;
-			//strcpy_s( ItemYouso[1][1].ItemName, 10 ,"鉄の剣"); 
-
-
-			// 3品目   
-			hinmoku[2].Grouptype = kabutoType;
-			hinmoku[2].subID = 1;
-
-
-			// 4品目   
-			hinmoku[3].Grouptype = kabutoType;
-			hinmoku[3].subID = 2;
-
-
-			// 5品目   
-			hinmoku[4].Grouptype = -99;
-			hinmoku[4].subID = -99;
-
-			goukeiItem = 0;
-
-			for (int aaa = 0; aaa <= 8; aaa = aaa + 1) {
-				if (hinmoku[aaa].Grouptype == -99) {
-					break;
-				}
-
-				itemHairetu[aaa] = hinmoku[aaa].subID;
-				itemTypeHairetu[aaa] = hinmoku[aaa].Grouptype;
-
-				goukeiItem = goukeiItem + 1;
-			}
-
-
-			for (int temp = 0; temp <= 3; temp = temp + 1) {
-
-				if ( hinmoku[temp].Grouptype == kabutoType) {
-					lstrcpy(mojibuf, helm_def_list[hinmoku[temp].subID].def_name);
-				}
-				if ( hinmoku[temp].Grouptype == tateType) {
-					lstrcpy(mojibuf, shield_def_list[hinmoku[temp].subID].def_name);
-				}
-				TextOut(hdc, 280, koumoku_Y +30+ 30 * temp, mojibuf, lstrlen(mojibuf));
-
-
-				lstrcpy(mojibuf, TEXT("50G"));
-				TextOut(hdc, 280 + 120, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
-
-				if (hinmoku[temp].Grouptype == kabutoType) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), helm_have_list[hinmoku[temp].subID].have_kosuu);
-				}
-				if (hinmoku[temp].Grouptype == tateType) {
-					_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d "), shield_have_list[hinmoku[temp].subID].have_kosuu);
-				}
-				TextOut(hdc, 280 + 100 * 2 + 50, koumoku_Y +30+ kasolOffsetY * temp, mojibuf, lstrlen(mojibuf));
-
-			} // for temp 終わり
-		} // mode 防具buyの終わり
 
 
 
@@ -6036,9 +5841,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				key_remain = 0;
 				whomTargetID = whomCHARA - 1;
 
+				// ここはアイテム使用時の効果
 
-
-
+				// 薬草の効果
 				if (whatuse == 1) {
 
 
@@ -6063,7 +5868,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-
+				// 毒消しの効果
 				if (whatuse == 2) {
 					
 					// MessageBox(NULL, TEXT("いまココ1"), TEXT("メッセージ"), MB_OK);
@@ -6089,6 +5894,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 	
+				// 不死鳥の尾の効果
 				if (whatuse == 3) {
 				
 						heros_def_list[whomTargetID].heros_HP0_flag = 0;
@@ -6940,7 +6746,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (whomTargetID2 == 1) {
 					// MessageBox(NULL, TEXT("売る未実装"), TEXT("キーテスト"), MB_OK);
 
-					mode_scene = MODE_Shop_weapon_sell;
+					if (mode_scene == MODE_Shop_weapon_main) {
+						mode_scene = MODE_Shop_weapon_sell;
+					}
+					if (mode_scene == MODE_Shop_armor_main) {
+						mode_scene = MODE_Shop_armor_sell;
+					}
+
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
