@@ -2965,7 +2965,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	_stprintf_s(p, MAX_LENGTH, TEXT("%s qqqqqqqqqqq"), heros_def_list[0].heros_name);
 				//	TextOut(hdc, 130, 105, p, lstrlen(p));
 
-			int itemskip = 0;
+			
 			goukeiItem = 0;
 
 			
@@ -2999,7 +2999,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 			
-			int LimintTemp = goukeiItem;
+			int LimintTemp = goukeiItem; 
 			goukeiItem = 0;
 
 
@@ -3010,11 +3010,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			int itemIDcount = 0; // for文の外で使うので、消したらダメ
-			itemskip = 0;
+			// itemIDcounは goukeiItem と同内容だが、意味合いが違うので残す。
 
 			// 使用品の配列代入
 			if (ViewFlagItem) {
-				itemskip = 0; // 直前のコードと重複してるけど、順番入れ替えを考えて残す
+				
 				LimintTemp = goukeiItem;
 
 				for (idTemp = 1; idTemp <= 3; idTemp = idTemp + 1)
@@ -3025,21 +3025,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						goukeiItem = goukeiItem + 1;
 
 						if (1) {
-							itemHairetu[idTemp - itemskip-1] = idTemp;
-							itemTypeHairetu[idTemp - itemskip-1] = siyouType;
+							itemHairetu[itemIDcount ] = idTemp;
+							itemTypeHairetu[itemIDcount ] = siyouType;
 							itemIDcount = itemIDcount + 1;
 						}
-					}
-
-					if (item_have_list[idTemp].have_kosuu == 0 && idTemp != 3) {
-						itemskip = itemskip + 1;
-
 					}
 				} // 使用品の配列代入
 			}
 
 			if (ViewFlagWeapon) {
-				itemskip = 0;
+				
 				LimintTemp = goukeiItem;
 
 
@@ -3051,25 +3046,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						goukeiItem = goukeiItem + 1;
 
 						if (1) {
-							itemHairetu[idTemp - itemskip - 1] = idTemp;
-							itemTypeHairetu[idTemp - itemskip - 1] = wepoType;
+							itemHairetu[itemIDcount ] = idTemp;
+							itemTypeHairetu[itemIDcount ] = wepoType;
 							itemIDcount = itemIDcount + 1;
 						}
-					}
-
-					if (weapon_have_list[idTemp].have_kosuu == 0 && idTemp != 2) {
-						itemskip = itemskip + 1;
-
-					}
+					}					
 				} // 武器の配列代入
-
 			}
 
 
 
 			if (ViewFlagShield) {
-
-				itemskip = 0;
+				
 				LimintTemp = goukeiItem;
 
 				// シールドの配列代入
@@ -3081,15 +3069,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						goukeiItem = goukeiItem + 1;
 
 						if (1) {
-							itemHairetu[idTemp - itemskip - 1] = idTemp;
-							itemTypeHairetu[idTemp - itemskip - 1] = tateType;
+							itemHairetu[itemIDcount ] = idTemp;
+							itemTypeHairetu[itemIDcount ] = tateType;
 							itemIDcount = itemIDcount + 1;
 						}
-
-					}
-
-					if (shield_have_list[idTemp].have_kosuu == 0) {
-						itemskip = itemskip + 1;
 
 					}
 				} // シールド
@@ -3099,7 +3082,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (ViewFlagHelm) {
 
-				itemskip = 0;
+				
 				LimintTemp = goukeiItem;
 				// ヘルムの配列代入
 				for (idTemp = 1; idTemp <= 2; idTemp = idTemp + 1)
@@ -3110,22 +3093,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						goukeiItem = goukeiItem + 1;
 
 						if (1) {
-							itemHairetu[idTemp - itemskip-1] = idTemp;
-							itemTypeHairetu[idTemp - itemskip - 1] = kabutoType;
+							itemHairetu[itemIDcount ] = idTemp;
+							itemTypeHairetu[itemIDcount ] = kabutoType;
 							itemIDcount = itemIDcount + 1;
 						}
 
-					}
-
-					if (helm_have_list[idTemp ].have_kosuu == 0) {
-						itemskip = itemskip + 1;
-
-					}
+					}	
 				} // かぶとの配列代入
-
-
 			}
-			itemTypeHairetu[itemIDcount] = -99; // 終了を意味する数。
+
+			itemTypeHairetu[itemIDcount ] = -99; // 終了を意味する数。
 
 
 		
@@ -3253,6 +3230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130 * 2, 300, mojibuf, lstrlen(mojibuf));
 
 
+			itemIDcount = 0;
 		} // end
 
 
