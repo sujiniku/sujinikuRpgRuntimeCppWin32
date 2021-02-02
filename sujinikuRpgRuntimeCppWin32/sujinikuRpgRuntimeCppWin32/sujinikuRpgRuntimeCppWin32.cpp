@@ -712,7 +712,7 @@ static void BrushDarkPink_set(HDC hdc) {
 
 
 
-
+HDC hbackDC;// = CreateCompatibleDC(hdc); // 裏画面用のハンドル
 
 
 void Draw_map(HDC hdc) {
@@ -817,11 +817,44 @@ void Draw_map(HDC hdc) {
 
 
 	// 裏画面から本画面に転送
-	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	if (filterFlag == 0) {
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
+
+
+	if (filterFlag == 1) {
+		if (1) {
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hbackDC);
+
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+			Image image2(L"filter.png");
+
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+		}
+
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
 
 	// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
 
+	if (filterFlag == 2) {
+		if (1) {
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hbackDC);
 
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+			Image image2(L"filter.png");
+
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			// graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+		}
+
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
 
 	/*
 
@@ -960,10 +993,17 @@ static struct heros_def heros_def_list[8];
 
 
 void hikaesai(HDC hdc) {
-
+	filterFlag = 1;
 	Draw_map(hdc); // 応急処置。できれば、hbitmapuをグローバル変数にしたいが、方法が分からない。
 	// もし処理速度に問題が生じるようなら、背景色を（マップ背景描画をやめて）黒に変更。
 
+
+	if (filterFlag) {
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+	}
+
+	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
 
 	/*
 
@@ -1133,7 +1173,7 @@ static void OffScreenBefore(HDC hdc) {
 
 }
 
-HDC hbackDC;// = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+	
 
 HDC hbackDCsave;// = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
 
@@ -2903,7 +2943,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_MAP) {
-
+			filterFlag = 0;
 			//MessageBox(NULL, TEXT("PAINT の if (mode_scene == MODE_MAP )にいる。"), TEXT("キーテスト"), MB_OK);
 
 			// maptableに移動先マップを代入
@@ -3855,6 +3895,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_Guild_Main) {
+			filterFlag = 1;
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -3865,8 +3906,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	Rectangle(hdc, 10, 100,	300, 200);
 
 
+
+
+
+
+			filterFlag = 1;
+
 			hikaesai(hdc);
+
+
+			if(1) {
+
+				// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+				Graphics graphics(hbackDC);
+
+				// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+				Image image2(L"filter.png");
+
+				// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+				graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+			}
+
+
+			BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
 			parsai(hdc);
+
+
+
+
 
 
 			lstrcpy(mojibuf, TEXT("誰を仲間にしますか？ 選んでください。"));
@@ -4574,6 +4643,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int battleMassBaseX = 50; int battleMassBaseY = 410 - 230; // 410 は「windowTempA」
 
 		if (mode_scene == MODE_BATTLE_NOW) {
+			filterFlag = 1;
+
 			draw_battle_common_before(hdc); // 画面全体の背景色など
 
 
