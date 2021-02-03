@@ -105,7 +105,7 @@ int tateType = 2;
 int kabutoType = 3;
 
 
-
+int tempPass = 0;
 
 
 HBITMAP mae_haikei;
@@ -893,6 +893,189 @@ void Draw_map(HDC hdc) {
 }
 
 
+
+
+
+
+
+void Draw_map2(HDC hdc, HDC hbackDC) {
+
+	// 最低限のマップチップ画像のロードは WM_CREATE などで既に行っている。
+
+
+	// ハンドルなどの定義。 static にしたら駄目（表示されなくなる）。
+	//HDC hdc;
+	// HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
+
+	// 中間作業用 （完成しても消したら駄目） static にしたら駄目（表示されなくなる）。
+	HDC hMdc = CreateCompatibleDC(hdc); // 中間作業用ハンドル
+
+	static HBITMAP hbmp; // 中間作業用 // こいつは static にしてもオッケー
+
+
+	// マップサイズの読み込む
+	hbmp = CreateCompatibleBitmap(hdc, 640 + 100, 480 + 100);
+	SelectObject(hbackDC, hbmp); // hbackDCにマップサイズを読み込ませている
+
+
+	// 実際にマップを裏画面に描画開始する
+
+	int x_map = 0; // マップ描画の開始位置 // これは消しちゃ駄目。for文の記述の簡略化のため
+	int y_map = 0;
+	int iTemp;
+
+	for (x_map = 0; x_map <= 9; ++x_map)
+	{
+		for (y_map = 0; y_map <= 6; ++y_map)
+		{
+
+			iTemp = maptable[y_map][x_map] + 1;
+			hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
+
+			SelectObject(hMdc, hbmp);
+			BitBlt(hbackDC, 225 + x_map * 32, 140 + y_map * 32, 32, 32, hMdc, 0, 0, SRCCOPY);
+
+			// DeleteDC(hMdc); // これを入れると、マップが表示されない。
+		}
+	}
+
+
+
+	// 主人公のBMP画像をファイルから読み込む
+
+	int chara_id = 0;
+	if (hero1_direction == upward) {
+		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_up;
+	}
+
+	if (hero1_direction == rightward) {
+		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_right;
+	}
+
+	if (hero1_direction == downward) {
+		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_down;
+	}
+
+	if (hero1_direction == leftward) {
+		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_left;
+	}
+
+
+	SelectObject(hMdc, hbmp); // これを消すと、主人公ドットが表示されない。	
+	BitBlt(hbackDC, 320 + (chara_x - start_x) * 32, 270 + (chara_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+
+
+	// マップ上の他キャラ（主人公以外）のBMP画像をファイルから読み込む
+
+	if (where_map == 1) {
+
+		hbmp = hbmp_what; // ギルドのチップ。
+
+		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
+		BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+
+	}
+
+
+	if (where_map == 2) {
+
+		for (int i = 0; i <= 1; i = i + 1)
+		{
+			if (enemy_alive[i] == 1) {
+				hbmp = hbmp_enemy;
+
+				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
+				BitBlt(hbackDC, 320 + (positionX_enemy[i] - start_x) * 32, 270 + (positionY_enemy[i] - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+			}
+		}
+	}
+
+
+	if (mapTrans_flag_is == 1) {
+
+		hbmp = hbmp_MapTrans;
+		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。
+		BitBlt(hbackDC, 320 + (MapTrans_position_x - start_x) * 32, 270 + (MapTrans_position_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+	}
+
+
+	// 裏画面から本画面に転送
+	if (filterFlag == 0) {
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
+
+
+	if (filterFlag == 1) {
+		if (1) {
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hbackDC);
+
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+			Image image2(L"filter.png");
+
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+		}
+
+		// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
+
+	// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+	if (filterFlag == 2) {
+		if (1) {
+			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
+			Graphics graphics(hbackDC);
+
+			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
+			Image image2(L"filter.png");
+
+			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
+			// graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
+
+		}
+
+		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+	}
+
+	/*
+
+	mae_haikei = hbmp_what;//  (HBITMAP)hbackDC;
+
+	mae_dc = CreateCompatibleDC(hdc); // hbackDC
+
+	SelectObject(hbackDC, mae_haikei);
+	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+	//BitBlt(mae_dc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
+
+
+	// テスト用
+	BitBlt(hdc, 700, 0, 0, 500, mae_dc, 0, 0, SRCCOPY);
+
+
+		*/
+
+
+
+
+
+	//hbmp = NULL; // これで初期化しないとバグり、何故かhbmp_MapTransにhbmp_enemyまたは主人公の向きが入ってる。
+
+
+	// 中間ハンドルからhbmpを解除
+	//SelectObject(hMdc, NULL);
+	//SelectObject(hbackDC, NULL);
+
+	// 不要になった中間物を削除	
+	//DeleteDC(hbackDC);
+	//DeleteDC(hMdc);
+
+	//DeleteObject(hbmp);
+} // draw map2
+
+
 // マップでのカーソル押された時の移動可能の判定
 void check_movable(HWND hWnd) {
 
@@ -994,48 +1177,40 @@ static struct heros_def heros_def_list[8];
 
 void hikaesai(HDC hdc) {
 	filterFlag = 1;
-	Draw_map(hdc); // 応急処置。できれば、hbitmapuをグローバル変数にしたいが、方法が分からない。
+	// Draw_map(hdc); // 応急処置。できれば、hbitmapuをグローバル変数にしたいが、方法が分からない。
 	// もし処理速度に問題が生じるようなら、背景色を（マップ背景描画をやめて）黒に変更。
 
 
-	if (filterFlag) {
-		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-	}
-
-	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-	/*
-
-	mae_dc = CreateCompatibleDC(hdc);
-
-	HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル
-	SelectObject(hbackDC, mae_haikei);
-	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-	// SelectObject(mae_dc , mae_haikei  ); // これを消すと、ドットが表示されない。
-	// // BitBlt(hbackDC, 320 + (MapTrans_position_x - start_x) * 32, 270 + (MapTrans_position_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
-
-	BitBlt(hdc, 0, 0, 700, 500, mae_dc, 0, 0, SRCCOPY);
-		*/
+	Draw_map(hdc);
+	
 
 
 
 	int offsetYtemp1 = 100;
 	SelectObject(hdc, blue_thin_1);
+	if ( mode_scene != MODE_Guild_Main) {
+		BrushDarkBlue_set(hdc);
+	}
 	Rectangle(hdc, 10, offsetYtemp1,
 		offsetYtemp1 + 100, 400);
+
+
 
 	int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
 
 	BrushPink_set(hdc);
+
+	if (mode_scene != MODE_Guild_Main) {
+		BrushDarkPink_set(hdc);
+	}
+
 	Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetIDhikae),
 		150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetIDhikae));
 
 	int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 	int yspan1 = carsoruHigh;
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー543"));
 	TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 	if (uwadumeFlag == 0) {
@@ -1087,7 +1262,7 @@ void hikaesai(HDC hdc) {
 
 
 		// temp == tourokuNakama + 1    に相当
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す555】"));
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す333】"));
 		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip)+120, mojibuf, lstrlen(mojibuf));
 
 
@@ -1133,6 +1308,9 @@ void parsai(HDC hdc) {
 
 	int kasoruHeight = 50;
 	BrushPink_set(hdc);
+	if (mode_scene == MODE_Guild_Main) {
+		BrushDarkPink_set(hdc);
+	}
 
 	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetIDparty),
 		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
@@ -3737,6 +3915,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_TOWN) {
+			filterFlag = 1;
+			Draw_map(hdc);
 
 			BrushBlue_set(hdc);
 			// Rectangle(hdc, 10, 10, 610, 80);
@@ -3823,9 +4003,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// if (mode_scene == MODE_Shop_Main && key_remain > 0) {
 
-
+		
 
 		if (mode_scene == MODE_Shop_Main) {
+			filterFlag = 1;
+			Draw_map(hdc);
 
 			BrushBlue_set(hdc);
 			// Rectangle(hdc, 10, 10, 610, 80);
@@ -3889,6 +4071,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
+			tempPass = whomTargetID;
+
 		}
 
 
@@ -3896,6 +4080,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (mode_scene == MODE_Guild_Main) {
 			filterFlag = 1;
+			// Draw_map(hdc);
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
@@ -3906,35 +4091,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	Rectangle(hdc, 10, 100,	300, 200);
 
 
-
-
-
-
 			filterFlag = 1;
 
 			hikaesai(hdc);
-
-
-			if(1) {
-
-				// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
-				Graphics graphics(hbackDC);
-
-				// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
-				Image image2(L"filter.png");
-
-				// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-				graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
-
-			}
-
-
-			BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
 			parsai(hdc);
-
-
-
 
 
 
@@ -3991,8 +4151,83 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_Shop_weapon_main || mode_scene == MODE_Shop_armor_main) {
+			filterFlag = 1;
+			Draw_map(hdc);
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
+
+
+
+
+
+			{
+
+				BrushDarkBlue_set(hdc);
+				// Rectangle(hdc, 10, 10, 610, 80);
+
+				BrushDarkPink_set(hdc);
+				//	Rectangle(hdc, 10, 100,	300, 200);
+
+
+				lstrcpy(mojibuf, TEXT("商店に入りました。どこへ行きますか?"));
+				TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+				int offsetYtemp1 = 100;
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, 10, offsetYtemp1,
+					offsetYtemp1 + 100, 400);
+
+				int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
+
+				BrushDarkPink_set(hdc);
+				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID),
+					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID));
+
+				int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
+				int yspan1 = carsoruHigh;
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("行き先"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("武器"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("防具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("装飾品"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("道具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (4), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (5), mojibuf, lstrlen(mojibuf));
+	
+			}
+
+
+
+			if (popFlagTown == 1) {
+
+				lstrcpy(mojibuf, TEXT("                                      "));
+				TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+				lstrcpy(mojibuf, popMsg);
+				//TextOut(hdc, 130, 150, mojibuf, lstrlen(mojibuf));
+
+
+			}
+
+
+
+
+
+
 
 			BrushBlue_set(hdc);
 			BrushPink_set(hdc);
@@ -4099,10 +4334,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_Shop_weapon_buy || (mode_scene == MODE_Shop_armor_buy)) {
+			filterFlag = 1;
+			Draw_map(hdc);
+
+
+			{
+				int whomTargetID3 = tempPass;
+
+				BrushDarkBlue_set(hdc);
+				// Rectangle(hdc, 10, 10, 610, 80);
+
+				BrushDarkPink_set(hdc);
+				//	Rectangle(hdc, 10, 100,	300, 200);
+
+
+				lstrcpy(mojibuf, TEXT("商店に入りました。どこへ行きますか?"));
+				TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+				int offsetYtemp1 = 100;
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, 10, offsetYtemp1,
+					offsetYtemp1 + 100, 400);
+
+				int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
+
+				BrushDarkPink_set(hdc);
+				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID3),
+					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID3));
+
+				int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
+				int yspan1 = carsoruHigh;
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("行き先"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("武器"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("防具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("装飾品"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("道具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (4), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (5), mojibuf, lstrlen(mojibuf));
+
+			}
+
 
 			// MessageBox(NULL, TEXT("ギルドのテスト中。"), TEXT("キーテスト"), MB_OK);
 
-			BrushBlue_set(hdc);
+			BrushDarkBlue_set(hdc);
 			BrushPink_set(hdc);
 
 			lstrcpy(mojibuf, TEXT("武器屋テスト買う。"));
@@ -4124,7 +4414,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			shopAct = 0; // 「買う」にカーソル
 
-			BrushPink_set(hdc);
+			BrushDarkPink_set(hdc);
 			Rectangle(hdc, BuySellX + spanX * (shopAct), offsetYtemp1 + 10,
 				BuySellX + 40 + spanX * (shopAct), offsetYtemp1 + 60);
 
@@ -4142,6 +4432,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
 
 
+			BrushBlue_set(hdc);
 			int GoldRanX = 480; int GoldRanY = 50;
 			SelectObject(hdc, blue_thin_1);
 			Rectangle(hdc, GoldRanX, GoldRanY,
@@ -4326,13 +4617,73 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		if (mode_scene == MODE_Shop_weapon_sell || mode_scene == MODE_Shop_armor_sell) {
+			filterFlag = 1;
+			Draw_map(hdc);
+
+			
+
+			{
+				int whomTargetID3 = tempPass;
+
+				BrushDarkBlue_set(hdc);
+				// Rectangle(hdc, 10, 10, 610, 80);
+
+				BrushDarkPink_set(hdc);
+				//	Rectangle(hdc, 10, 100,	300, 200);
+
+
+				lstrcpy(mojibuf, TEXT("商店にhhh入りました。どこへ行きますか?"));
+				TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
+
+
+
+
+				int offsetYtemp1 = 100;
+				SelectObject(hdc, blue_thin_1);
+				Rectangle(hdc, 10, offsetYtemp1,
+					offsetYtemp1 + 100, 400);
+
+				int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
+
+				BrushDarkPink_set(hdc);
+				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID3),
+					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID3));
+
+				int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
+				int yspan1 = carsoruHigh;
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("行き先hhh"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
+
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("武器"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (1), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("防具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (2), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("装飾品"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (3), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("道具"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (4), mojibuf, lstrlen(mojibuf));
+
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("出る"));
+				TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (5), mojibuf, lstrlen(mojibuf));
+
+			}
+
+
+
+
+
 
 			SetBkMode(hdc, OPAQUE);
 			// SetBkMode(hdc, TRANSPARENT);
 
 			// MessageBox(NULL, TEXT("売却のテスト中。"), TEXT("キーテスト"), MB_OK);
 
-			BrushBlue_set(hdc);
+			BrushDarkBlue_set(hdc);
 			BrushPink_set(hdc);
 
 			lstrcpy(mojibuf, TEXT("武器屋テスト売る。"));
@@ -4355,7 +4706,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			shopAct = 1; // 「売る」にカーソル
 
-			BrushPink_set(hdc);
+			BrushDarkPink_set(hdc);
 			Rectangle(hdc, BuySellX + spanX * (shopAct), offsetYtemp1 + 10,
 				BuySellX + 40 + spanX * (shopAct), offsetYtemp1 + 60);
 
@@ -4373,6 +4724,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, BuySellX + spanX * 3, BuySellY, mojibuf, lstrlen(mojibuf));
 
 
+			BrushBlue_set(hdc);
 			int GoldRanX = 480; int GoldRanY = 50;
 			SelectObject(hdc, blue_thin_1);
 			Rectangle(hdc, GoldRanX, GoldRanY,
