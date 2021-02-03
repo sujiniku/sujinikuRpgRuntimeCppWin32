@@ -894,188 +894,6 @@ void Draw_map(HDC hdc) {
 
 
 
-
-
-
-
-void Draw_map2(HDC hdc, HDC hbackDC) {
-
-	// 最低限のマップチップ画像のロードは WM_CREATE などで既に行っている。
-
-
-	// ハンドルなどの定義。 static にしたら駄目（表示されなくなる）。
-	//HDC hdc;
-	// HDC hbackDC = CreateCompatibleDC(hdc); // 裏画面用のハンドル	
-
-	// 中間作業用 （完成しても消したら駄目） static にしたら駄目（表示されなくなる）。
-	HDC hMdc = CreateCompatibleDC(hdc); // 中間作業用ハンドル
-
-	static HBITMAP hbmp; // 中間作業用 // こいつは static にしてもオッケー
-
-
-	// マップサイズの読み込む
-	hbmp = CreateCompatibleBitmap(hdc, 640 + 100, 480 + 100);
-	SelectObject(hbackDC, hbmp); // hbackDCにマップサイズを読み込ませている
-
-
-	// 実際にマップを裏画面に描画開始する
-
-	int x_map = 0; // マップ描画の開始位置 // これは消しちゃ駄目。for文の記述の簡略化のため
-	int y_map = 0;
-	int iTemp;
-
-	for (x_map = 0; x_map <= 9; ++x_map)
-	{
-		for (y_map = 0; y_map <= 6; ++y_map)
-		{
-
-			iTemp = maptable[y_map][x_map] + 1;
-			hbmp = hbmp_mapchip_list[iTemp].hbmp_mapchip;
-
-			SelectObject(hMdc, hbmp);
-			BitBlt(hbackDC, 225 + x_map * 32, 140 + y_map * 32, 32, 32, hMdc, 0, 0, SRCCOPY);
-
-			// DeleteDC(hMdc); // これを入れると、マップが表示されない。
-		}
-	}
-
-
-
-	// 主人公のBMP画像をファイルから読み込む
-
-	int chara_id = 0;
-	if (hero1_direction == upward) {
-		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_up;
-	}
-
-	if (hero1_direction == rightward) {
-		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_right;
-	}
-
-	if (hero1_direction == downward) {
-		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_down;
-	}
-
-	if (hero1_direction == leftward) {
-		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_left;
-	}
-
-
-	SelectObject(hMdc, hbmp); // これを消すと、主人公ドットが表示されない。	
-	BitBlt(hbackDC, 320 + (chara_x - start_x) * 32, 270 + (chara_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
-
-
-	// マップ上の他キャラ（主人公以外）のBMP画像をファイルから読み込む
-
-	if (where_map == 1) {
-
-		hbmp = hbmp_what; // ギルドのチップ。
-
-		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-		BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
-
-	}
-
-
-	if (where_map == 2) {
-
-		for (int i = 0; i <= 1; i = i + 1)
-		{
-			if (enemy_alive[i] == 1) {
-				hbmp = hbmp_enemy;
-
-				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-				BitBlt(hbackDC, 320 + (positionX_enemy[i] - start_x) * 32, 270 + (positionY_enemy[i] - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
-			}
-		}
-	}
-
-
-	if (mapTrans_flag_is == 1) {
-
-		hbmp = hbmp_MapTrans;
-		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。
-		BitBlt(hbackDC, 320 + (MapTrans_position_x - start_x) * 32, 270 + (MapTrans_position_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
-	}
-
-
-	// 裏画面から本画面に転送
-	if (filterFlag == 0) {
-		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-	}
-
-
-	if (filterFlag == 1) {
-		if (1) {
-			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
-			Graphics graphics(hbackDC);
-
-			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
-			Image image2(L"filter.png");
-
-			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-			graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
-
-		}
-
-		// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-	}
-
-	// BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-	if (filterFlag == 2) {
-		if (1) {
-			// Graphics 型の命令の読み込みのためにダミー変数 graphics を宣言.
-			Graphics graphics(hbackDC);
-
-			// 画像の読み込み「image2」は変数名。ここで黒フィルターを読み込み。
-			Image image2(L"filter.png");
-
-			// 黒フィルター画像の描画。 ダミー変数 graphics を仲介して描画する必要がある.
-			// graphics.DrawImage(&image2, 0, 0, image2.GetWidth(), image2.GetHeight());
-
-		}
-
-		BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-	}
-
-	/*
-
-	mae_haikei = hbmp_what;//  (HBITMAP)hbackDC;
-
-	mae_dc = CreateCompatibleDC(hdc); // hbackDC
-
-	SelectObject(hbackDC, mae_haikei);
-	BitBlt(hdc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-	//BitBlt(mae_dc, 0, 0, 700, 500, hbackDC, 0, 0, SRCCOPY);
-
-
-	// テスト用
-	BitBlt(hdc, 700, 0, 0, 500, mae_dc, 0, 0, SRCCOPY);
-
-
-		*/
-
-
-
-
-
-	//hbmp = NULL; // これで初期化しないとバグり、何故かhbmp_MapTransにhbmp_enemyまたは主人公の向きが入ってる。
-
-
-	// 中間ハンドルからhbmpを解除
-	//SelectObject(hMdc, NULL);
-	//SelectObject(hbackDC, NULL);
-
-	// 不要になった中間物を削除	
-	//DeleteDC(hbackDC);
-	//DeleteDC(hMdc);
-
-	//DeleteObject(hbmp);
-} // draw map2
-
-
 // マップでのカーソル押された時の移動可能の判定
 void check_movable(HWND hWnd) {
 
@@ -1210,7 +1028,7 @@ void hikaesai(HDC hdc) {
 	int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 	int yspan1 = carsoruHigh;
 
-	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー543"));
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("控えメンバー"));
 	TextOut(hdc, offsetXtemp1, -10 + offsetYtemp1 + yspan1 * (0), mojibuf, lstrlen(mojibuf));
 
 	if (uwadumeFlag == 0) {
@@ -1262,7 +1080,7 @@ void hikaesai(HDC hdc) {
 
 
 		// temp == tourokuNakama + 1    に相当
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す333】"));
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("【外す】"));
 		TextOut(hdc, offsetXtemp1, 30 - 10 + yspan1 * (skip)+120, mojibuf, lstrlen(mojibuf));
 
 
@@ -1312,9 +1130,10 @@ void parsai(HDC hdc) {
 		BrushDarkPink_set(hdc);
 	}
 
-	Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetIDparty),
-		offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
-
+	if (mode_scene == MODE_Guild_Remove) {
+		Rectangle(hdc, offsetXtemp2 + 10, offsetYtemp2 + 10 + 60 * (whomTargetIDparty),
+			offsetXtemp2 + 150, offsetYtemp2 + kasoruHeight + 10 + 60 * (whomTargetIDparty));
+	}
 
 	int yspan1 = 50;
 
