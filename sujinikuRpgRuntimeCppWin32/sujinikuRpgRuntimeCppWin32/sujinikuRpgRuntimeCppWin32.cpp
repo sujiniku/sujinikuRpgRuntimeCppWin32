@@ -104,6 +104,8 @@ int wepoType = 1;
 int tateType = 2;
 int kabutoType = 3;
 
+int PorEflag[20];
+int PorEthisID[20];
 
 int tempPass = 0;
 
@@ -1254,6 +1256,39 @@ static void MainGraMenu(HDC hdc) {
 
 	}
 
+
+	// partyNarabijyun[0];
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("pn[0]: %d"), partyNarabijyun[0]);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 0 +50, menuComBaseY +20, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("pn[1]: %d"), partyNarabijyun[1]);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 1 + 50, menuComBaseY + 20, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("pn[2]: %d"), partyNarabijyun[2]);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 2 + 50, menuComBaseY + 20, mojibuf, lstrlen(mojibuf));
+
+
+
+	// heros_def_list[temp].PartyIn
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("paI[0]: %d"), heros_def_list[0].PartyIn);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 0 + 50, menuComBaseY + 40, mojibuf, lstrlen(mojibuf));
+		
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("paI[1]: %d"), heros_def_list[1].PartyIn);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 1 + 50, menuComBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("paI[2]: %d"), heros_def_list[2].PartyIn);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 2 + 50, menuComBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+
+	_stprintf_s(mojibuf, MAX_LENGTH, TEXT("paI[3]: %d"), heros_def_list[3].PartyIn);
+	TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * 3 + 50, menuComBaseY + 40, mojibuf, lstrlen(mojibuf));
+
+
+
+
 	// 間借り
 
 	if (mode_scene == MODE_ITEM_TYPE) {
@@ -1603,7 +1638,7 @@ static int damage_HeroAttack = 1;
 static int damage_EnemyAttack = 0;
 
 void heroside_attack(HWND hWnd) {
-	int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
+	int ActNaraGrob = actionOrder[partyNarabijyun[PorEthisID[globalTempA]]];
 
 	if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
 		// 主人公たちの攻撃
@@ -1651,16 +1686,16 @@ void enemy_attack(HWND hWnd) {
 		/* サイコロ */
 		damage_EnemyAttack = rand() % (6 / 2) + 0 + 2 * monster_def_list[encount_monters_id - 1].mon_attackPower;
 
-		// 主人公にダメージ
-		if (heros_def_list[0].heros_HP0_flag != 1) {
-			heros_def_list[0].heros_hp = heros_def_list[0].heros_hp - damage_EnemyAttack;
+		// 隊列1人目にダメージ
+		if (heros_def_list[partyNarabijyun[0]].heros_HP0_flag != 1) {
+			heros_def_list[partyNarabijyun[0]].heros_hp = heros_def_list[partyNarabijyun[0]].heros_hp - damage_EnemyAttack;
 		}
 
-		if (heros_def_list[0].heros_HP0_flag == 1) {
-			heros_def_list[1].heros_hp = heros_def_list[1].heros_hp - damage_EnemyAttack;
+		if (heros_def_list[partyNarabijyun[0]].heros_HP0_flag == 1) {
+			heros_def_list[partyNarabijyun[1]].heros_hp = heros_def_list[partyNarabijyun[1]].heros_hp - damage_EnemyAttack;
 		}
 
-		if (heros_def_list[0].heros_HP0_flag == 1 && heros_def_list[1].heros_HP0_flag == 1) {
+		if (heros_def_list[partyNarabijyun[0]].heros_HP0_flag == 1 && heros_def_list[partyNarabijyun[1]].heros_HP0_flag == 1) {
 			heros_def_list[partyNarabijyun[2]].heros_hp = heros_def_list[partyNarabijyun[2]].heros_hp - damage_EnemyAttack;
 		}
 
@@ -1783,6 +1818,9 @@ void draw_battle_common_after(HDC hdc) {
 	}
 
 
+
+	// 戦闘デバッグ文の描画プログラム
+
 	// 行動順配列の表示テスト 
 	lstrcpy(mojibuf, TEXT("行動順配列"));
 	TextOut(hdc, agilityProcMonitorX, agilityProcMonitorY + 50, mojibuf, lstrlen(mojibuf));
@@ -1804,6 +1842,34 @@ void draw_battle_common_after(HDC hdc) {
 		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
 		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
 	}
+
+
+	lstrcpy(mojibuf, TEXT("act"));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
+
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
+	}
+
+
+	lstrcpy(mojibuf, TEXT("PE f"));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 3, mojibuf, lstrlen(mojibuf));
+
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), PorEflag[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 3, mojibuf, lstrlen(mojibuf));
+	}
+
+	lstrcpy(mojibuf, TEXT("PE ID"));
+	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 4, mojibuf, lstrlen(mojibuf));
+
+	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), PorEthisID[tempMonitor]);
+		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 4, mojibuf, lstrlen(mojibuf));
+	}
+
+	
 
 
 	/* モンスターの表示 */
@@ -2245,7 +2311,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 1) {
 			lstrcpy(monster_def_list[temp].monster_name, TEXT("コボルト"));
-			monster_def_list[temp].mon_hp_max = 5;
+			monster_def_list[temp].mon_hp_max = 25;
 			monster_def_list[temp].mon_agility = 76;
 			monster_def_list[temp].monster_id = 2;
 			monster_def_list[temp].mon_gold = 10;
@@ -2261,7 +2327,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			lstrcpy(heros_def_list[temp].heros_name, TEXT("エロス"));
-			heros_def_list[temp].heros_hp = 2; // 20;
+			heros_def_list[temp].heros_hp = 32; // 20;
 			heros_def_list[temp].heros_hp_max = 25;
 			heros_def_list[temp].heros_agility = 56;
 
@@ -2397,7 +2463,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	for (int loctempA = 0; loctempA <= BATTLE_Agility_proc - 1; ++loctempA)
 	{
-		actionOrder[loctempA] = loctempA;
+		actionOrder[loctempA] = partyNarabijyun[loctempA];
 		iremonoOrderHairetu[loctempA] = loctempA;
 	}
 
@@ -2761,10 +2827,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// カネと経験値の更新
 				your_money = your_money + monster_def_list[encount_monters_id - 1].mon_gold;
 
-				heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-				heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+				// heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+				// heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
 
-				heros_def_list[partyNarabijyun[2]].heros_exp = heros_def_list[partyNarabijyun[2]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+
+				for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+					if (heros_def_list[temp].PartyIn == 0) {
+						//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
+						
+						heros_def_list[partyNarabijyun[temp]].heros_exp = heros_def_list[partyNarabijyun[temp]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+
+						
+						// heros_def_list[partyNarabijyun[0]].heros_exp = heros_def_list[partyNarabijyun[0]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
+
+						// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
+					}		
+				}
 
 
 				// partyNarabijyun[2]
@@ -2810,19 +2888,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			for (int battleTempA = 0; battleTempA <= partyNinzuDone - 1 + enemyNinzu; ++battleTempA) {
+			for (int battleTempA = 0; battleTempA <= partyNinzuDone - 1 + enemyNinzu -1+1; ++battleTempA) {
 				if (encount_mons_alive == 1 && TimeCount >= (3 + 4 * battleTempA) && timerFlag == battleTempA) //&& timerFlag >= globalTempA+1  && timerCheckCount == loctempA
 				{
 					timerFlag = 1 + battleTempA;
 					globalTempA = battleTempA;
 
 					// 行動者が味方側の場合
-					if (actionOrder[battleTempA] < partyNinzuDone) {
+					// if (actionOrder[battleTempA] < partyNinzuDone) {
+					
+					if (PorEflag[battleTempA] ==1 ) {
+					
+					
 						heroside_attack(hWnd);
 					}
 
 					// 行動者が敵側の場合					
-					if (actionOrder[battleTempA] >= partyNinzuDone) {
+					// if (actionOrder[battleTempA] >= partyNinzuDone) {
+
+					if (PorEflag[battleTempA] == 2) {
+
 						if (encount_mons_alive == 1) {
 							enemy_attack(hWnd);
 						}
@@ -4825,11 +4910,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// int ActVal = partyNarabijyun[globalTempA];
 
 
-			int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
+			int ActNaraGrob = actionOrder[partyNarabijyun[PorEthisID[globalTempA] ]];
 
 			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
 				if (ActNaraGrob <= partyNinzuDone - 1) {
-					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[ActNaraGrob].heros_name);
+					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[partyNarabijyun[PorEthisID[globalTempA] ]].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -4845,7 +4930,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (heros_def_list[ActNaraGrob].heros_HP0_flag == 1) {
 				if (ActNaraGrob <= partyNinzuDone - 1) {
-					_stprintf_s(mojibuf, TEXT("%s は戦闘不能で動けない"), heros_def_list[ActNaraGrob].heros_name);
+					_stprintf_s(mojibuf, TEXT("%s は戦闘不能で動けない"), heros_def_list[partyNarabijyun[ActNaraGrob]].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -5651,6 +5736,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							for (int temp = 0; temp <= tourokuNakama; ++temp) {
 								fprintf(fp2, "登録キャラ %d 番目の兜: %d \n", temp + 1, helm_def_list[
 									heros_def_list[temp].heros_helm].def_id);
+							}
+					
+							for (int temp = 0; temp <= tourokuNakama; ++temp) {
+								fprintf(fp2, "登録キャラ %d 番目の経験値: %d \n", temp + 1, heros_def_list[temp].heros_exp);
 							}
 
 
@@ -7695,18 +7784,23 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 
 						for (idTemp = 0; idTemp <= partyNinzuDone - 1; idTemp = idTemp + 1)
 						{
-							sankaAgility[idTemp] = mikataAgility[idTemp];
+							sankaAgility[idTemp] = mikataAgility[idTemp]; // sankaAgil はまだ並び替え前
+							// PorEflag[idTemp] = 1;
+							// PorEthisID[idTemp] = idTemp;
 						}
 
 						for (idTemp = 0; idTemp <= enemyNinzu - 1; idTemp = idTemp + 1)
 						{
 							sankaAgility[partyNinzuDone + idTemp] = tekiTairetuAgility[idTemp];
+							// PorEflag[idTemp] = 2;
+							// PorEthisID[idTemp] = idTemp;
+
 						}
 
 
 						for (int loctempQ = 0; loctempQ <= partyNinzuDone + enemyNinzu - 1; ++loctempQ)
 						{
-							iremonoAgilityHairetu[loctempQ] = sankaAgility[loctempQ];
+							iremonoAgilityHairetu[loctempQ] = sankaAgility[loctempQ]; // iremonoAgi と sanka は同内容
 
 							iremonoOrderHairetu[loctempQ] = loctempQ;
 						} // 初期値の代入
@@ -7714,9 +7808,9 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 
 						// ソートで実装
 
-						for (int loctempB = 0; loctempB <= partyNinzuDone - 1 + enemyNinzu; ++loctempB)
+						for (int loctempB = 0; loctempB <= (partyNinzuDone - 1 + enemyNinzu -1 )+1; ++loctempB)
 						{
-							for (int loctempA = loctempB; loctempA <= partyNinzuDone - 1 + enemyNinzu; ++loctempA)
+							for (int loctempA = loctempB; loctempA <= (partyNinzuDone - 1 + enemyNinzu-1)+1; ++loctempA)
 							{
 								if (iremonoAgilityHairetu[loctempB] >= iremonoAgilityHairetu[loctempA + loctempB]) {
 
@@ -7725,6 +7819,7 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 								//	iremonoAgilityHairetu[loctempA + loctempB] = iremonoAgilityHairetu[loctempA + loctempB];
 
 								}
+								// locAのほうが内側です。
 								if (iremonoAgilityHairetu[loctempB] < iremonoAgilityHairetu[loctempA + loctempB]) {
 
 									int tempSwapA, tempSwapB;
@@ -7743,6 +7838,11 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 
 									iremonoOrderHairetu[loctempB] = tempOrderSwapB;
 									iremonoOrderHairetu[loctempA + loctempB] = tempOrderSwapA;
+
+									
+
+
+									// デバッグ文の「irem」では入れ物オーダー配列である。
 								}
 							}
 
@@ -7756,6 +7856,29 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 						{
 							actionOrder[loctempA] = iremonoOrderHairetu[loctempA];
 						}
+
+
+						for (int loctempA = 0; loctempA <= partyNinzuDone - 1 + enemyNinzu; ++loctempA)
+						{
+							if (actionOrder[loctempA] <= partyNinzuDone - 1) {
+								PorEflag[loctempA] = 1;
+								PorEthisID[loctempA] = actionOrder[loctempA];
+							}
+
+							if (actionOrder[loctempA] > partyNinzuDone - 1) {
+								PorEflag[loctempA] = 2;
+								PorEthisID[loctempA] = -9;
+							}
+
+
+						}
+
+						
+						// PorEthisID[idTemp] = idTemp;
+
+
+
+
 
 						mode_scene = MODE_BATTLE_NOW;
 
