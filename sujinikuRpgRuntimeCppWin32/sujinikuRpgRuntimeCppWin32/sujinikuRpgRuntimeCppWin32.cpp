@@ -108,7 +108,6 @@ int tateType = 2;
 int kabutoType = 3;
 
 int PorEflag[20];
-int PorEthisID[20];
 
 int tempPass = 0;
 
@@ -1641,8 +1640,8 @@ static int damage_HeroAttack = 1;
 static int damage_EnemyAttack = 0;
 
 void heroside_attack(HWND hWnd) {
-	int ActNaraGrob = actionOrder[partyNarabijyun[PorEthisID[globalTempA]]];
-	int pnCommon = partyNarabijyun[PorEthisID[globalTempA]];
+	
+	int pnCommon = partyNarabijyun[actionOrder[globalTempA]];
 
 
 	if (heros_def_list[pnCommon].heros_HP0_flag == 0) {
@@ -1879,7 +1878,7 @@ void draw_battle_common_after(HDC hdc) {
 	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 4, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), PorEthisID[tempMonitor]);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
 		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 4, mojibuf, lstrlen(mojibuf));
 	}
 
@@ -2315,7 +2314,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 0) {
 			lstrcpy(monster_def_list[temp].monster_name, TEXT("スライム"));
-			monster_def_list[temp].mon_hp_max = 2;
+			monster_def_list[temp].mon_hp_max = 12;
 			monster_def_list[temp].mon_agility = 13;
 			monster_def_list[temp].monster_id = 1;
 			monster_def_list[temp].mon_gold = 1;
@@ -2913,7 +2912,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 					if (PorEflag[battleTempA] ==1 
 						&& 
-						heros_def_list[partyNarabijyun[PorEthisID[globalTempA]]].heros_HP0_flag == 0) {
+						heros_def_list[partyNarabijyun[actionOrder[globalTempA]]].heros_HP0_flag == 0) {
 						 
 									
 						
@@ -4923,48 +4922,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			// 「○○の攻撃！」を表示
-			// actionOrder[globalTempA]
-			// int ActVal = partyNarabijyun[globalTempA];
 
-
-			// int ActNaraGrob = actionOrder[ partyNarabijyun[PorEthisID[globalTempA] ]];
-			int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
-			int pnCommon = partyNarabijyun[PorEthisID[globalTempA]];
-			int Act2NaraGrob = actionOrder[pnCommon]; // int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
-
-
-
-			// int ActNaraGrob = actionOrder[partyNarabijyun[globalTempA]];
-
-			//if (heros_def_list[ActNaraGrob].heros_HP0_flag == 0) {
+			int pnCommon = partyNarabijyun[actionOrder[globalTempA]];
 
 			if (heros_def_list[pnCommon].heros_HP0_flag == 0) {
-				if (ActNaraGrob <= partyNinzuDone - 1) {
-					// heros_def_list[partyNarabijyun[PorEthisID[globalTempA]]]
-
-					// heros_def_list[partyNarabijyun[PorEthisID[globalTempA]]]
-
-
-					// globalTempA = battleTempA; であり、0から始まっている。
+				if (actionOrder[globalTempA] <= partyNinzuDone - 1) {
 					
 					_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[pnCommon].heros_name);
-					//_stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[partyNarabijyun[globalTempA]].heros_name);
-					// _stprintf_s(mojibuf, TEXT("%s の攻撃！"), heros_def_list[ActNaraGrob].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
-					// デバッグブン
+					// デバッグ文
 					
 					_stprintf_s(mojibuf, TEXT("gte %d"), globalTempA);
 					TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 89 -30, mojibuf, lstrlen(mojibuf));
 
-					_stprintf_s(mojibuf, TEXT("PE %d"), PorEthisID[globalTempA]);
-					TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 89, mojibuf, lstrlen(mojibuf));
+					_stprintf_s(mojibuf, TEXT("PE %d"), actionOrder[globalTempA]);
+					// TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 89, mojibuf, lstrlen(mojibuf));
 
-					_stprintf_s(mojibuf, TEXT("並び %d"), partyNarabijyun[PorEthisID[globalTempA]]);
+					_stprintf_s(mojibuf, TEXT("pag並び %d"), partyNarabijyun[actionOrder[globalTempA]]);
 					TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 59, mojibuf, lstrlen(mojibuf));
 
 
-					// デバ
+					// ここまでデバ文
 
 					// ここにダメージ表記の関数を追加。
 					draw_battle_EnemyDamage(hdc);
@@ -4976,9 +4955,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			if (heros_def_list[partyNarabijyun[PorEthisID[globalTempA]]].heros_HP0_flag == 1) {
-				if (ActNaraGrob <= partyNinzuDone - 1) {
-					_stprintf_s(mojibuf, TEXT("%s は戦闘不能で動けない"), heros_def_list[partyNarabijyun[PorEthisID[globalTempA]]].heros_name);
+			if (heros_def_list[partyNarabijyun[actionOrder[globalTempA]]].heros_HP0_flag == 1) {
+				if (actionOrder[globalTempA] <= partyNinzuDone - 1) {
+					_stprintf_s(mojibuf, TEXT("%s は戦闘不能で動けない"), heros_def_list[partyNarabijyun[actionOrder[globalTempA]]].heros_name);
 					TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
 
@@ -4993,7 +4972,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			if (ActNaraGrob >= partyNinzuDone) {
+			if (actionOrder[globalTempA] >= partyNinzuDone) {
 				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("敵の攻撃！ "));
 				TextOut(hdc, battleMassBaseX, battleMassBaseY, mojibuf, lstrlen(mojibuf));
 
@@ -5010,7 +4989,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			for (int j = 0; j <= 2; ++j) {
 
 
-				if (j == 0) { _stprintf_s(mojibuf, TEXT("aNg %d %s"), ActNaraGrob, TEXT("ActNaraGrob")); }
+				// if (j == 0) { _stprintf_s(mojibuf, TEXT("aNg %d %s"), ActNaraGrob, TEXT("ActNaraGrob")); }
 				if (j == 1) { _stprintf_s(mojibuf, TEXT("gt %d %s"), globalTempA, TEXT("globalTempA")); }
 				if (j == 2) { _stprintf_s(mojibuf, TEXT("tf %d %s"), timerFlag, TEXT("timerFlag")); }
 
@@ -7834,14 +7813,14 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 						{
 							sankaAgility[idTemp] = mikataAgility[idTemp]; // sankaAgil はまだ並び替え前
 							// PorEflag[idTemp] = 1;
-							// PorEthisID[idTemp] = idTemp;
+							// actionOrder[idTemp] = idTemp;
 						}
 
 						for (idTemp = 0; idTemp <= enemyNinzu - 1; idTemp = idTemp + 1)
 						{
 							sankaAgility[partyNinzuDone + idTemp] = tekiTairetuAgility[idTemp];
 							// PorEflag[idTemp] = 2;
-							// PorEthisID[idTemp] = idTemp;
+							// actionOrder[idTemp] = idTemp;
 
 						}
 
@@ -7910,19 +7889,19 @@ if (whomTargetIDhikae == tourokuNakama+1 ) {
 						{
 							if (actionOrder[loctempA] <= partyNinzuDone - 1) {
 								PorEflag[loctempA] = 1;
-								PorEthisID[loctempA] = actionOrder[loctempA];
+								// actionOrder[loctempA] = actionOrder[loctempA];
 							}
 
 							if (actionOrder[loctempA] > partyNinzuDone - 1) {
 								PorEflag[loctempA] = 2;
-								PorEthisID[loctempA] = -9;
+								// actionOrder[loctempA] = -9;
 							}
 
 
 						}
 
 						
-						// PorEthisID[idTemp] = idTemp;
+						// actionOrder[idTemp] = idTemp;
 
 
 
