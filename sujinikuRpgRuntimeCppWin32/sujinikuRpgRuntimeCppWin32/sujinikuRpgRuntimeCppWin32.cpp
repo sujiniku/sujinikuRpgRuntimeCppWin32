@@ -7163,18 +7163,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				 //MessageBox(NULL, TEXT("1買ってる"), TEXT("キーテスト"), MB_OK);
 
 
-				// 売る処理
-				if (itemTypeHairetu[whomTargetID] == wepoType) {
-					weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
-				}
-				if (itemTypeHairetu[whomTargetID] == tateType) {
-					shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
-				}
-				if (itemTypeHairetu[whomTargetID] == kabutoType) {
-					helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
-				}
-
 				// 買う処理
+				if (your_money >= 50) {
+					if (itemTypeHairetu[whomTargetID] == wepoType) {
+						weapon_have_list[itemHairetu[whomTargetID]].have_kosuu = weapon_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
+						your_money = your_money - 50;
+					}
+					if (itemTypeHairetu[whomTargetID] == tateType) {
+						shield_have_list[itemHairetu[whomTargetID]].have_kosuu = shield_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
+						your_money = your_money - 50;
+					}
+					if (itemTypeHairetu[whomTargetID] == kabutoType) {
+						helm_have_list[itemHairetu[whomTargetID]].have_kosuu = helm_have_list[itemHairetu[whomTargetID]].have_kosuu + 1;
+						your_money = your_money - 50;
+					}
+				}
+				// 売る処理
+				// 売り物なし
 
 				InvalidateRect(hWnd, NULL, FALSE);
 				UpdateWindow(hWnd);
@@ -7266,15 +7271,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (itemTypeHairetu[temp2] == siyouType) {
 					item_have_list[itemHairetu[temp2]].have_kosuu = item_have_list[itemHairetu[temp2]].have_kosuu - 1;
+					your_money = your_money + 50;
 				}
 				if (itemTypeHairetu[temp2] == wepoType) {
 					weapon_have_list[itemHairetu[temp2]].have_kosuu = weapon_have_list[itemHairetu[temp2]].have_kosuu - 1;
+					your_money = your_money + 50;
 				}
 				if (itemTypeHairetu[temp2] == tateType) {
 					shield_have_list[itemHairetu[temp2]].have_kosuu = shield_have_list[itemHairetu[temp2]].have_kosuu - 1;
 				}
 				if (itemTypeHairetu[temp2] == kabutoType) {
 					helm_have_list[itemHairetu[temp2]].have_kosuu = helm_have_list[itemHairetu[temp2]].have_kosuu - 1;
+					your_money = your_money + 50;
 				}
 
 
@@ -7316,8 +7324,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					whomTargetID = whomTargetID - 1;
 				}
 
-
-				if (whomTargetID >= goukeiItem - 1) {
+				if (whomTargetID >= goukeiItem - 1 ) {
 					whomTargetID = goukeiItem - 1;
 				}
 				else if (whomTargetID < 0) {
@@ -7330,7 +7337,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					whomTargetID = 0;
 				}
 
-
+				if (goukeiItem <= 0) {
+					// MessageBox(NULL, TEXT("ページ送り処理の調査テスト"), TEXT("キーテスト"), MB_OK);
+					whomTargetID = 0;
+				}
 
 
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -7345,9 +7355,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// MessageBox(NULL, TEXT("↓が押されました。"), TEXT("キーテスト"), MB_OK);
 				whomTargetID = whomTargetID - 1;
 
-				if (whomTargetID >= goukeiItem - 1) {
+				if (whomTargetID >= goukeiItem - 1 ) {
 					whomTargetID = goukeiItem - 1;
 				}
+				
 				else if ((pageSyori > 0) && (whomTargetID < 0)) {
 					pageSyori = pageSyori - 1;
 					whomTargetID = 5;
@@ -7356,6 +7367,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					pageSyori = 0;
 					whomTargetID = 0;
 				}
+
+				if (goukeiItem <= 0) {
+					// MessageBox(NULL, TEXT("ページ戻し処理の調査テスト"), TEXT("キーテスト"), MB_OK);
+					whomTargetID = 0;
+				}
+
+
 
 				if (whomTargetID >= 5) {
 					// MessageBox(NULL, TEXT("ページ戻し処理の調査テスト"), TEXT("キーテスト"), MB_OK);
