@@ -1355,6 +1355,17 @@ static void MainGraMenu(HDC hdc) {
 			TextOut(hbackDC, StatsHPbaseX + 30 * 2, StatsHPbaseY + offsetY * j, mojibuf, lstrlen(mojibuf));
 
 
+			lstrcpy(mojibuf, TEXT("EXP"));
+			TextOut(hbackDC, StatsHPbaseX, StatsHPbaseY + 20 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[j]].heros_exp);
+			TextOut(hbackDC, StatsHPbaseX + 30, StatsHPbaseY + 20 + offsetY * j, mojibuf, lstrlen(mojibuf));
+
+
+
+
+
+
 			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("PN: %d"), partyNarabijyun[j]);
 			TextOut(hbackDC, StatsHPbaseX - 50, StatsHPbaseY + 40 + offsetY * j, mojibuf, lstrlen(mojibuf));
 
