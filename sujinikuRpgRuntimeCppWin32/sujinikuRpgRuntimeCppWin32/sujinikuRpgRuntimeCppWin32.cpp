@@ -2840,21 +2840,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// カネと経験値の更新
 				your_money = your_money + monster_def_list[encount_monters_id - 1].mon_gold;
 
-				// heros_def_list[0].heros_exp = heros_def_list[0].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-				// heros_def_list[1].heros_exp = heros_def_list[1].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-
-
 				for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
-					if (heros_def_list[temp].PartyIn == 0) {
-						//MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
+					//if (heros_def_list[temp].PartyIn == 0) { // 登録キャラが多い場合を想定して（歴史SLGなど）、全キャラは走査しない。
+						// MessageBox(NULL, TEXT("敵倒した。"), TEXT("場所テスト"), MB_OK);
 						
 						heros_def_list[partyNarabijyun[temp]].heros_exp = heros_def_list[partyNarabijyun[temp]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-
 						
-						// heros_def_list[partyNarabijyun[0]].heros_exp = heros_def_list[partyNarabijyun[0]].heros_exp + monster_def_list[encount_monters_id - 1].mon_exp;
-
-						// _stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[temp].heros_name);
-					}		
+					//}		
 				}
 
 
@@ -5242,7 +5234,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									henkan = atoi(str2);
 
 
-									int statsLimit = 5;
+									int statsLimit = 6;
 									for (int subtemp = 0; subtemp <= statsLimit - 1; subtemp = subtemp + 1) {
 										for (int temp = 0; temp <= tourokuNakama; temp = temp + 1) {
 											// 登録仲間のキャラHPのロード。一部はパーティと重複。
@@ -5270,6 +5262,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 											}
 
 
+											if (subtemp == 5) {
+												// 登録仲間の経験値のロード
+												heros_def_list[temp].heros_exp = henkan;
+											}
+
+
+
+
+
 											if (temp == tourokuNakama) { break; } // この行も変化してるのを忘れるな
 
 											fgets(buffer1, 150, fp1);
@@ -5287,11 +5288,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										henkan = atoi(str2);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 									} // for subtemp end
 
 
+
+
+
+
+
 								}
-								if (j == 6) { your_money = henkan; }
+								if (j == 6) { 
+									
+									
+									
+									
+									
+									
+									
+									your_money = henkan; }
 								if (j == 7) {
 
 									int LoopLimit; // これはループ処理用の変数。for文の2項目で使う
