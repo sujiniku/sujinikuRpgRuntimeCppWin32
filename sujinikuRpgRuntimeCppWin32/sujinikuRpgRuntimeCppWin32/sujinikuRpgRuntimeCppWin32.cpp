@@ -57,6 +57,10 @@ using namespace Gdiplus;
 
 
 #define MODE_MENU 40000 // メニュー画面のモード番号
+
+#define MODE_narabikae_select1 40001
+#define MODE_narabikae_select2 40002
+
 #define MODE_ITEM_TYPE 40500 // アイテムの「使用品」、「装備品」、「大事なもの」の区別
 #define MODE_ITEM_MENU 41000 // アイテムメニューのモード
 #define MODE_ITEM_MENU_FRONT 41500
@@ -94,6 +98,12 @@ using namespace Gdiplus;
 #define MODE_Guild_Responce 2010000
 #define MODE_Guild_Remove 2020000
 
+
+
+
+int NaraSele1 = 0;
+
+int NaraSele2 = 0;
 
 
 int uketKyara = 1; // 戦闘中で、何人目がダメージ受けてるか。「1」で1人目。
@@ -241,7 +251,12 @@ int sankaNinzu = partyNinzuDone + enemyNinzu;
 int hikaeNinzu = 2;
 
 
-int partyNarabijyun[5] = { 0,1,-1,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
+int partyNarabijyun[15] = { 0,1,-1,-1, -1 }; // パーティ隊列の並び替えの処理に使う予定
+int partyNarabijyunBefore[15];
+int partyNarabijyunAfter[15];
+
+
+
 int hikaeNarabijyun[10] = { 2,3,-1, -1, -1 }; // ギルドの処理に使う予定
 
 int monsterNarabijyun[5] = { 0,1,2,3,4 }; // モンスターの戦闘中の行動順の処理に使う予定
@@ -493,8 +508,8 @@ static int before_chara_x; // 退却処理で1歩前に戻るときに使う。
 static int before_chara_y; //
 
 
-static int start_x = 3;
-static int start_y = 4;
+static int start_x = 4;
+static int start_y = 3;
 
 
 
@@ -781,9 +796,12 @@ void Draw_map(HDC hdc) {
 		hbmp = chara_chip_list[chara_id].hbmp_chara_chip_left;
 	}
 
+	int start2_x = 3;
+	int start2_y = 4;
+
 
 	SelectObject(hMdc, hbmp); // これを消すと、主人公ドットが表示されない。	
-	BitBlt(hbackDC, 320 + (chara_x - start_x) * 32, 270 + (chara_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+	BitBlt(hbackDC, 320 + (chara_x - start2_x) * 32, 270 + (chara_y - start2_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 
 
 	// マップ上の他キャラ（主人公以外）のBMP画像をファイルから読み込む
@@ -793,7 +811,7 @@ void Draw_map(HDC hdc) {
 		hbmp = hbmp_what; // ギルドのチップ。
 
 		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-		BitBlt(hbackDC, 320 + (town_X - start_x) * 32, 270 + (town_Y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+		BitBlt(hbackDC, 320 + (town_X - start2_x) * 32, 270 + (town_Y - start2_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 
 	}
 
@@ -806,7 +824,7 @@ void Draw_map(HDC hdc) {
 				hbmp = hbmp_enemy;
 
 				SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。				
-				BitBlt(hbackDC, 320 + (positionX_enemy[i] - start_x) * 32, 270 + (positionY_enemy[i] - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+				BitBlt(hbackDC, 320 + (positionX_enemy[i] - start2_x) * 32, 270 + (positionY_enemy[i] - start2_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 			}
 		}
 	}
@@ -816,7 +834,7 @@ void Draw_map(HDC hdc) {
 
 		hbmp = hbmp_MapTrans;
 		SelectObject(hMdc, hbmp); // これを消すと、ドットが表示されない。
-		BitBlt(hbackDC, 320 + (MapTrans_position_x - start_x) * 32, 270 + (MapTrans_position_y - start_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
+		BitBlt(hbackDC, 320 + (MapTrans_position_x - start2_x) * 32, 270 + (MapTrans_position_y - start2_y) * (32), 170, 180, hMdc, 0, 0, SRCCOPY);
 	}
 
 
@@ -1243,7 +1261,7 @@ static void MainGraMenu(HDC hdc) {
 
 	SetBkMode(hbackDC, TRANSPARENT);
 
-	for (int j = 0; j <= 3; ++j) {
+	for (int j = 0; j <= 4; ++j) {
 
 		// ここに共通する前段階の作業を記述;
 
@@ -1252,6 +1270,7 @@ static void MainGraMenu(HDC hdc) {
 		if (j == 1) { lstrcpy(mojibuf, TEXT("装備")); }
 		if (j == 2) { lstrcpy(mojibuf, TEXT("技能")); }
 		if (j == 3) { lstrcpy(mojibuf, TEXT("セーブ")); }
+		if (j == 4) { lstrcpy(mojibuf, TEXT("並び替え")); }
 
 		// ここに共通する後段階の作業を記述;
 		TextOut(hbackDC, menuComBaseX + menuComOffsetPerX * j, menuComBaseY, mojibuf, lstrlen(mojibuf));
@@ -2695,7 +2714,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		lstrcpy(chip_temp, TEXT("GameData\\charachip\\"));
-		lstrcpy(chip_name, TEXT("what_dot.bmp"));
+		lstrcpy(chip_name, TEXT("town_dot.bmp"));
 		lstrcat(chip_temp, chip_name); // 合成
 
 		hbmp_what = (HBITMAP)LoadImage(NULL, chip_temp, IMAGE_BITMAP, 0, 0,
@@ -3074,6 +3093,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			MainGraMenu(hdc);
 
 		}
+
+
+		if (mode_scene == MODE_narabikae_select1  || mode_scene == MODE_narabikae_select2) {
+
+			BrushBlue_set(hdc);
+			if (darkFlag) {
+				BrushDarkBlue_set(hdc);
+			}
+
+			int narabiSikY = 100;
+			Rectangle(hdc, 10, narabiSikY, 310, narabiSikY + 180);
+
+			// int tempMae = 0;
+
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("並び替え前"));
+			TextOut(hdc, 20, narabiSikY + 10, mojibuf, lstrlen(mojibuf));
+
+			for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyunBefore[temp]].heros_name);
+				TextOut(hdc, 20 + 0*150, narabiSikY + 10 + 30 * (1 + temp), mojibuf, lstrlen(mojibuf));
+			}
+
+
+			BrushPink_set(hdc);
+			SetBkMode(hdc, TRANSPARENT);
+			if (mode_scene == MODE_narabikae_select2) {
+				BrushDarkPink_set(hdc);
+				SetBkMode(hdc, TRANSPARENT);
+
+
+			}
+			Rectangle(hdc, 160, 140 + whomTargetID *30 , 160 + 100, 140+20 + whomTargetID * 30);
+
+	
+			_stprintf_s(mojibuf, MAX_LENGTH, TEXT("並び替え後"));
+			TextOut(hdc, 20+150, narabiSikY + 10, mojibuf, lstrlen(mojibuf));
+
+			for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%s"), heros_def_list[partyNarabijyunAfter[temp]].heros_name);
+				TextOut(hdc, 20+150, narabiSikY + 10 + 30 * (1 + temp), mojibuf, lstrlen(mojibuf));
+			}
+		
+
+
+		}
+
+
+
 
 
 		// mode_scene == MODE_ITEM_TYPE
@@ -5853,7 +5920,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
+
 				}
+
+
+				if (selecting_mainmenu == 5) {
+					// MessageBox(NULL, TEXT("並び替えをするためのコマンド（※未実装）。"), TEXT("テスト"), MB_OK);
+
+					for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+						partyNarabijyunBefore[temp] = partyNarabijyun[temp];
+						partyNarabijyunAfter[temp] = partyNarabijyun[temp];
+					}
+
+					whomTargetID = 0;
+					mode_scene = MODE_narabikae_select1;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+
+
+
+
 			} // casezの終わり
 
 			break;
@@ -5862,6 +5950,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// マップ画面に戻る
 			{
 				key_remain = 0;
+				//MessageBox(NULL, TEXT("rightが押されました。"), TEXT("キーテスト"), MB_OK);
 
 				mode_scene = MODE_MAP;
 				InvalidateRect(hWnd, NULL, FALSE);
@@ -5912,6 +6001,201 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		} // メニューの終わり
+
+
+		if (mode_scene == MODE_narabikae_select1 && key_remain > 0) {
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				NaraSele1 = whomTargetID;
+
+				mode_scene = MODE_narabikae_select2;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+
+
+			} // casezの終わり
+
+			break;
+
+			case 'X':
+				// マップ画面に戻る
+			{
+				key_remain = 0;
+
+				for (int temp = 0; temp <= partyNinzuDone - 1; temp = temp + 1) {
+					
+					partyNarabijyun[temp] = partyNarabijyunAfter[temp];
+				}
+				mode_scene = MODE_MENU;
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("ueが押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID - 1;
+				if (whomTargetID <= 0) {
+					whomTargetID = 0; // 		
+				}
+				//item_select(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+				
+				whomTargetID = whomTargetID + 1;
+				if (whomTargetID >= partyNinzuDone - 1) {
+					//MessageBox(NULL, TEXT("aaaaaた。"), TEXT("キーテスト"), MB_OK);
+					whomTargetID = partyNinzuDone-1; // 		
+				}
+				//item_select(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+
+
+			case VK_RIGHT:
+			{
+				//MessageBox(NULL, TEXT("rightが押されました。"), TEXT("キーテスト"), MB_OK);
+
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+
+			case VK_LEFT:
+
+			{
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+			}
+
+		} // mode_narabikae
+
+
+
+
+
+
+		if (mode_scene == MODE_narabikae_select2 && key_remain > 0) {
+
+			switch (wParam)
+			{
+			case 'Z':
+			{
+				key_remain = 0;
+
+				// NaraSele1 = whomTargetID;
+				NaraSele2 = whomTargetID;
+				int tempnara = partyNarabijyunAfter[NaraSele1];
+				partyNarabijyunAfter[NaraSele1] = partyNarabijyunAfter[NaraSele2];
+				partyNarabijyunAfter[NaraSele2] = tempnara;
+				mode_scene = MODE_narabikae_select1;
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+
+
+			} // casezの終わり
+
+			break;
+
+			case 'X':
+				// マップ画面に戻る
+			{
+				key_remain = 0;
+
+				mode_scene = MODE_narabikae_select1;
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+			break;
+
+			case VK_UP:
+			{
+				// MessageBox(NULL, TEXT("ueが押されました。"), TEXT("キーテスト"), MB_OK);
+				whomTargetID = whomTargetID - 1;
+				if (whomTargetID <= 0) {
+					whomTargetID = 0; // 		
+				}
+				//item_select(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+			case VK_DOWN:
+			{
+
+				whomTargetID = whomTargetID + 1;
+				if (whomTargetID >= partyNinzuDone - 1) {
+					//MessageBox(NULL, TEXT("aaaaaた。"), TEXT("キーテスト"), MB_OK);
+					whomTargetID = partyNinzuDone - 1; // 		
+				}
+				//item_select(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+
+			}
+
+
+			case VK_RIGHT:
+			{
+				//MessageBox(NULL, TEXT("rightが押されました。"), TEXT("キーテスト"), MB_OK);
+
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+
+
+			case VK_LEFT:
+
+			{
+
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+			}
+
+			break;
+			}
+
+		} // mode_narabikae
+
+
+
+
+
+
 
 
 		if (mode_scene == MODE_ITEM_TYPE && key_remain > 0) {
