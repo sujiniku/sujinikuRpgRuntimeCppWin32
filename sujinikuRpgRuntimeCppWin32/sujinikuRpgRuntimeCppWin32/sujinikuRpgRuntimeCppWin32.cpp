@@ -4339,7 +4339,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 			{
-				int whomTargetID13 = tempPass;
+				int whomTargetID3 = tempPass;
 
 				BrushDarkBlue_set(hdc);
 				// Rectangle(hdc, 10, 10, 610, 80);
@@ -4362,8 +4362,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
 
 				BrushDarkPink_set(hdc);
-				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID13),
-					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID13));
+				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID3),
+					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID3));
 
 				int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 				int yspan1 = carsoruHigh;
@@ -4623,7 +4623,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 
 			{
-				int whomTargetID13 = tempPass;
+				int whomTargetID3 = tempPass;
 
 				BrushDarkBlue_set(hdc);
 				// Rectangle(hdc, 10, 10, 610, 80);
@@ -4646,8 +4646,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int carsoruHigh = 50; // 文字スパンとカーソル高さは同じにすること
 
 				BrushDarkPink_set(hdc);
-				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID13),
-					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID13));
+				Rectangle(hdc, 20, offsetYtemp1 + 10 + carsoruHigh * (whomTargetID3),
+					150 + 30, offsetYtemp1 + 60 + carsoruHigh * (whomTargetID3));
 
 				int offsetXtemp1 = 30; // カーソル高さと同じなのは偶然。
 				int yspan1 = carsoruHigh;
