@@ -407,6 +407,8 @@ struct heros_def
 	int heros_sousyoku3;
 
 
+	int heros_bukiKougekiRyoku;
+	int heros_subiRyoku;
 
 };
 
@@ -1685,7 +1687,7 @@ void heroside_attack(HWND hWnd) {
 
 
 			/* サイコロ */
-			damage_HeroAttack = rand() % 6 + 2 + equipWeaponPower;
+			damage_HeroAttack = rand() % 6 + 2 + heros_def_list[pnCommon].heros_bukiKougekiRyoku;
 
 			// 敵にダメージ
 			monster_hp = monster_hp - damage_HeroAttack;
@@ -2123,7 +2125,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄の槍"));
 			weapon_def_list[temp].material = mateIron;
 			weapon_def_list[temp].equip_type = spear;
-			weapon_def_list[temp].equipPower = 7; // 攻撃力	
+			weapon_def_list[temp].equipPower = 107; // 攻撃力	
 			continue;
 		}
 
@@ -2132,7 +2134,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			lstrcpy(weapon_def_list[temp].def_name, TEXT("鉄のメイス"));
 			weapon_def_list[temp].material = mateIron;
 			// weapon_def_list[temp].equip_type = spear;
-			weapon_def_list[temp].equipPower = 4; // 攻撃力
+			weapon_def_list[temp].equipPower = 44; // 攻撃力
 			continue;
 		}
 
@@ -2375,6 +2377,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			heros_def_list[temp].heros_weapon1 = 1;
 
 			heros_def_list[temp].heros_shield = 2;
+			heros_def_list[temp].heros_bukiKougekiRyoku = weapon_def_list[heros_def_list[temp].heros_weapon1].equipPower;
 
 		}
 
@@ -2392,6 +2395,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			heros_def_list[temp].heros_weapon1 = 2;
 			heros_def_list[temp].heros_shield = 0;
+
+			heros_def_list[temp].heros_bukiKougekiRyoku = weapon_def_list[heros_def_list[temp].heros_weapon1].equipPower;
+
 		}
 
 		if (temp == 2) {
@@ -3734,6 +3740,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
+			int temp = 8;
+			lstrcpy(mojibuf1, TEXT("武器攻撃力"));
+			TextOut(hdc, 15, soubiYbase + soubiYper * temp,
+				mojibuf1, lstrlen(mojibuf1));
+
+		
+			_stprintf_s(mojibuf2, MAX_LENGTH, TEXT("%d"), heros_def_list[partyNarabijyun[whomTargetID1]].heros_bukiKougekiRyoku);
+			TextOut(hdc, 90 + 50, soubiYbase + soubiYper * temp,
+				mojibuf2, lstrlen(mojibuf2));
+
+
+
 
 			// 背景の青
 			SelectObject(hdc, blue_thin_1);
@@ -3741,6 +3759,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			lstrcpy(mojibuf, TEXT("変更したい装備を選んでください。"));
 			TextOut(hdc, 15, 350 + 10, mojibuf, lstrlen(mojibuf));
+
+			// whatedit2
+
+			
 
 
 			// デバッグ文。装備個数ズレのバグ調査。
@@ -3887,7 +3909,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 
-
+			if (mode_scene == MODE_EQUIP_EDIT2) {
+				_stprintf_s(mojibuf, MAX_LENGTH, TEXT("装備威力 %d"), weapon_def_list[itemHairetu[whatedit2]].equipPower);
+				TextOut(hdc, 15 + 300, 350 + 10, mojibuf, lstrlen(mojibuf));
+			}
 		} // end of MODE_EQUIP_ 手～頭
 
 
@@ -6847,6 +6872,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					tempID = (weapon_have_list[heros_def_list[partyNarabijyun[whomTargetID1]].heros_weapon1]).have_def_id;
 					int tempEquip = heros_def_list[partyNarabijyun[whomTargetID1]].heros_weapon1;
 					//have_def_id;
+
+					// 攻撃力の更新
+					heros_def_list[partyNarabijyun[whomTargetID1]].heros_bukiKougekiRyoku =
+						//heros_def_list[partyNarabijyun[whomTargetID1]].heros_bukiKougekiRyoku // 現在の値
+						weapon_def_list[itemHairetu[whatedit2]].equipPower;// これから装備するのは上がる。
+						//- weapon_def_list[tempEquip].equipPower; // 装備しているのは外れるので下がる。
 
 					// 外した装備の個数が1増える。
 					weapon_have_list[tempEquip].have_kosuu = weapon_have_list[tempEquip].have_kosuu + 1;
