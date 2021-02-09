@@ -4094,8 +4094,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TextOut(hdc, 130, 50, mojibuf, lstrlen(mojibuf));
 
 
-			lstrcpy(mojibuf, TEXT("Xボタンで退出。"));
+			lstrcpy(mojibuf, TEXT("Xボタンで退出。          "));
 			TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+			if (partyNinzuTemp <= 0) {
+
+				lstrcpy(mojibuf, TEXT("パーティ人数が1人以上必要です。"));
+				TextOut(hdc, 280, 350, mojibuf, lstrlen(mojibuf));
+
+
+			}
+
+
+
 
 			_stprintf_s(
 				mojibuf, MAX_LENGTH, TEXT("%d"),
@@ -7832,36 +7843,45 @@ if (whomTargetID1hikae == tourokuNakama+1 ) {
 			{
 				key_remain = 0;
 
-
-				int skip = 0;
-				int kousinNarabijyun[partymax];
-
-				partyNinzuDone = partyNinzuTemp;
-				// MessageBox(NULL, TEXT("xxxxxxxが押されました。"), TEXT("キーテスト"), MB_OK);
+				if (partyNinzuTemp >= 1) {
 
 
 
+					int skip = 0;
+					int kousinNarabijyun[partymax];
 
-				for (int temp = 0; temp < partymax; temp++)
-				{
-					if (partyNarabijyun[temp] >= 0) {
-						kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+					partyNinzuDone = partyNinzuTemp;
+					// MessageBox(NULL, TEXT("xxxxxxxが押されました。"), TEXT("キーテスト"), MB_OK);
+
+
+
+
+					for (int temp = 0; temp < partymax; temp++)
+					{
+						if (partyNarabijyun[temp] >= 0) {
+							kousinNarabijyun[temp - skip] = partyNarabijyun[temp];
+						}
+
+						if (partyNarabijyun[temp] < 0) {
+							skip = skip + 1;
+						}
 					}
 
-					if (partyNarabijyun[temp] < 0) {
-						skip = skip + 1;
+					for (int temp = 0; temp < partymax; temp++)
+					{
+						partyNarabijyun[temp] = kousinNarabijyun[temp];
 					}
+
+					mode_scene = MODE_TOWN;
+
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
 				}
 
-				for (int temp = 0; temp < partymax; temp++)
-				{
-					partyNarabijyun[temp] = kousinNarabijyun[temp];
-				}
 
-				mode_scene = MODE_TOWN;
 
-				InvalidateRect(hWnd, NULL, FALSE);
-				UpdateWindow(hWnd);
+
+
 
 			}
 			break;
