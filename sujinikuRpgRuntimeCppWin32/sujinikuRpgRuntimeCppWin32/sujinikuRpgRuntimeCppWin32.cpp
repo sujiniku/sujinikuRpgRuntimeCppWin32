@@ -1882,18 +1882,10 @@ void draw_battle_common_after(HDC hdc) {
 	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
+		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("v%d"), actionOrder[tempMonitor]);
 		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
 	}
 
-
-	lstrcpy(mojibuf, TEXT("act"));
-	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
-
-	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
-		_stprintf_s(mojibuf, MAX_LENGTH, TEXT("%d"), actionOrder[tempMonitor]);
-		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 2, mojibuf, lstrlen(mojibuf));
-	}
 
 
 	lstrcpy(mojibuf, TEXT("PE f"));
@@ -1904,7 +1896,7 @@ void draw_battle_common_after(HDC hdc) {
 		TextOut(hdc, agilityProcMonitorX + 30 + tempMonitor * 30, agilityProcMonitorY + 40 + 30 * 3, mojibuf, lstrlen(mojibuf));
 	}
 
-	lstrcpy(mojibuf, TEXT("PE ID"));
+	lstrcpy(mojibuf, TEXT("Ac tp"));
 	TextOut(hdc, agilityProcMonitorX - 10, agilityProcMonitorY + 40 + 30 * 4, mojibuf, lstrlen(mojibuf));
 
 	for (int tempMonitor = 0; tempMonitor <= sankaNinzu - 1; ++tempMonitor) {
@@ -2354,7 +2346,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 1) {
 			lstrcpy(monster_def_list[temp].monster_name, TEXT("コボルト"));
-			monster_def_list[temp].mon_hp_max = 25;
+			monster_def_list[temp].mon_hp_max = 125;
 			monster_def_list[temp].mon_agility = 76;
 			monster_def_list[temp].monster_id = 2;
 			monster_def_list[temp].mon_gold = 10;
@@ -2388,7 +2380,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		if (temp == 1) {
 			lstrcpy(heros_def_list[temp].heros_name, TEXT("ピエ－ル"));
-			heros_def_list[temp].heros_hp = 8; //  18;
+			heros_def_list[temp].heros_hp = 108; //  18;
 			heros_def_list[temp].heros_hp_max = 18;
 			heros_def_list[temp].heros_agility = 100;
 
@@ -5016,7 +5008,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					_stprintf_s(mojibuf, TEXT("gte %d"), globalTempA);
 					TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 89 -30, mojibuf, lstrlen(mojibuf));
 
-					_stprintf_s(mojibuf, TEXT("PE %d"), actionOrder[globalTempA]);
+					_stprintf_s(mojibuf, TEXT("AG %d"), actionOrder[globalTempA]);
 					// TextOut(hdc, battleMassBaseX + 100, battleMassBaseY - 89, mojibuf, lstrlen(mojibuf));
 
 					_stprintf_s(mojibuf, TEXT("pag並び %d"), partyNarabijyun[actionOrder[globalTempA]]);
@@ -8161,7 +8153,7 @@ if (whomTargetID1hikae == tourokuNakama+1 ) {
 
 						for (idTemp = 0; idTemp <= partyNinzuDone - 1; idTemp = idTemp + 1)
 						{
-							sankaAgility[idTemp] = mikataAgility[idTemp]; // sankaAgil はまだ並び替え前
+							sankaAgility[idTemp] = mikataAgility[partyNarabijyun[idTemp] ]; // sankaAgil はまだ並び替え前
 							// PorEflag[idTemp] = 1;
 							// actionOrder[idTemp] = idTemp;
 						}
